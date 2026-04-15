@@ -211,7 +211,7 @@ function renderMeetings(tab){
   }
   cont.innerHTML=meetings.map((m,i)=>{
     const {day,mon}=formatDateBox(m.date);
-    const allIdx=getMeetings().indexOf(m);
+    const allIdx=meetingsCache.indexOf(m);
     return `<div class="meeting-card">
       <div class="meeting-date-box"><div class="meeting-date-day">${day}</div><div class="meeting-date-mon">${mon}</div></div>
       <div class="meeting-info">

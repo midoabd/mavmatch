@@ -689,6 +689,24 @@ function sendSchedule(){
   const msgs = getChat(activeMatch);
   msgs.push({type:'meeting', course, date, meetTime, day, location, note, mine:true, time:fmtTime()});
   saveChat(activeMatch, msgs);
+
+  // Save to API so it shows in meetings tab
+  if(studentId && matches[activeMatch]){
+    fetch('/api/meetings', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        studentId: parseInt(studentId),
+        partner: matches[activeMatch].name,
+        course, date, day,
+        time: meetTime,
+        duration: '1 hour',
+        location,
+        notes: note
+      })
+    }).catch(()=>{});
+  }
+
   closeSchedule();
   renderMessages(activeMatch);
   renderMatchList();
