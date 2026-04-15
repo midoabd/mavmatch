@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Getting Started – MavMatch</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+<script src="courses_db.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--blue:#1565C0;--blue-dark:#0D47A1;--orange:#F57C00;--orange-bright:#FF6F00;--white:#fff;--bg:#F0F4FF;--border:#E2E8F0;--text:#1e293b;--text-muted:#64748b;--radius:12px;--shadow:0 4px 24px rgba(21,101,192,.12)}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:40px 20px}
+/* PROGRESS */
+.progress-bar{display:flex;gap:8px;margin-bottom:40px;width:100%;max-width:560px}
+.progress-step{height:5px;border-radius:3px;flex:1;background:var(--border);transition:.4s}
+.progress-step.done{background:var(--blue)}
+.progress-step.active{background:var(--orange)}
+/* CARD */
+.card{background:var(--white);border-radius:24px;padding:44px 40px;width:100%;max-width:560px;box-shadow:var(--shadow);border:1.5px solid var(--border);animation:fadeIn .35s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.step{display:none}
+.step.active{display:block}
+.step-label{font-size:.78rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--orange);margin-bottom:8px}
+h2{font-family:'Nunito',sans-serif;font-size:1.75rem;font-weight:900;color:var(--blue-dark);margin-bottom:8px;line-height:1.2}
+.sub{font-size:.95rem;color:var(--text-muted);margin-bottom:28px;line-height:1.6}
+/* BUTTONS */
+.btn-primary{background:linear-gradient(135deg,var(--orange),var(--orange-bright));color:#fff;border:none;padding:13px 32px;border-radius:10px;font-size:1rem;font-weight:700;cursor:pointer;transition:.2s;display:inline-block;font-family:'Inter',sans-serif}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(245,124,0,.35)}
+.btn-secondary{background:none;border:1.5px solid var(--border);color:var(--text-muted);padding:12px 24px;border-radius:10px;font-size:.95rem;font-weight:600;cursor:pointer;transition:.15s;font-family:'Inter',sans-serif}
+.btn-secondary:hover{background:var(--bg)}
+.btn-row{display:flex;gap:12px;align-items:center;margin-top:24px;flex-wrap:wrap}
+/* COURSES */
+.courses-search{width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:8px;font-size:.93rem;font-family:'Inter',sans-serif;outline:none;margin-bottom:14px;background:#fafbfc}
+.courses-search:focus{border-color:var(--blue)}
+.courses-grid{display:flex;flex-direction:column;gap:6px;max-height:320px;overflow-y:auto;padding-right:4px}
+.courses-grid::-webkit-scrollbar{width:4px}
+.courses-grid::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+.course-item{display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:8px;border:1.5px solid var(--border);cursor:pointer;transition:.15s;background:#fafbfc}
+.course-item:hover{border-color:var(--blue);background:#E3F2FD}
+.course-item.selected{border-color:var(--blue);background:#E3F2FD}
+.course-item.selected .course-check{background:var(--blue);border-color:var(--blue);color:#fff}
+.course-check{width:20px;height:20px;border-radius:5px;border:1.5px solid var(--border);background:#fff;display:flex;align-items:center;justify-content:center;font-size:.75rem;flex-shrink:0;transition:.15s}
+.course-code{font-weight:700;font-size:.88rem;color:var(--blue-dark);min-width:90px}
+.course-name-text{font-size:.82rem;color:var(--text-muted)}
+.selected-count{font-size:.85rem;color:var(--blue);font-weight:600;margin-top:10px}
+/* AVAILABILITY GRID */
+.avail-tip{background:#E3F2FD;border:1px solid #BBDEFB;border-radius:8px;padding:9px 13px;font-size:.82rem;color:var(--blue-dark);margin-bottom:16px}
+.grid-wrap{overflow-x:auto}
+.ag-header{display:grid;grid-template-columns:52px repeat(7,1fr);gap:2px;margin-bottom:2px}
+.ag-header div{font-size:.68rem;font-weight:700;color:var(--text-muted);text-align:center;padding:3px 0}
+.ag-body{display:grid;grid-template-columns:52px repeat(7,1fr);gap:2px}
+.ag-label{font-size:.66rem;color:var(--text-muted);display:flex;align-items:center;justify-content:flex-end;padding-right:4px;line-height:1.1}
+.ag-slot{height:28px;border-radius:4px;border:1.5px solid var(--border);background:#fafbfc;cursor:pointer;transition:.1s}
+.ag-slot:hover{border-color:var(--blue);background:#E3F2FD}
+.ag-slot.on{background:var(--blue);border-color:var(--blue-dark)}
+.slots-note{font-size:.82rem;color:var(--text-muted);margin-top:8px}
+/* LOADING */
+.loading-wrap{text-align:center;padding:20px 0}
+.spinner{width:64px;height:64px;border:5px solid #E3F2FD;border-top-color:var(--blue);border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 20px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-title{font-family:'Nunito',sans-serif;font-size:1.3rem;font-weight:900;color:var(--blue-dark);margin-bottom:8px}
+.loading-sub{font-size:.9rem;color:var(--text-muted)}
+.loading-steps{display:flex;flex-direction:column;gap:8px;margin-top:24px;text-align:left}
+.loading-step-item{display:flex;align-items:center;gap:10px;font-size:.88rem;color:var(--text-muted);padding:8px 12px;border-radius:8px;background:#f8fafc;transition:.3s}
+.loading-step-item.done-step{background:#E8F5E9;color:#2E7D32}
+.loading-step-item.active-step{background:#E3F2FD;color:var(--blue);font-weight:600}
+.step-dot{width:8px;height:8px;border-radius:50%;background:var(--border);flex-shrink:0}
+.done-step .step-dot{background:#2E7D32}
+.active-step .step-dot{background:var(--blue)}
+/* MATCH PICKS */
+.match-pick-list{display:flex;flex-direction:column;gap:10px;max-height:340px;overflow-y:auto;padding-right:4px}
+.match-pick-item{display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:12px;border:1.5px solid var(--border);cursor:pointer;transition:.15s;background:#fafbfc}
+.match-pick-item:hover{border-color:var(--blue);background:#E3F2FD}
+.match-pick-item.picked{border-color:var(--blue);background:#E3F2FD}
+.match-pick-item.picked .pick-check{background:var(--blue);border-color:var(--blue);color:#fff}
+.pick-avatar{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.9rem;color:#fff;flex-shrink:0}
+.pick-info{flex:1}
+.pick-name{font-weight:700;font-size:.95rem;color:var(--text);margin-bottom:2px}
+.pick-detail{font-size:.78rem;color:var(--text-muted)}
+.pick-overlap{background:#E8F5E9;color:#2E7D32;font-size:.75rem;font-weight:700;padding:3px 10px;border-radius:20px;white-space:nowrap}
+.pick-check{width:22px;height:22px;border-radius:6px;border:1.5px solid var(--border);background:#fff;display:flex;align-items:center;justify-content:center;font-size:.8rem;flex-shrink:0;transition:.15s}
+/* WELCOME */
+.welcome-icon{font-size:3.5rem;margin-bottom:16px;display:block}
+.feature-list{display:flex;flex-direction:column;gap:10px;margin:20px 0}
+.feature-item{display:flex;align-items:center;gap:12px;font-size:.92rem;color:var(--text)}
+.feature-icon-wrap{width:36px;height:36px;border-radius:8px;background:#E3F2FD;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0}
+</style>
+</head>
+<body>
+
+<div class="progress-bar" id="progress-bar">
+  <div class="progress-step active" id="pb0"></div>
+  <div class="progress-step" id="pb1"></div>
+  <div class="progress-step" id="pb2"></div>
+  <div class="progress-step" id="pb3"></div>
+  <div class="progress-step" id="pb4"></div>
+</div>
+
+<div class="card">
+
+  <!-- STEP 0: WELCOME -->
+  <div class="step active" id="step-0">
+    <span class="welcome-icon">👋</span>
+    <div class="step-label">Step 1 of 5</div>
+    <h2 id="welcome-heading">Welcome to MavMatch!</h2>
+    <p class="sub">Let's get you set up in just a few steps. We'll find you the best study partners at UTA based on your exact courses and schedule.</p>
+    <div class="feature-list">
+      <div class="feature-item"><div class="feature-icon-wrap">📚</div>Add your current courses</div>
+      <div class="feature-item"><div class="feature-icon-wrap">📅</div>Set your weekly availability</div>
+      <div class="feature-item"><div class="feature-icon-wrap">🤝</div>Get matched with classmates</div>
+      <div class="feature-item"><div class="feature-icon-wrap">💬</div>Chat and schedule study sessions</div>
+    </div>
+    <div class="btn-row">
+      <button class="btn-primary" onclick="goStep(1)">Let's Go →</button>
+    </div>
+  </div>
+
+  <!-- STEP 1: COURSES -->
+  <div class="step" id="step-1">
+    <div class="step-label">Step 2 of 5</div>
+    <h2>Which courses are you taking?</h2>
+    <p class="sub" id="courses-sub">Select all the courses you're currently enrolled in this semester.</p>
+    <input class="courses-search" type="text" id="course-search" placeholder="Search courses..." oninput="filterCourses()"/>
+    <div class="courses-grid" id="courses-grid"></div>
+    <div class="selected-count" id="sel-courses-count">0 courses selected</div>
+    <div class="btn-row">
+      <button class="btn-primary" onclick="goStep(2)">Next →</button>
+      <button class="btn-secondary" onclick="goStep(0)">← Back</button>
+    </div>
+  </div>
+
+  <!-- STEP 2: AVAILABILITY -->
+  <div class="step" id="step-2">
+    <div class="step-label">Step 3 of 5</div>
+    <h2>When are you free to study?</h2>
+    <p class="sub">Click the time blocks when you're available. We'll use this to find matches who share your free time.</p>
+    <div class="avail-tip">💡 Tap a block to mark yourself as free. Tap again to unmark.</div>
+    <div class="grid-wrap">
+      <div class="ag-header" id="ag-header"></div>
+      <div class="ag-body" id="ag-body"></div>
+    </div>
+    <div class="slots-note" id="slots-note">0 time slots selected</div>
+    <div class="btn-row">
+      <button class="btn-primary" onclick="goStep(3)">Find My Matches →</button>
+      <button class="btn-secondary" onclick="goStep(1)">← Back</button>
+    </div>
+  </div>
+
+  <!-- STEP 3: LOADING/FINDING MATCHES -->
+  <div class="step" id="step-3">
+    <div class="loading-wrap">
+      <div class="spinner"></div>
+      <div class="loading-title">Finding your matches...</div>
+      <div class="loading-sub">Searching for students in your courses with overlapping availability</div>
+      <div class="loading-steps" id="loading-steps">
+        <div class="loading-step-item active-step" id="ls0"><div class="step-dot"></div>Scanning your course list</div>
+        <div class="loading-step-item" id="ls1"><div class="step-dot"></div>Finding students in same classes</div>
+        <div class="loading-step-item" id="ls2"><div class="step-dot"></div>Calculating schedule overlap</div>
+        <div class="loading-step-item" id="ls3"><div class="step-dot"></div>Ranking matches by best fit</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 4: PICK MATCHES -->
+  <div class="step" id="step-4">
+    <div class="step-label">Step 5 of 5</div>
+    <h2>Your top matches! 🎉</h2>
+    <p class="sub">These students share your courses and schedule. Select the ones you want to connect with.</p>
+    <div class="match-pick-list" id="match-pick-list"></div>
+    <div class="selected-count" id="sel-matches-count" style="margin-top:10px">0 matches selected</div>
+    <div class="btn-row">
+      <button class="btn-primary" onclick="finishOnboarding()">Go to Dashboard →</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const fname = localStorage.getItem('mm_fname') || 'Maverick';
+const major = localStorage.getItem('mm_major') || 'Information Systems (BBA)';
+document.getElementById('welcome-heading').textContent = 'Welcome, ' + fname + '! 👋';
+document.getElementById('courses-sub').textContent =
+  'Here are the courses for your major (' + major + '). Select all you\'re taking this semester.';
+
+// PROGRESS
+let currentStep = 0;
+function updateProgress(step){
+  for(let i=0;i<5;i++){
+    const el = document.getElementById('pb'+i);
+    if(i < step) el.className='progress-step done';
+    else if(i===step) el.className='progress-step active';
+    else el.className='progress-step';
+  }
+}
+
+function goStep(n){
+  document.getElementById('step-'+currentStep).classList.remove('active');
+  currentStep = n;
+  document.getElementById('step-'+currentStep).classList.add('active');
+  updateProgress(n);
+  if(n===1) buildCourses();
+  if(n===2) buildAvailGrid();
+  if(n===3) runLoadingAnimation();
+  if(n===4){ const sid=localStorage.getItem("mm_studentId"); if(sid) loadRealMatches(sid); else buildMatchPicks(); }
+  window.scrollTo(0,0);
+}
+
+// COURSES
+let selectedCourses = new Set();
+let allCourses = UTA_COURSES[major] || UTA_COURSES['Information Systems (BBA)'];
+
+function buildCourses(filter=''){
+  const grid = document.getElementById('courses-grid');
+  const filtered = filter ? allCourses.filter(c=>
+    c.code.toLowerCase().includes(filter.toLowerCase()) ||
+    c.name.toLowerCase().includes(filter.toLowerCase())
+  ) : allCourses;
+  grid.innerHTML = filtered.map(c => `
+    <div class="course-item ${selectedCourses.has(c.code)?'selected':''}" onclick="toggleCourse('${c.code}','${c.name.replace(/'/g,"\\'")}')">
+      <div class="course-check">${selectedCourses.has(c.code)?'✓':''}</div>
+      <span class="course-code">${c.code}</span>
+      <span class="course-name-text">${c.name}</span>
+    </div>`).join('');
+  document.getElementById('sel-courses-count').textContent = selectedCourses.size + ' course' + (selectedCourses.size!==1?'s':'') + ' selected';
+}
+
+function toggleCourse(code, name){
+  if(selectedCourses.has(code)) selectedCourses.delete(code);
+  else selectedCourses.add(code);
+  buildCourses(document.getElementById('course-search').value);
+}
+
+function filterCourses(){
+  buildCourses(document.getElementById('course-search').value);
+}
+
+// AVAILABILITY GRID
+const days=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+const times=['8 AM','9 AM','10 AM','11 AM','12 PM','1 PM','2 PM','3 PM','4 PM','5 PM','6 PM','7 PM','8 PM'];
+let selectedSlots = new Set();
+
+function buildAvailGrid(){
+  const hdr = document.getElementById('ag-header');
+  const bdy = document.getElementById('ag-body');
+  hdr.innerHTML = '<div></div>' + days.map(d=>`<div>${d}</div>`).join('');
+  bdy.innerHTML = '';
+  times.forEach((t,ti)=>{
+    const lbl = document.createElement('div');
+    lbl.className = 'ag-label';
+    lbl.textContent = t;
+    bdy.appendChild(lbl);
+    days.forEach((_,di)=>{
+      const slot = document.createElement('div');
+      slot.className = 'ag-slot' + (selectedSlots.has(di+'-'+ti)?' on':'');
+      slot.addEventListener('click',()=>{
+        const key = di+'-'+ti;
+        if(selectedSlots.has(key)) selectedSlots.delete(key);
+        else selectedSlots.add(key);
+        slot.classList.toggle('on');
+        document.getElementById('slots-note').textContent = selectedSlots.size + ' time slot' + (selectedSlots.size!==1?'s':'') + ' selected';
+      });
+      bdy.appendChild(slot);
+    });
+  });
+}
+
+// LOADING ANIMATION
+function runLoadingAnimation(){
+  const steps = ['ls0','ls1','ls2','ls3'];
+  let i = 0;
+  let apiDone = false;
+  let animDone = false;
+
+  function tryGoStep4(){ if(apiDone && animDone) goStep(4); }
+
+  const interval = setInterval(()=>{
+    if(i > 0){
+      document.getElementById(steps[i-1]).className = 'loading-step-item done-step';
+      document.getElementById(steps[i-1]).querySelector('.step-dot').style.background='#2E7D32';
+    }
+    if(i < steps.length) document.getElementById(steps[i]).className = 'loading-step-item active-step';
+    i++;
+    if(i > steps.length){ clearInterval(interval); animDone = true; tryGoStep4(); }
+  }, 900);
+
+  // Save to DB in background
+  const studentId = parseInt(localStorage.getItem('mm_studentId'));
+  if(studentId && studentId > 0){
+    const dayNames=['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+    const timeVals=[8,9,10,11,12,13,14,15,16,17,18,19,20];
+    const apiSlots=[];
+    selectedSlots.forEach(k=>{
+      const [di,ti]=k.split('-').map(Number);
+      apiSlots.push({day:dayNames[di], startHour:timeVals[ti], endHour:timeVals[ti]+1});
+    });
+    const coursePromises = Array.from(selectedCourses).map(code=>{
+      const c = allCourses.find(x=>x.code===code);
+      return fetch('/api/courses',{method:'POST',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({studentId,courseCode:code,courseName:c?c.name:code,days:'TBD',time:''})
+      });
+    });
+    Promise.all(coursePromises)
+      .then(()=> apiSlots.length > 0 ? fetch('/api/availability',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({studentId,slots:apiSlots})}) : Promise.resolve())
+      .then(()=> fetch('/api/matches?studentId='+studentId+'&page=0'))
+      .then(r=>r.json())
+      .then(data=>{ realMatches = data || []; apiDone = true; tryGoStep4(); })
+      .catch(()=>{ apiDone = true; tryGoStep4(); });
+  } else {
+    apiDone = true;
+  }
+}
+
+// MATCH PICKS
+const avatarColors=['#1565C0','#F57C00','#2E7D32','#7B1FA2','#C62828','#0277BD','#E65100','#4A148C'];
+function colorFor(name){let h=0;for(let i=0;i<(name||'').length;i++)h=(h*31+name.charCodeAt(i))%avatarColors.length;return avatarColors[h];}
+function initialsOf(name){const p=(name||'?').trim().split(' ');return(p[0][0]+(p[1]?p[1][0]:'')).toUpperCase();}
+
+let realMatches = [];
+let pickedMatches = new Set();
+
+function loadRealMatches(studentId){
+  const list = document.getElementById('match-pick-list');
+  list.innerHTML = '<div style="text-align:center;padding:20px;color:#64748b">Loading your matches...</div>';
+  fetch('/api/matches?studentId='+studentId+'&page=0')
+    .then(r=>r.json())
+    .then(data=>{
+      if(data && data.length > 0){
+        realMatches = data;
+        buildMatchPicks();
+      } else {
+        list.innerHTML = '<div style="text-align:center;padding:20px;color:#64748b">No matches found yet. You can find matches later!</div>';
+      }
+    }).catch(()=>{
+      list.innerHTML = '<div style="text-align:center;padding:20px;color:#64748b">Could not load matches. You can find them on the matches page!</div>';
+    });
+}
+
+function buildMatchPicks(){
+  const list = document.getElementById('match-pick-list');
+  list.innerHTML = realMatches.map((m,i)=>{
+    const name = m.name || '?';
+    const initials = initialsOf(name);
+    const color = colorFor(name);
+    return `<div class="match-pick-item ${pickedMatches.has(i)?'picked':''}" onclick="toggleMatch(${i})">
+      <div class="pick-avatar" style="background:${color}">${initials}</div>
+      <div class="pick-info">
+        <div class="pick-name">${name}</div>
+        <div class="pick-detail">${m.major||''} · ${m.courseCode||''}</div>
+      </div>
+      <div class="pick-overlap">${m.overlapHours||0}h overlap</div>
+      <div class="pick-check">${pickedMatches.has(i)?'✓':''}</div>
+    </div>`;
+  }).join('');
+  updateMatchCount();
+}
+
+function toggleMatch(i){
+  if(pickedMatches.has(i)) pickedMatches.delete(i);
+  else pickedMatches.add(i);
+  buildMatchPicks();
+}
+
+function updateMatchCount(){
+  document.getElementById('sel-matches-count').textContent =
+    pickedMatches.size + ' match' + (pickedMatches.size!==1?'es':'') + ' selected';
+}
+
+function finishOnboarding(){
+  // Save selected match IDs so matches.html only shows picked ones
+  const selectedMatchIds = Array.from(pickedMatches).map(i => realMatches[i]).filter(Boolean);
+  const sid = localStorage.getItem('mm_studentId');
+  if(selectedMatchIds.length > 0 && sid){
+    localStorage.setItem('mm_picked_matches_' + sid, JSON.stringify(selectedMatchIds));
+  }
+  // Save courses to localStorage
+  const courses = Array.from(selectedCourses).map(code=>{
+    const c = allCourses.find(x=>x.code===code);
+    return {code, name: c?c.name:'Course', days:'TBD', time:''};
+  });
+  localStorage.setItem('mm_courses', JSON.stringify(courses));
+  window.location.href='dashboard.html';
+}
+</script>
+</body>
+</html>

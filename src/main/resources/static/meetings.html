@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Meetings – MavMatch</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  :root{--blue:#1565C0;--blue-dark:#0D47A1;--orange:#F57C00;--orange-bright:#FF6F00;--white:#fff;--bg:#F0F4FF;--border:#E2E8F0;--text:#1e293b;--text-muted:#64748b;--radius:12px;--shadow:0 4px 24px rgba(21,101,192,.10)}
+  body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column}
+  nav{background:var(--white);border-bottom:1.5px solid var(--border);padding:0 5%;display:flex;align-items:center;justify-content:space-between;height:64px;box-shadow:0 2px 12px rgba(21,101,192,.07);position:sticky;top:0;z-index:50}
+  .logo{display:flex;align-items:center;gap:8px;text-decoration:none}
+  .logo-text{font-family:'Nunito',sans-serif;font-size:1.4rem;font-weight:900;color:#0D47A1}
+  .logo-text span{color:var(--orange)}
+  .user-chip{display:flex;align-items:center;gap:8px;background:var(--bg);border:1.5px solid var(--border);border-radius:24px;padding:5px 14px 5px 8px}
+  .user-avatar{width:30px;height:30px;border-radius:50%;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;font-size:.78rem;font-weight:800}
+  .app{display:flex;flex:1}
+  .sidebar{width:220px;background:var(--white);border-right:1.5px solid var(--border);padding:24px 0;flex-shrink:0}
+  .nav-item{display:flex;align-items:center;gap:10px;padding:10px 22px;font-size:.92rem;font-weight:600;color:var(--text-muted);text-decoration:none;transition:.15s}
+  .nav-item:hover{background:var(--bg);color:var(--blue)}
+  .nav-item.active{background:#E3F2FD;color:var(--blue);border-right:3px solid var(--blue)}
+  .nav-icon{font-size:1.1rem;width:22px;text-align:center}
+  .sidebar-section{font-size:.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);padding:16px 22px 6px}
+  .content{flex:1;padding:32px 5%}
+  .page-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px;flex-wrap:wrap;gap:12px}
+  .page-title{font-family:'Nunito',sans-serif;font-size:1.6rem;font-weight:900;color:var(--blue-dark);margin-bottom:4px}
+  .page-sub{font-size:.92rem;color:var(--text-muted)}
+  .btn-create{background:var(--orange);color:#fff;border:none;padding:11px 24px;border-radius:10px;font-size:.95rem;font-weight:700;cursor:pointer;transition:.2s;white-space:nowrap}
+  .btn-create:hover{background:var(--orange-bright);transform:translateY(-1px);box-shadow:0 4px 16px rgba(245,124,0,.3)}
+  .tabs{display:flex;gap:4px;margin-bottom:24px;background:var(--white);border-radius:10px;padding:4px;border:1.5px solid var(--border);width:fit-content}
+  .tab{padding:8px 22px;border-radius:7px;font-size:.87rem;font-weight:600;cursor:pointer;color:var(--text-muted);transition:.15s;border:none;background:none}
+  .tab.active{background:var(--blue);color:#fff}
+  .meetings-list{display:flex;flex-direction:column;gap:14px}
+  .meeting-card{background:var(--white);border-radius:14px;padding:20px 24px;border:1.5px solid var(--border);display:flex;gap:18px;align-items:flex-start;transition:.2s}
+  .meeting-card:hover{box-shadow:var(--shadow)}
+  .meeting-date-box{background:var(--blue-dark);color:#fff;border-radius:10px;padding:10px 14px;text-align:center;min-width:56px;flex-shrink:0}
+  .meeting-date-day{font-family:'Nunito',sans-serif;font-size:1.4rem;font-weight:900;line-height:1}
+  .meeting-date-mon{font-size:.72rem;font-weight:700;opacity:.85;margin-top:2px;text-transform:uppercase}
+  .meeting-info{flex:1}
+  .meeting-title{font-family:'Nunito',sans-serif;font-size:1rem;font-weight:800;color:var(--text);margin-bottom:6px}
+  .meeting-meta{display:flex;gap:14px;flex-wrap:wrap}
+  .meta-item{font-size:.82rem;color:var(--text-muted)}
+  .meeting-top{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:4px}
+  .status-badge{padding:4px 12px;border-radius:20px;font-size:.78rem;font-weight:700;white-space:nowrap;flex-shrink:0}
+  .status-confirmed{background:#E8F5E9;color:#2E7D32}
+  .status-pending{background:#FFF3E0;color:#E65100}
+  .meeting-actions{display:flex;gap:8px;margin-top:12px}
+  .btn-sm{padding:6px 16px;border-radius:6px;font-size:.82rem;font-weight:600;cursor:pointer;border:1.5px solid var(--border);background:var(--white);color:var(--text);transition:.15s}
+  .btn-sm:hover{background:var(--bg)}
+  .btn-sm.danger{color:#c62828;border-color:#ffcdd2}
+  .btn-sm.danger:hover{background:#fff2f2}
+  .empty-state{text-align:center;padding:60px 20px;color:var(--text-muted)}
+  .empty-icon{font-size:3rem;margin-bottom:12px}
+  .empty-title{font-family:'Nunito',sans-serif;font-size:1.1rem;font-weight:800;color:var(--text);margin-bottom:8px}
+  .empty-btn{background:var(--orange);color:#fff;border:none;padding:10px 24px;border-radius:8px;font-size:.9rem;font-weight:700;cursor:pointer;margin-top:12px;transition:.2s}
+  .empty-btn:hover{background:var(--orange-bright)}
+  /* MODAL */
+  .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;display:none;align-items:center;justify-content:center}
+  .modal-overlay.open{display:flex}
+  .modal{background:var(--white);border-radius:20px;padding:36px;width:100%;max-width:460px;box-shadow:0 20px 60px rgba(0,0,0,.2);max-height:90vh;overflow-y:auto}
+  .modal h3{font-family:'Nunito',sans-serif;font-size:1.3rem;font-weight:900;color:var(--blue-dark);margin-bottom:18px}
+  .mf{margin-bottom:14px}
+  .mf label{display:block;font-size:.85rem;font-weight:600;color:var(--text);margin-bottom:5px}
+  .mf input,.mf select,.mf textarea{width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:8px;font-size:.93rem;font-family:'Inter',sans-serif;outline:none;background:#fafbfc;color:var(--text)}
+  .mf input:focus,.mf select:focus,.mf textarea:focus{border-color:var(--blue)}
+  .mf textarea{resize:vertical;min-height:72px}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .modal-btns{display:flex;gap:10px;justify-content:flex-end;margin-top:6px}
+  .btn-cancel{background:none;border:1.5px solid var(--border);color:var(--text-muted);padding:9px 20px;border-radius:8px;font-size:.9rem;font-weight:600;cursor:pointer}
+  .btn-save{background:var(--orange);color:#fff;border:none;padding:9px 24px;border-radius:8px;font-size:.9rem;font-weight:700;cursor:pointer}
+  .err-inline{color:#c62828;font-size:.82rem;margin-top:4px;display:none}
+  @media(max-width:800px){.sidebar{display:none}}
+</style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="logo">
+    
+    <span class="logo-text">Mav<span>Match</span></span>
+  </a>
+  <div class="user-chip">
+    <div class="user-avatar" id="nav-avatar">M</div>
+    <span style="font-size:.87rem;font-weight:600" id="nav-name">Maverick</span>
+  </div>
+</nav>
+<div class="app">
+  <aside class="sidebar">
+    <div class="sidebar-section">Menu</div>
+    <a class="nav-item" href="dashboard.html"><span class="nav-icon">🏠</span> Dashboard</a>
+    <a class="nav-item" href="availability.html"><span class="nav-icon">📅</span> My Availability</a>
+    <a class="nav-item" href="matches.html"><span class="nav-icon">🤝</span> My Matches</a>
+    <a class="nav-item active" href="meetings.html"><span class="nav-icon">📆</span> Meetings</a>
+    <a class="nav-item" href="groups.html"><span class="nav-icon">👥</span> Study Groups</a>
+    <div class="sidebar-section">Account</div>
+    <a class="nav-item" href="profile.html"><span class="nav-icon">👤</span> Profile</a>
+    <a class="nav-item" href="login.html" onclick="localStorage.clear()"><span class="nav-icon">🚪</span> Log Out</a>
+  </aside>
+  <main class="content">
+    <div class="page-header">
+      <div>
+        <div class="page-title">📆 My Meetings</div>
+        <div class="page-sub">Schedule and manage your study sessions.</div>
+      </div>
+      <button class="btn-create" onclick="openModal()">+ Schedule Meeting</button>
+    </div>
+    <div class="tabs">
+      <button class="tab active" onclick="showTab('upcoming',this)">Upcoming</button>
+      <button class="tab" onclick="showTab('pending',this)">Pending</button>
+      <button class="tab" onclick="showTab('past',this)">Past</button>
+    </div>
+    <div id="tab-content" class="meetings-list"></div>
+  </main>
+</div>
+
+
+<!-- CANCEL MODAL -->
+<div class="modal-overlay" id="cancel-modal">
+  <div class="modal">
+    <h3>Cancel Meeting</h3>
+    <p style="font-size:.9rem;color:#64748b;margin-bottom:20px">Are you sure you want to cancel this meeting?</p>
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="document.getElementById('cancel-modal').classList.remove('open')">Keep It</button>
+      <button class="btn-save" style="background:#c62828" onclick="confirmCancel()">Yes, Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- CREATE MEETING MODAL -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <h3>Schedule a Study Session 📆</h3>
+    <div class="mf"><label>Study Partner *</label>
+      <select id="m-partner"><option value="">Select a match...</option></select>
+      <div class="err-inline" id="partner-err">Required</div>
+    </div>
+    <div class="mf"><label>Course *</label><input type="text" id="m-course" placeholder="e.g. INSY 4325"/><div class="err-inline" id="course-err">Required</div></div>
+    <div class="row2">
+      <div class="mf"><label>Date *</label><input type="date" id="m-date" oninput="updateMeetingDay()"/><div class="err-inline" id="date-err">Required</div></div>
+      <div class="mf"><label>Time *</label><input type="time" id="m-time" value="14:00"/></div>
+    </div>
+    <input type="hidden" id="m-day"/>
+    <div class="mf"><label>Duration</label><select id="m-dur"><option>1 hour</option><option>2 hours</option><option>3 hours</option><option>30 minutes</option></select></div>
+    <div class="mf"><label>Location *</label><input type="text" id="m-location" placeholder="e.g. Library Room 204, Zoom"/><div class="err-inline" id="loc-err">Required</div></div>
+    <div class="mf"><label>Notes (optional)</label><textarea id="m-notes" placeholder="What are you studying? Any prep needed?"></textarea></div>
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+      <button class="btn-save" onclick="createMeeting()">Schedule It</button>
+    </div>
+  </div>
+</div>
+
+<script>
+document.getElementById('nav-avatar').textContent=localStorage.getItem('mm_initials')||'M';
+document.getElementById('nav-name').textContent=localStorage.getItem('mm_fname')||'Maverick';
+
+const studentId = localStorage.getItem('mm_studentId');
+let meetingsCache = [];
+
+function getMeetings(){ return meetingsCache; }
+function setMeetings(m){ meetingsCache = m; }
+
+function loadMeetingsFromAPI(){
+  if(!studentId) return;
+  fetch('/api/meetings?studentId='+studentId)
+    .then(r=>r.json())
+    .then(data=>{
+      meetingsCache = data||[];
+      renderMeetings(currentTab);
+    }).catch(()=>{ renderMeetings(currentTab); });
+}
+
+const monthNames=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+function formatDateBox(dateStr){
+  if(!dateStr) return {day:'?',mon:'???'};
+  const d=new Date(dateStr+'T12:00:00');
+  return {day:String(d.getDate()).padStart(2,'0'), mon:monthNames[d.getMonth()]};
+}
+
+function isPast(dateStr){
+  if(!dateStr) return false;
+  return new Date(dateStr+'T23:59:00') < new Date();
+}
+
+let currentTab='upcoming';
+
+function showTab(tab, el){
+  currentTab=tab;
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  renderMeetings(tab);
+}
+
+function renderMeetings(tab){
+  const all=getMeetings();
+  let meetings;
+  if(tab==='upcoming') meetings=all.filter(m=>m.status==='confirmed'&&!isPast(m.date));
+  else if(tab==='pending') meetings=all.filter(m=>m.status==='pending');
+  else meetings=all.filter(m=>m.status==='cancelled'||isPast(m.date));
+
+  const cont=document.getElementById('tab-content');
+  if(meetings.length===0){
+    cont.innerHTML=`<div class="empty-state">
+      <div class="empty-icon">${tab==='upcoming'?'📭':tab==='pending'?'⏳':'🗂️'}</div>
+      <div class="empty-title">${tab==='upcoming'?'No upcoming meetings':'No '+tab+' meetings'}</div>
+      <p>${tab==='upcoming'?'Schedule your first study session with a match!':tab==='pending'?'No pending requests right now.':'Past meetings will show up here.'}</p>
+      ${tab==='upcoming'?'<button class="empty-btn" onclick="openModal()">+ Schedule Meeting</button>':''}
+    </div>`;
+    return;
+  }
+  cont.innerHTML=meetings.map((m,i)=>{
+    const {day,mon}=formatDateBox(m.date);
+    const allIdx=getMeetings().indexOf(m);
+    return `<div class="meeting-card">
+      <div class="meeting-date-box"><div class="meeting-date-day">${day}</div><div class="meeting-date-mon">${mon}</div></div>
+      <div class="meeting-info">
+        <div class="meeting-top">
+          <div class="meeting-title">${m.course} – Study with ${m.partner}</div>
+          <span class="status-badge status-${m.status}">${m.status==='confirmed'?'Confirmed':'Pending'}</span>
+        </div>
+        <div class="meeting-meta">
+          <span class="meta-item">🕑 ${m.time} · ${m.duration}</span>
+          <span class="meta-item">📍 ${m.location}</span>
+          <span class="meta-item">📚 ${m.course}</span>
+          ${m.notes?`<span class="meta-item">📝 ${m.notes}</span>`:''}
+        </div>
+        <div class="meeting-actions">
+          ${m.status==='pending'?`<button class="btn-sm" style="background:var(--blue);color:#fff;border-color:var(--blue)" onclick="confirmMeeting(${allIdx})">Confirm</button>`:''}
+          <button class="btn-sm danger" onclick="cancelMeeting(${allIdx})">Cancel</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function confirmMeeting(idx){
+  const m=getMeetings();
+  m[idx].status='confirmed';
+  setMeetings(m);
+  renderMeetings(currentTab);
+}
+
+let cancelIdx = null;
+function cancelMeeting(idx){
+  cancelIdx = idx;
+  document.getElementById('cancel-modal').classList.add('open');
+}
+function confirmCancel(){
+  if(cancelIdx === null) return;
+  const meeting = meetingsCache[cancelIdx];
+  if(meeting && meeting.id){
+    fetch('/api/meetings/'+meeting.id, {method:'DELETE'})
+      .then(()=>{ cancelIdx=null; document.getElementById('cancel-modal').classList.remove('open'); loadMeetingsFromAPI(); })
+      .catch(()=>alert('Failed to cancel meeting.'));
+  } else {
+    cancelIdx=null;
+    document.getElementById('cancel-modal').classList.remove('open');
+    renderMeetings(currentTab);
+  }
+}
+
+function updateMeetingDay(){
+  const dateVal = document.getElementById('m-date').value;
+  if(!dateVal) return;
+  const days=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  document.getElementById('m-day').value = days[new Date(dateVal+'T12:00:00').getDay()];
+}
+
+function populatePartners(){
+  const sid = localStorage.getItem('mm_studentId');
+  const sel = document.getElementById('m-partner');
+  sel.innerHTML = '<option value="">Select a match...</option>';
+  if(!sid) return;
+  const allKey = 'mm_all_matches_' + sid;
+  const pickedKey = 'mm_picked_matches_' + sid;
+  let matchData = null;
+  try{ matchData = JSON.parse(localStorage.getItem(allKey)||localStorage.getItem(pickedKey)||'[]'); }catch(e){}
+  if(matchData && matchData.length > 0){
+    matchData.forEach(m=>{
+      const name = m.name || m.student2Name || '';
+      if(name){ sel.innerHTML += `<option value="${name}">${name}</option>`; }
+    });
+  }
+}
+
+function syncChatMeetings(){
+  const sid = localStorage.getItem('mm_studentId');
+  if(!sid) return;
+  const existing = getMeetings();
+  const allKey = 'mm_all_matches_' + sid;
+  const pickedKey = 'mm_picked_matches_' + sid;
+  let matchData = null;
+  try{ matchData = JSON.parse(localStorage.getItem(allKey)||localStorage.getItem(pickedKey)||'[]'); }catch(e){}
+  if(!matchData) return;
+  matchData.forEach((m,idx)=>{
+    const chatKey = 'chat_' + sid + '_' + idx;
+    let msgs = [];
+    try{ msgs = JSON.parse(localStorage.getItem(chatKey)||'[]'); }catch(e){}
+    msgs.filter(msg=>msg.type==='meeting' && msg.mine).forEach(msg=>{
+      const key = msg.date+'_'+msg.course+'_'+(m.name||'');
+      if(!existing.find(e=>e._key===key)){
+        existing.push({
+          _key: key,
+          partner: m.name||'',
+          course: msg.course||'',
+          date: msg.date||'',
+          day: msg.day||'',
+          time: msg.meetTime||msg.time||'',
+          duration: '1 hour',
+          location: msg.location||'',
+          notes: msg.note||'',
+          status: 'confirmed'
+        });
+      }
+    });
+  });
+  setMeetings(existing);
+}
+
+function openModal(){
+  populatePartners();
+  document.getElementById('modal').classList.add('open');
+}
+function closeModal(){document.getElementById('modal').classList.remove('open')}
+
+function createMeeting(){
+  const errs=['partner-err','course-err','date-err','loc-err'];
+  errs.forEach(e=>document.getElementById(e).style.display='none');
+  updateMeetingDay();
+  const partner=document.getElementById('m-partner').value.trim();
+  const course=document.getElementById('m-course').value.trim();
+  const date=document.getElementById('m-date').value;
+  const location=document.getElementById('m-location').value.trim();
+  let ok=true;
+  if(!partner){document.getElementById('partner-err').style.display='block';ok=false}
+  if(!course){document.getElementById('course-err').style.display='block';ok=false}
+  if(!date){document.getElementById('date-err').style.display='block';ok=false}
+  if(!location){document.getElementById('loc-err').style.display='block';ok=false}
+  if(!ok) return;
+  const timeVal=document.getElementById('m-time').value;
+  const [h,min]=timeVal.split(':');
+  const hr=parseInt(h);
+  const timeStr=(hr>12?hr-12:hr)+':'+(min||'00')+' '+(hr>=12?'PM':'AM');
+  const day = document.getElementById('m-day').value || '';
+  fetch('/api/meetings',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({
+      studentId:parseInt(studentId),
+      partner, course, date, day,
+      time:timeStr,
+      duration:document.getElementById('m-dur').value,
+      location,
+      notes:document.getElementById('m-notes').value.trim()
+    })
+  }).then(r=>r.json())
+    .then(()=>{
+      closeModal();
+      document.getElementById('m-partner').value='';
+      ['m-course','m-date','m-location','m-notes'].forEach(id=>document.getElementById(id).value='');
+      document.getElementById('m-time').value='14:00';
+      loadMeetingsFromAPI();
+    }).catch(()=>alert('Failed to save meeting.'));
+}
+
+document.getElementById('modal').addEventListener('click',function(e){if(e.target===this)closeModal()});
+document.getElementById('cancel-modal').addEventListener('click',function(e){if(e.target===this)this.classList.remove('open')});
+loadMeetingsFromAPI();
+</script>
+</body>
+</html>

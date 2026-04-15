@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>My Matches – MavMatch</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--blue:#1565C0;--blue-dark:#0D47A1;--orange:#F57C00;--orange-bright:#FF6F00;--white:#fff;--bg:#F0F4FF;--border:#E2E8F0;--text:#1e293b;--text-muted:#64748b;--radius:12px}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);height:100vh;display:flex;flex-direction:column;overflow:hidden}
+nav{background:var(--white);border-bottom:1.5px solid var(--border);padding:0 5%;display:flex;align-items:center;justify-content:space-between;height:64px;position:sticky;top:0;z-index:50}
+.logo{display:flex;align-items:center;gap:8px;text-decoration:none}
+.logo-text{font-family:'Nunito',sans-serif;font-size:1.4rem;font-weight:900;color:#0D47A1}
+.logo-text span{color:var(--orange)}
+.user-chip{display:flex;align-items:center;gap:8px;background:var(--bg);border:1.5px solid var(--border);border-radius:24px;padding:5px 14px 5px 8px}
+.user-avatar{width:30px;height:30px;border-radius:50%;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;font-size:.78rem;font-weight:800}
+.app{display:flex;flex:1;min-height:0;height:calc(100vh - 64px);max-height:calc(100vh - 64px);overflow:hidden}
+.sidebar{width:220px;background:var(--white);border-right:1.5px solid var(--border);padding:24px 0;flex-shrink:0}
+.nav-item{display:flex;align-items:center;gap:10px;padding:10px 22px;font-size:.92rem;font-weight:600;color:var(--text-muted);text-decoration:none;transition:.15s}
+.nav-item:hover{background:var(--bg);color:var(--blue)}
+.nav-item.active{background:#E3F2FD;color:var(--blue);border-right:3px solid var(--blue)}
+.nav-icon{font-size:1.1rem;width:22px;text-align:center}
+.sidebar-section{font-size:.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);padding:16px 22px 6px}
+.matches-panel{width:320px;flex-shrink:0;border-right:1.5px solid var(--border);background:var(--white);display:flex;flex-direction:column;overflow:hidden}
+.matches-panel-header{padding:18px 20px;border-bottom:1.5px solid var(--border)}
+.matches-panel-title{font-family:'Nunito',sans-serif;font-size:1.05rem;font-weight:900;color:var(--blue-dark);margin-bottom:10px}
+.filter-bar{display:flex;gap:6px;flex-wrap:wrap}
+.filter-chip{padding:4px 12px;border-radius:20px;border:1.5px solid var(--border);font-size:.78rem;font-weight:600;cursor:pointer;background:#fafbfc;color:var(--text-muted)}
+.filter-chip.active{background:var(--blue);color:#fff;border-color:var(--blue)}
+.match-list{flex:1;overflow-y:auto;padding:10px}
+.match-row{display:flex;align-items:center;gap:12px;padding:12px 10px;border-radius:10px;cursor:pointer;border:1.5px solid transparent;margin-bottom:4px}
+.match-row:hover{background:var(--bg)}
+
+.match-row.active{background:#E3F2FD;border-color:#BBDEFB}
+.m-av{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.85rem;font-weight:800;color:#fff;flex-shrink:0}
+.match-row-info{flex:1;min-width:0}
+.match-row-name{font-weight:700;font-size:.9rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.match-row-detail{font-size:.75rem;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.overlap-pill{background:#E8F5E9;color:#2E7D32;font-size:.7rem;font-weight:700;padding:2px 8px;border-radius:20px;white-space:nowrap}
+.chat-panel{flex:1;display:flex;flex-direction:column;min-width:0;overflow:hidden}
+.chat-empty{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--text-muted);gap:12px;padding:20px}
+.chat-empty-icon{font-size:3rem}
+.chat-header{padding:14px 20px;border-bottom:1.5px solid var(--border);background:var(--white);display:flex;align-items:center;gap:14px;flex-shrink:0;position:relative}
+.chat-header-av{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.85rem;color:#fff}
+.chat-header-name{font-family:'Nunito',sans-serif;font-size:1rem;font-weight:800;color:var(--blue-dark);cursor:pointer;text-decoration:underline dotted}
+.chat-header-sub{font-size:.78rem;color:var(--text-muted)}
+.btn-schedule{background:var(--orange);color:#fff;border:none;padding:7px 16px;border-radius:8px;font-size:.82rem;font-weight:700;cursor:pointer;margin-left:auto}
+.chat-messages{flex:1;overflow-y:auto;padding:16px 20px;display:flex;flex-direction:column;gap:10px;background:var(--bg)}
+.msg{display:flex;gap:8px;align-items:flex-end;max-width:75%}
+.msg.mine{align-self:flex-end;flex-direction:row-reverse}
+.msg-av{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:800;color:#fff;flex-shrink:0}
+.msg-content{display:flex;flex-direction:column;gap:3px;position:relative}
+.msg.mine .msg-content{align-items:flex-end}
+.msg-sender{font-size:.7rem;color:var(--text-muted)}
+.msg-bubble{padding:9px 13px;border-radius:14px;font-size:.88rem;line-height:1.5;word-break:break-word}
+.msg.theirs .msg-bubble{background:var(--white);border:1.5px solid var(--border);border-bottom-left-radius:4px}
+.msg.mine .msg-bubble{background:var(--blue);color:#fff;border-bottom-right-radius:4px}
+.msg-time{font-size:.65rem;color:var(--text-muted)}
+.msg-row{display:flex;align-items:flex-end;gap:4px}
+.msg-options-btn{background:none;border:none;cursor:pointer;font-size:14px;color:var(--text-muted);padding:2px 4px;opacity:0;border-radius:4px;line-height:1}
+.msg:hover .msg-options-btn{opacity:1}
+.meeting-bubble{background:var(--white);border:1.5px solid #BBDEFB;border-radius:12px;padding:12px 14px;min-width:220px;max-width:280px}
+.meeting-bubble-title{font-family:'Nunito',sans-serif;font-size:.88rem;font-weight:800;color:var(--blue-dark);margin-bottom:4px}
+.meeting-bubble-detail{font-size:.78rem;color:var(--text-muted);margin-bottom:2px}
+.meeting-bubble-status{font-size:.75rem;font-weight:700;color:#2E7D32;margin-top:6px}
+.chat-input-row{padding:12px 16px;background:var(--white);border-top:1.5px solid var(--border);display:flex;gap:10px;align-items:flex-end}
+.chat-input{flex:1;border:1.5px solid var(--border);border-radius:10px;padding:9px 14px;font-size:.92rem;font-family:'Inter',sans-serif;outline:none;resize:none;max-height:80px;min-height:38px;line-height:1.4}
+.chat-input:focus{border-color:var(--blue)}
+.btn-send{background:var(--blue);color:#fff;border:none;width:38px;height:38px;border-radius:9px;font-size:1rem;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+/* Dropdown menu */
+.dropdown{position:absolute;background:var(--white);border:1.5px solid var(--border);border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.12);z-index:100;min-width:160px;overflow:hidden}
+.dropdown-item{padding:10px 16px;font-size:.88rem;cursor:pointer;display:flex;align-items:center;gap:8px}
+.dropdown-item:hover{background:var(--bg)}
+.dropdown-item.danger{color:#c62828}
+/* Modals */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;display:none;align-items:center;justify-content:center}
+.modal-overlay.open{display:flex}
+.modal{background:var(--white);border-radius:20px;padding:32px;width:100%;max-width:440px;max-height:90vh;overflow-y:auto}
+.modal h3{font-family:'Nunito',sans-serif;font-size:1.2rem;font-weight:900;color:var(--blue-dark);margin-bottom:18px}
+.mf{margin-bottom:13px}
+.mf label{display:block;font-size:.83rem;font-weight:600;margin-bottom:5px}
+.mf input,.mf select,.mf textarea{width:100%;padding:9px 13px;border:1.5px solid var(--border);border-radius:8px;font-size:.92rem;font-family:'Inter',sans-serif;outline:none;background:#fafbfc}
+.mf input:focus,.mf select:focus,.mf textarea:focus{border-color:var(--blue)}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.modal-btns{display:flex;gap:10px;justify-content:flex-end;margin-top:14px}
+.btn-cancel{background:none;border:1.5px solid var(--border);color:var(--text-muted);padding:8px 18px;border-radius:8px;font-size:.88rem;font-weight:600;cursor:pointer}
+.btn-primary{background:var(--orange);color:#fff;border:none;padding:8px 22px;border-radius:8px;font-size:.88rem;font-weight:700;cursor:pointer}
+.btn-danger{background:#c62828;color:#fff;border:none;padding:8px 22px;border-radius:8px;font-size:.88rem;font-weight:700;cursor:pointer}
+.err-inline{color:#c62828;font-size:.8rem;margin-top:3px;display:none}
+/* Find More Modal */
+.find-more-grid{display:flex;flex-direction:column;gap:8px;max-height:400px;overflow-y:auto;margin-bottom:16px}
+.find-more-row{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:10px;border:1.5px solid var(--border);cursor:pointer}
+.find-more-row.selected{border-color:var(--blue);background:#E3F2FD}
+.find-more-row:hover{background:var(--bg)}
+@media(max-width:900px){.sidebar{display:none}.matches-panel{width:260px}}
+@media(max-width:600px){.matches-panel{display:none}}
+</style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="logo">
+    
+    <span class="logo-text">Mav<span>Match</span></span>
+  </a>
+  <div class="user-chip">
+    <div class="user-avatar" id="nav-avatar">M</div>
+    <span style="font-size:.87rem;font-weight:600" id="nav-name">Maverick</span>
+  </div>
+</nav>
+<div class="app">
+  <aside class="sidebar">
+    <div class="sidebar-section">Menu</div>
+    <a class="nav-item" href="dashboard.html"><span class="nav-icon">🏠</span> Dashboard</a>
+    <a class="nav-item" href="availability.html"><span class="nav-icon">📅</span> My Availability</a>
+    <a class="nav-item active" href="matches.html"><span class="nav-icon">🤝</span> My Matches</a>
+    <a class="nav-item" href="meetings.html"><span class="nav-icon">📆</span> Meetings</a>
+    <a class="nav-item" href="groups.html"><span class="nav-icon">👥</span> Study Groups</a>
+    <div class="sidebar-section">Account</div>
+    <a class="nav-item" href="profile.html"><span class="nav-icon">👤</span> Profile</a>
+    <a class="nav-item" href="login.html" onclick="localStorage.clear()"><span class="nav-icon">🚪</span> Log Out</a>
+  </aside>
+
+  <div class="matches-panel">
+    <div class="matches-panel-header">
+      <div class="matches-panel-title">🤝 My Matches</div>
+      <div class="filter-bar" id="filter-bar">
+        <div class="filter-chip active" onclick="filterBy('all',this)">All</div>
+      </div>
+    </div>
+    <div class="match-list" id="match-list"><div style="padding:20px;text-align:center;color:var(--text-muted);font-size:.88rem;">Loading matches...</div></div>
+    <div style="padding:12px;">
+      <button id="find-more-btn" onclick="openFindMore()" style="display:none;width:100%;padding:10px;background:#FF6D00;color:white;border:none;border-radius:10px;font-weight:700;font-size:.88rem;cursor:pointer;">🔄 Find More Matches</button>
+    </div>
+  </div>
+
+  <div class="chat-panel">
+    <div class="chat-empty" id="chat-empty">
+      <div class="chat-empty-icon">💬</div>
+      <div style="font-family:'Nunito',sans-serif;font-size:1.1rem;font-weight:800;color:var(--text)">Select a match to chat</div>
+      <div style="font-size:.88rem;text-align:center">Pick a study partner from the left to start a conversation.</div>
+    </div>
+    <div id="chat-view" style="display:none;flex:1;flex-direction:column;min-height:0;max-height:100%;overflow:hidden;height:100%">
+      <div class="chat-header">
+        <div class="chat-header-av" id="chat-av">?</div>
+        <div style="flex:1">
+          <div class="chat-header-name" id="chat-name" onclick="toggleHeaderMenu()">Loading...</div>
+          <div class="chat-header-sub" id="chat-sub"></div>
+        </div>
+        <button class="btn-schedule" onclick="openSchedule()">📆 Schedule Meeting</button>
+        <div id="header-menu" class="dropdown" style="display:none;top:60px;right:80px;position:absolute;">
+          <div class="dropdown-item" onclick="clearChat()">🗑️ Clear Chat</div>
+          <div class="dropdown-item danger" onclick="confirmRemoveMatch()">❌ Remove Match</div>
+          <div class="dropdown-item danger" onclick="confirmBlock()">🚫 Block User</div>
+        </div>
+      </div>
+      <div class="chat-messages" id="chat-messages"></div>
+      <div class="chat-input-row">
+        <textarea class="chat-input" id="chat-input" placeholder="Type a message..." rows="1" onkeydown="handleKey(event)"></textarea>
+        <button class="btn-send" onclick="sendMsg()">➤</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SCHEDULE MODAL -->
+<div class="modal-overlay" id="sched-modal">
+  <div class="modal">
+    <h3>📆 Schedule Study Session</h3>
+    <div class="mf"><label>Course</label><input id="s-course" placeholder="e.g. INSY 3304"/><div class="err-inline" id="s-course-err">Required</div></div>
+    <div class="row2">
+      <div class="mf"><label>Date</label><input type="date" id="s-date" oninput="updateDayFromDate()" /><div class="err-inline" id="s-date-err">Required</div></div>
+      <div class="mf"><label>Time</label><input type="time" id="s-time" value="14:00"/></div>
+    </div>
+    <input type="hidden" id="s-day"/>
+    <div class="mf"><label>Location</label><input id="s-location" placeholder="e.g. Library Room 301"/><div class="err-inline" id="s-loc-err">Required</div></div>
+    <div class="mf"><label>Note (optional)</label><textarea id="s-note" rows="2" placeholder="Anything to add?"></textarea></div>
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="closeSchedule()">Cancel</button>
+      <button class="btn-primary" onclick="sendSchedule()">Send Request</button>
+    </div>
+  </div>
+</div>
+
+<!-- REPORT MODAL -->
+<div class="modal-overlay" id="report-modal">
+  <div class="modal">
+    <h3>🚨 Report Message</h3>
+    <p style="font-size:.88rem;color:var(--text-muted);margin-bottom:16px">Why are you reporting this message?</p>
+    <div class="mf">
+      <select id="report-reason">
+        <option value="">Select a reason...</option>
+        <option value="Offensive language">Offensive language</option>
+        <option value="Harassment or bullying">Harassment or bullying</option>
+        <option value="Inappropriate content">Inappropriate content</option>
+        <option value="Spam">Spam</option>
+        <option value="Threats">Threats</option>
+        <option value="Other">Other</option>
+      </select>
+    </div>
+    <div class="mf"><textarea id="report-details" rows="3" placeholder="Additional details (optional)..."></textarea></div>
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="closeReport()">Cancel</button>
+      <button class="btn-danger" onclick="submitReport()">Submit Report</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- CLEAR CHAT MODAL -->
+<div class="modal-overlay" id="clear-modal">
+  <div class="modal">
+    <h3>🗑️ Clear Chat</h3>
+    <p style="font-size:.9rem;color:var(--text-muted);margin-bottom:20px">Are you sure you want to clear this chat? This cannot be undone.</p>
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="document.getElementById('clear-modal').classList.remove('open')">Cancel</button>
+      <button class="btn-danger" onclick="confirmClear()">Yes, Clear</button>
+    </div>
+  </div>
+</div>
+
+<!-- REMOVE MATCH MODAL -->
+<div class="modal-overlay" id="remove-match-modal">
+  <div class="modal">
+    <h3>❌ Remove Match</h3>
+    <p style="font-size:.9rem;color:var(--text-muted);margin-bottom:20px">Are you sure you want to remove <strong id="remove-match-name"></strong> from your matches? You can find them again later.</p>
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="document.getElementById('remove-match-modal').classList.remove('open')">Cancel</button>
+      <button class="btn-danger" onclick="doRemoveMatch()">Yes, Remove</button>
+    </div>
+  </div>
+</div>
+
+<!-- BLOCK CONFIRM MODAL -->
+<div class="modal-overlay" id="block-modal">
+  <div class="modal">
+    <h3>🚫 Block User</h3>
+    <p style="font-size:.9rem;color:var(--text-muted);margin-bottom:20px">Are you sure you want to block <strong id="block-name-display"></strong>? They will no longer appear in your matches and cannot message you.</p>
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="closeBlock()">Cancel</button>
+      <button class="btn-danger" onclick="blockUser()">Yes, Block</button>
+    </div>
+  </div>
+</div>
+
+<!-- FIND MORE MODAL -->
+<div class="modal-overlay" id="find-more-modal">
+  <div class="modal">
+    <h3>🔍 More Matches Found</h3>
+    <p style="font-size:.88rem;color:var(--text-muted);margin-bottom:16px">Select the students you want to connect with.</p>
+    <div class="find-more-grid" id="find-more-grid"></div>
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="closeFindMore()">Cancel</button>
+      <button class="btn-primary" onclick="confirmFindMore()">Add Selected</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const studentId = localStorage.getItem('mm_studentId');
+const myName = (localStorage.getItem('mm_fname')||'') + ' ' + (localStorage.getItem('mm_lname')||'');
+const myInitials = ((localStorage.getItem('mm_fname')||'M')[0] + (localStorage.getItem('mm_lname')||'')[0]).toUpperCase();
+function getMyColor(){ return localStorage.getItem('mm_color') || '#1565C0'; }
+
+// Nav
+document.getElementById('nav-avatar').textContent = myInitials;
+document.getElementById('nav-name').textContent = localStorage.getItem('mm_fname') || 'Student';
+
+// Chats stored per student+match key
+function chatKey(matchIdx){ return 'chat_' + studentId + '_' + matchIdx; }
+function getChat(idx){ try{ return JSON.parse(localStorage.getItem(chatKey(idx))||'[]'); }catch(e){ return []; } }
+function saveChat(idx, msgs){ localStorage.setItem(chatKey(idx), JSON.stringify(msgs)); }
+
+const avatarColors=['#1565C0','#F57C00','#2E7D32','#7B1FA2','#C62828','#0277BD','#E65100','#4A148C'];
+function colorFor(name){let h=0;for(let i=0;i<(name||'').length;i++)h=(h*31+name.charCodeAt(i))%avatarColors.length;return avatarColors[h];}
+function initialsOf(name){const p=(name||'?').trim().split(' ');return(p[0][0]+(p[1]?p[1][0]:'')).toUpperCase();}
+
+let matches = [];
+let currentPage = 0;
+let activeMatch = null;
+let currentFilter = 'all';
+let pendingMoreMatches = [];
+let reportingMsgId = null;
+let blockingStudentId = null;
+
+function mapMatch(m){
+  return {
+    matchId: m.matchId,
+    matchedStudentId: m.studentId,
+    name: m.name,
+    initials: initialsOf(m.name),
+    color: colorFor(m.name),
+    major: m.major||'',
+    course: m.courseCode||'',
+    overlap: m.overlapHours||0
+  };
+}
+
+function loadMatches(page){
+  if(!studentId){ document.getElementById('match-list').innerHTML='<div style="padding:20px;text-align:center;color:#c62828">Please log in first.</div>'; return; }
+
+  // On first load, use mm_picked_matches as single source of truth
+  if(page === 0){
+    const pickedKey = 'mm_picked_matches_' + studentId;
+    const picked = localStorage.getItem(pickedKey);
+    if(picked){
+      try{
+        const pickedData = JSON.parse(picked);
+        if(pickedData && pickedData.length > 0){
+          matches = pickedData.map(mapMatch);
+          buildFilters();
+          renderMatchList();
+          document.getElementById('find-more-btn').style.display = 'block';
+          currentPage = 0;
+          return;
+        }
+      }catch(e){}
+    }
+  }
+
+  fetch('/api/matches?studentId='+studentId+'&page='+page)
+    .then(r=>r.json())
+    .then(data=>{
+      if(data && data.length > 0){
+        matches = [...matches, ...data.map(mapMatch)];
+        // DO NOT auto-save API results - only save what user explicitly picks
+        buildFilters();
+        renderMatchList();
+      } else if(page === 0){
+        document.getElementById('match-list').innerHTML='<div style="padding:20px;text-align:center;color:var(--text-muted)">No matches yet. Add more courses and availability!</div>';
+      }
+      const btn = document.getElementById('find-more-btn');
+      if(btn) btn.style.display = data && data.length === 10 ? 'block' : 'none';
+    }).catch(()=>{ document.getElementById('match-list').innerHTML='<div style="padding:20px;text-align:center;color:#c62828">Could not load matches.</div>'; });
+}
+
+function openFindMore(){
+  if(!studentId) return;
+  const btn = document.getElementById('find-more-btn');
+  if(btn){ btn.textContent='⏳ Finding more matches...'; btn.disabled=true; }
+  const nextPage = currentPage + 1;
+  fetch('/api/matches?studentId='+studentId+'&page='+nextPage)
+    .then(r=>r.json())
+    .then(data=>{
+      if(!data || data.length === 0){
+        alert('No more matches found! Try adding more courses or availability slots.');
+        document.getElementById('find-more-btn').style.display='none';
+        return;
+      }
+      pendingMoreMatches = data.map(mapMatch);
+      const grid = document.getElementById('find-more-grid');
+      grid.innerHTML = pendingMoreMatches.map((m,i)=>`
+        <div class="find-more-row" id="fmr-${i}" onclick="toggleFindMore(${i})">
+          <div style="width:38px;height:38px;border-radius:50%;background:${m.color};display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.82rem;flex-shrink:0">${m.initials}</div>
+          <div style="flex:1">
+            <div style="font-weight:700;font-size:.9rem">${m.name}</div>
+            <div style="font-size:.75rem;color:var(--text-muted)">${m.major} · ${m.course}</div>
+          </div>
+          <div style="background:#E8F5E9;color:#2E7D32;font-size:.72rem;font-weight:700;padding:2px 8px;border-radius:20px">${m.overlap}h</div>
+        </div>`).join('');
+      const b = document.getElementById('find-more-btn');
+      if(b){ b.textContent='🔄 Find More Matches'; b.disabled=false; }
+      document.getElementById('find-more-modal').classList.add('open');
+      currentPage = nextPage;
+    }).catch(()=>{
+      const b = document.getElementById('find-more-btn');
+      if(b){ b.textContent='🔄 Find More Matches'; b.disabled=false; }
+      alert('Could not load more matches.');
+    });
+}
+
+function toggleFindMore(i){
+  const el = document.getElementById('fmr-'+i);
+  el.classList.toggle('selected');
+}
+
+function confirmFindMore(){
+  const selected = pendingMoreMatches.filter((_,i)=>document.getElementById('fmr-'+i)?.classList.contains('selected'));
+  if(selected.length === 0){ closeFindMore(); return; }
+  matches = [...matches, ...selected];
+  // Save to mm_picked_matches (single source of truth)
+  localStorage.setItem('mm_picked_matches_'+studentId, JSON.stringify(
+    matches.map(m=>({matchId:m.matchId,studentId:m.matchedStudentId,name:m.name,major:m.major,courseCode:m.course,overlapHours:m.overlap}))
+  ));
+  buildFilters();
+  renderMatchList();
+  const btn = document.getElementById('find-more-btn');
+  if(btn) btn.style.display = pendingMoreMatches.length === 10 ? 'block' : 'none';
+  closeFindMore();
+}
+
+function closeFindMore(){ document.getElementById('find-more-modal').classList.remove('open'); }
+
+function buildFilters(){
+  const bar = document.getElementById('filter-bar');
+  const chips = ['<div class="filter-chip active" onclick="filterBy(\'all\',this)">All</div>'];
+  const seen = new Set();
+  matches.forEach(m=>{ if(!seen.has(m.course)){ seen.add(m.course); chips.push(`<div class="filter-chip" onclick="filterBy('${m.course}',this)">${m.course}</div>`); } });
+  bar.innerHTML = chips.join('');
+}
+
+function removeMatch(idx){
+  if(activeMatch === idx){
+    activeMatch = null;
+    document.getElementById('chat-view').style.display='none';
+    document.getElementById('chat-empty').style.display='flex';
+  }
+  matches.splice(idx, 1);
+  if(activeMatch !== null && activeMatch > idx) activeMatch--;
+  buildFilters();
+  renderMatchList();
+}
+
+function filterBy(f, el){
+  currentFilter = f;
+  document.querySelectorAll('.filter-chip').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+  renderMatchList();
+}
+
+function renderMatchList(){
+  const list = document.getElementById('match-list');
+  const filtered = currentFilter==='all' ? matches : matches.filter(m=>m.course===currentFilter);
+  if(filtered.length === 0){ list.innerHTML='<div style="padding:20px;text-align:center;color:var(--text-muted);font-size:.88rem">No matches found.</div>'; return; }
+  // Set unread for dummy matches with messages that haven't been read
+  matches.forEach((m,idx)=>{
+    if(idx === activeMatch) return;
+    const isDummy = m.matchedStudentId && m.matchedStudentId <= 100;
+    if(!isDummy) return;
+    const msgs = getChat(idx).filter(msg=>!msg.cleared);
+    const uk = 'unread_' + studentId + '_' + idx;
+    const hasUnread = parseInt(localStorage.getItem(uk)||'0');
+    const hasTheirMsg = msgs.some(msg=>!msg.mine);
+    const seenKey = 'seen_' + studentId + '_' + idx;
+    const seen = localStorage.getItem(seenKey);
+    if(hasTheirMsg && !seen && !hasUnread){
+      localStorage.setItem(uk, '1');
+    }
+  });
+  list.innerHTML = filtered.map((m,i)=>{
+    const idx = matches.indexOf(m);
+    const msgs = getChat(idx);
+    const last = msgs[msgs.length-1];
+    const lastText = last ? (last.type==='meeting' ? '📆 Study session requested' : last.text) : 'Start a conversation...';
+    const unreadKey = 'unread_' + studentId + '_' + idx;
+    const unreadCount = parseInt(localStorage.getItem(unreadKey)||'0');
+    return `<div class="match-row ${activeMatch===idx?'active':''}" onclick="selectMatch(${idx})" style="position:relative">
+      <div class="m-av" style="background:${m.color}">${m.initials}</div>
+      <div class="match-row-info">
+        <div class="match-row-name">${m.name}</div>
+        <div class="match-row-detail">${m.course} · ${(lastText||'').substring(0,28)}${(lastText||'').length>28?'...':''}</div>
+      </div>
+      ${unreadCount > 0 ? `<div style="background:#E53935;color:#fff;font-size:.65rem;font-weight:800;width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0">${unreadCount}</div>` : `<div class="overlap-pill">${m.overlap}h</div>`}
+    </div>`;
+  }).join('');
+}
+
+function selectMatch(idx){
+  activeMatch = idx;
+  renderMatchList();
+  const m = matches[idx];
+  document.getElementById('chat-empty').style.display='none';
+  const cv = document.getElementById('chat-view');
+  cv.style.cssText='display:flex;flex-direction:column;flex:1;min-height:0;max-height:100%;overflow:hidden;height:100%';
+  document.getElementById('chat-av').textContent = m.initials;
+  document.getElementById('chat-av').style.background = m.color;
+  document.getElementById('chat-name').textContent = m.name;
+  document.getElementById('chat-sub').textContent = m.major + ' · ' + m.course + ' · ' + m.overlap + 'h overlap/week';
+  document.getElementById('s-course').value = m.course;
+  localStorage.removeItem('unread_' + studentId + '_' + idx);
+  localStorage.setItem('seen_' + studentId + '_' + idx, '1');
+  document.getElementById('header-menu').style.display='none';
+
+  // Only show demo messages for dummy/seeded accounts (id <= 100) and only if chat was never opened
+  const existingChat = getChat(idx);
+  const wasCleared = existingChat.length > 0 && existingChat[0].cleared;
+  const isDummy = m.matchedStudentId && m.matchedStudentId <= 100;
+  if(existingChat.length === 0 && isDummy && !wasCleared){
+    // Only show ONE opener message from them
+    const demoMsgs = [
+      {sender:m.name, text:'Hey! Saw we matched for '+m.course+'. Want to study together?', time:fmtTime(new Date(Date.now()-3600000)), mine:false},
+    ];
+    saveChat(idx, demoMsgs);
+    // Don't set unread here - user is opening the chat now, so they'll see it
+  }
+  renderMessages(idx);
+}
+
+function renderMessages(idx){
+  const cont = document.getElementById('chat-messages');
+  const m = matches[idx];
+  const msgs = getChat(idx).filter(m=>!m.cleared);
+  cont.innerHTML = msgs.map((msg, msgIdx)=>{
+    if(msg.type==='meeting'){
+      return `<div class="msg ${msg.mine?'mine':'theirs'}">
+        ${!msg.mine?`<div class="msg-av" style="background:${m.color}">${m.initials}</div>`:''}
+        <div class="msg-content">
+          <div class="msg-sender">${msg.mine?'You':m.name}</div>
+          <div class="meeting-bubble">
+            <div class="meeting-bubble-title">📆 Study Session Request</div>
+            <div class="meeting-bubble-detail">📚 ${msg.course}</div>
+            <div class="meeting-bubble-detail">📅 ${msg.day||''} ${msg.date} at ${msg.meetTime||msg.time}</div>
+            <div class="meeting-bubble-detail">📍 ${msg.location}</div>
+            ${msg.note?`<div class="meeting-bubble-detail">💬 ${msg.note}</div>`:''}
+            <div class="meeting-bubble-status">✓ Request Sent</div>
+          </div>
+        </div>
+        ${msg.mine?`<div class="msg-av" style="background:${getMyColor()}">${myInitials}</div>`:''}
+      </div>`;
+    }
+    return `<div class="msg ${msg.mine?'mine':'theirs'}">
+      ${!msg.mine?`<div class="msg-av" style="background:${m.color}">${m.initials}</div>`:''}
+      <div class="msg-content">
+        <div class="msg-sender">${msg.mine?'You':m.name}</div>
+        <div class="msg-row">
+          <div class="msg-bubble">${msg.text}</div>
+          ${!msg.mine?`<button class="msg-options-btn" onclick="openReport(${msgIdx})" title="Report message">⋯</button>`:''}
+        </div>
+        <div class="msg-time">${msg.time}</div>
+      </div>
+      ${msg.mine?`<div class="msg-av" style="background:${getMyColor()}">${myInitials}</div>`:''}
+    </div>`;
+  }).join('');
+  cont.scrollTop = cont.scrollHeight;
+}
+
+function fmtTime(d){
+  d = d || new Date();
+  const h=d.getHours()%12||12, m=String(d.getMinutes()).padStart(2,'0');
+  return h+':'+m+' '+(d.getHours()>=12?'PM':'AM');
+}
+
+function sendMsg(){
+  const inp = document.getElementById('chat-input');
+  const text = inp.value.trim();
+  if(!text || activeMatch===null) return;
+  const msgs = getChat(activeMatch);
+  msgs.push({sender:'me', text, time:fmtTime(), mine:true});
+  saveChat(activeMatch, msgs);
+  inp.value='';
+  renderMessages(activeMatch);
+  renderMatchList();
+  const m = matches[activeMatch];
+  const replies = ['Sounds good! When works for you?','Yes definitely! I\'m free this week.','Great, let\'s meet at the library!','That works for me 👍','Cool, can we do it in the morning?','I\'ll be there! What chapter are we covering?'];
+  const idx = activeMatch;
+  // Only auto-reply for seeded dummy students (id <= 100)
+  if(m.matchedStudentId && m.matchedStudentId <= 100){
+    setTimeout(()=>{
+      const msgs2 = getChat(idx);
+      msgs2.push({sender:m.name, text:replies[Math.floor(Math.random()*replies.length)], time:fmtTime(), mine:false});
+      saveChat(idx, msgs2);
+      if(activeMatch===idx){
+        renderMessages(idx);
+      } else {
+        // Increment unread
+        const uk = 'unread_' + studentId + '_' + idx;
+        localStorage.setItem(uk, (parseInt(localStorage.getItem(uk)||'0')+1).toString());
+      }
+      renderMatchList();
+    }, 1200);
+  }
+}
+
+function handleKey(e){ if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMsg();} }
+
+// Header menu (block/clear)
+function toggleHeaderMenu(){
+  const menu = document.getElementById('header-menu');
+  menu.style.display = menu.style.display==='none' ? 'block' : 'none';
+}
+document.addEventListener('click', function(e){
+  if(!e.target.closest('#header-menu') && !e.target.closest('#chat-name')) document.getElementById('header-menu').style.display='none';
+});
+
+function clearChat(){
+  if(activeMatch===null) return;
+  document.getElementById('header-menu').style.display='none';
+  document.getElementById('clear-modal').classList.add('open');
+}
+function confirmClear(){
+  saveChat(activeMatch,[{cleared:true}]);
+  renderMessages(activeMatch);
+  renderMatchList();
+  document.getElementById('clear-modal').classList.remove('open');
+}
+
+function confirmRemoveMatch(){
+  if(activeMatch===null) return;
+  document.getElementById('remove-match-name').textContent = matches[activeMatch].name;
+  document.getElementById('header-menu').style.display='none';
+  document.getElementById('remove-match-modal').classList.add('open');
+}
+function doRemoveMatch(){
+  if(activeMatch===null) return;
+  // Remove from matches array
+  matches.splice(activeMatch, 1);
+  // Update localStorage
+  if(studentId){
+    const saved = matches.map(m=>({matchId:m.matchId,studentId:m.matchedStudentId,name:m.name,major:m.major,courseCode:m.course,overlapHours:m.overlap}));
+    localStorage.setItem('mm_picked_matches_'+studentId, JSON.stringify(saved));
+  }
+  activeMatch = null;
+  document.getElementById('chat-view').style.display='none';
+  document.getElementById('chat-empty').style.display='flex';
+  buildFilters();
+  renderMatchList();
+  document.getElementById('remove-match-modal').classList.remove('open');
+  // Update stat in sessionStorage so dashboard refreshes
+  sessionStorage.setItem('matches_updated', '1');
+}
+
+function confirmBlock(){
+  if(activeMatch===null) return;
+  const m = matches[activeMatch];
+  blockingStudentId = m.matchedStudentId;
+  document.getElementById('block-name-display').textContent = m.name;
+  document.getElementById('header-menu').style.display='none';
+  document.getElementById('block-modal').classList.add('open');
+}
+
+function blockUser(){
+  if(!blockingStudentId || !studentId) return;
+  fetch('/api/block', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({blockerId:parseInt(studentId), blockedId:blockingStudentId}) })
+    .then(r=>r.json())
+    .then(()=>{
+      matches = matches.filter(m=>m.matchedStudentId !== blockingStudentId);
+      activeMatch = null;
+      document.getElementById('chat-view').style.display='none';
+      document.getElementById('chat-empty').style.display='flex';
+      buildFilters();
+      renderMatchList();
+      closeBlock();
+      alert('User blocked successfully.');
+    }).catch(()=>{ closeBlock(); alert('Block failed. Please try again.'); });
+}
+
+function closeBlock(){ document.getElementById('block-modal').classList.remove('open'); }
+
+// Report
+function openReport(msgIdx){
+  reportingMsgId = msgIdx;
+  document.getElementById('report-reason').value='';
+  document.getElementById('report-details').value='';
+  document.getElementById('report-modal').classList.add('open');
+}
+
+function closeReport(){ document.getElementById('report-modal').classList.remove('open'); }
+
+function submitReport(){
+  const reason = document.getElementById('report-reason').value;
+  if(!reason){ alert('Please select a reason.'); return; }
+  const details = document.getElementById('report-details').value;
+  // Call backend to report
+  const msgs = getChat(activeMatch);
+  const msg = msgs[reportingMsgId];
+  if(msg && msg.dbId){
+    fetch('/api/messages/report', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({messageId:msg.dbId, reason:reason+' — '+details}) })
+      .catch(()=>{});
+  }
+  closeReport();
+  alert('Message reported. Thank you for helping keep MavMatch safe.');
+}
+
+// Schedule
+function updateDayFromDate(){
+  const dateVal = document.getElementById('s-date').value;
+  if(!dateVal) return;
+  const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const day = days[new Date(dateVal + 'T12:00:00').getDay()];
+  document.getElementById('s-day').value = day;
+}
+function openSchedule(){ document.getElementById('sched-modal').classList.add('open'); }
+function closeSchedule(){ document.getElementById('sched-modal').classList.remove('open'); }
+function sendSchedule(){
+  ['s-course-err','s-date-err','s-loc-err'].forEach(e=>document.getElementById(e).style.display='none');
+  const course=document.getElementById('s-course').value.trim();
+  const date=document.getElementById('s-date').value;
+  const location=document.getElementById('s-location').value.trim();
+  let ok=true;
+  if(!course){document.getElementById('s-course-err').style.display='block';ok=false}
+  if(!date){document.getElementById('s-date-err').style.display='block';ok=false}
+  if(!location){document.getElementById('s-loc-err').style.display='block';ok=false}
+  if(!ok) return;
+  const [h,min]=document.getElementById('s-time').value.split(':');
+  const hr=parseInt(h);
+  const meetTime=(hr>12?hr-12:hr)+':'+(min||'00')+' '+(hr>=12?'PM':'AM');
+  updateDayFromDate(); const day=document.getElementById('s-day').value||'TBD';
+  const note=document.getElementById('s-note').value.trim();
+  const msgs = getChat(activeMatch);
+  msgs.push({type:'meeting', course, date, meetTime, day, location, note, mine:true, time:fmtTime()});
+  saveChat(activeMatch, msgs);
+  closeSchedule();
+  renderMessages(activeMatch);
+  renderMatchList();
+}
+
+document.getElementById('sched-modal').addEventListener('click',function(e){if(e.target===this)closeSchedule()});
+document.getElementById('report-modal').addEventListener('click',function(e){if(e.target===this)closeReport()});
+document.getElementById('block-modal').addEventListener('click',function(e){if(e.target===this)closeBlock()});
+document.getElementById('remove-match-modal').addEventListener('click',function(e){if(e.target===this)this.classList.remove('open')});
+document.getElementById('find-more-modal').addEventListener('click',function(e){if(e.target===this)closeFindMore()});
+
+loadMatches(0);
+</script>
+</body>
+</html>

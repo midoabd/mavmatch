@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Profile – MavMatch</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  :root{--blue:#1565C0;--blue-dark:#0D47A1;--orange:#F57C00;--orange-bright:#FF6F00;--white:#fff;--bg:#F0F4FF;--border:#E2E8F0;--text:#1e293b;--text-muted:#64748b;--radius:12px;--shadow:0 4px 24px rgba(21,101,192,.10)}
+  body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column}
+  nav{background:var(--white);border-bottom:1.5px solid var(--border);padding:0 5%;display:flex;align-items:center;justify-content:space-between;height:64px;box-shadow:0 2px 12px rgba(21,101,192,.07);position:sticky;top:0;z-index:50}
+  .logo{display:flex;align-items:center;gap:8px;text-decoration:none}
+  .logo-text{font-family:'Nunito',sans-serif;font-size:1.4rem;font-weight:900;color:#0D47A1}
+  .logo-text span{color:var(--orange)}
+  .user-chip{display:flex;align-items:center;gap:8px;background:var(--bg);border:1.5px solid var(--border);border-radius:24px;padding:5px 14px 5px 8px}
+  .user-avatar-sm{width:30px;height:30px;border-radius:50%;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;font-size:.78rem;font-weight:800}
+  .app{display:flex;flex:1}
+  .sidebar{width:220px;background:var(--white);border-right:1.5px solid var(--border);padding:24px 0;flex-shrink:0}
+  .nav-item{display:flex;align-items:center;gap:10px;padding:10px 22px;font-size:.92rem;font-weight:600;color:var(--text-muted);text-decoration:none;transition:.15s}
+  .nav-item:hover{background:var(--bg);color:var(--blue)}
+  .nav-item.active{background:#E3F2FD;color:var(--blue);border-right:3px solid var(--blue)}
+  .nav-icon{font-size:1.1rem;width:22px;text-align:center}
+  .sidebar-section{font-size:.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);padding:16px 22px 6px}
+  .content{flex:1;padding:40px 5%;max-width:900px}
+
+  /* PROFILE CARD */
+  .profile-top{background:var(--white);border-radius:20px;padding:36px;border:1.5px solid var(--border);display:flex;align-items:center;gap:32px;margin-bottom:24px}
+  .avatar-wrap{position:relative;flex-shrink:0}
+  .big-avatar{width:96px;height:96px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Nunito',sans-serif;font-size:2rem;font-weight:900;color:#fff;cursor:pointer;transition:.2s;border:4px solid var(--white);box-shadow:var(--shadow)}
+  .big-avatar:hover{transform:scale(1.05)}
+  .avatar-edit-hint{font-size:.72rem;color:var(--text-muted);text-align:center;margin-top:6px}
+  .profile-info{flex:1}
+  .profile-name{font-family:'Nunito',sans-serif;font-size:1.7rem;font-weight:900;color:var(--blue-dark);margin-bottom:4px}
+  .profile-major{font-size:.95rem;color:var(--text-muted);margin-bottom:12px}
+  .profile-badges{display:flex;gap:8px;flex-wrap:wrap}
+  .badge{background:#E3F2FD;color:var(--blue-dark);font-size:.78rem;font-weight:700;padding:4px 12px;border-radius:20px;border:1px solid #BBDEFB}
+  .btn-edit{background:var(--orange);color:#fff;border:none;padding:10px 24px;border-radius:8px;font-size:.9rem;font-weight:700;cursor:pointer;transition:.2s;margin-top:16px}
+  .btn-edit:hover{background:var(--orange-bright);transform:translateY(-1px)}
+
+  /* COLOR PICKER */
+  .color-picker{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}
+  .color-dot{width:28px;height:28px;border-radius:50%;cursor:pointer;border:3px solid transparent;transition:.15s}
+  .color-dot:hover{transform:scale(1.15)}
+  .color-dot.selected{border-color:var(--text)}
+
+  /* INFO CARD */
+  .info-card{background:var(--white);border-radius:20px;padding:32px;border:1.5px solid var(--border);margin-bottom:24px}
+  .info-card-title{font-family:'Nunito',sans-serif;font-size:1.05rem;font-weight:800;color:var(--blue-dark);margin-bottom:24px;display:flex;justify-content:space-between;align-items:center}
+  .btn-save-sm{background:var(--blue);color:#fff;border:none;padding:7px 18px;border-radius:7px;font-size:.85rem;font-weight:700;cursor:pointer;display:none}
+  .btn-save-sm.visible{display:inline-block}
+  .fields-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+  .field-group{display:flex;flex-direction:column;gap:6px}
+  .field-label{font-size:.82rem;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em}
+  .field-value{font-size:.97rem;font-weight:600;color:var(--text);padding:10px 14px;border-radius:8px;border:1.5px solid transparent;background:#f8fafc;transition:.2s}
+  .field-value.editable{border-color:var(--border);cursor:text}
+  .field-value.editable:focus{border-color:var(--blue);outline:none;background:#fff;box-shadow:0 0 0 3px rgba(21,101,192,.08)}
+  .field-value.readonly{background:transparent;color:var(--text-muted);font-size:.95rem}
+  select.field-value{cursor:pointer;appearance:auto}
+
+  @media(max-width:800px){.sidebar{display:none}.fields-grid{grid-template-columns:1fr}.profile-top{flex-direction:column;text-align:center}}
+  .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;display:none;align-items:center;justify-content:center}
+  .modal-overlay.open{display:flex}
+  .modal{background:var(--white);border-radius:20px;padding:32px;width:100%;max-width:380px;box-shadow:0 20px 60px rgba(0,0,0,.2)}
+  .modal h3{font-family:'Nunito',sans-serif;font-size:1.2rem;font-weight:900;color:var(--blue-dark);margin-bottom:16px}
+  .modal p{font-size:.88rem;color:var(--text-muted);margin-bottom:16px}
+  .modal-btns{display:flex;gap:10px;justify-content:flex-end;margin-top:16px}
+  .btn-cancel{background:none;border:1.5px solid var(--border);color:var(--text-muted);padding:8px 18px;border-radius:8px;font-size:.88rem;font-weight:600;cursor:pointer}
+  .btn-confirm{background:var(--orange);color:#fff;border:none;padding:8px 20px;border-radius:8px;font-size:.88rem;font-weight:700;cursor:pointer}
+
+  @media(max-width:800px){.sidebar{display:none}.fields-grid{grid-template-columns:1fr}.profile-top{flex-direction:column;text-align:center}}
+</style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="logo">
+    
+    <span class="logo-text">Mav<span>Match</span></span>
+  </a>
+  <div class="user-chip">
+    <div class="user-avatar-sm" id="nav-avatar">M</div>
+    <span style="font-size:.87rem;font-weight:600" id="nav-name">Maverick</span>
+  </div>
+</nav>
+
+<div class="app">
+  <aside class="sidebar">
+    <div class="sidebar-section">Menu</div>
+    <a class="nav-item" href="dashboard.html"><span class="nav-icon">🏠</span> Dashboard</a>
+    <a class="nav-item" href="availability.html"><span class="nav-icon">📅</span> My Availability</a>
+    <a class="nav-item" href="matches.html"><span class="nav-icon">🤝</span> My Matches</a>
+    <a class="nav-item" href="meetings.html"><span class="nav-icon">📆</span> Meetings</a>
+    <a class="nav-item" href="groups.html"><span class="nav-icon">👥</span> Study Groups</a>
+    <div class="sidebar-section">Account</div>
+    <a class="nav-item active" href="profile.html"><span class="nav-icon">👤</span> Profile</a>
+    <a class="nav-item" href="login.html" onclick="localStorage.clear()"><span class="nav-icon">🚪</span> Log Out</a>
+  </aside>
+
+  <main class="content">
+
+    <!-- PROFILE TOP -->
+    <div class="profile-top">
+      <div class="avatar-wrap">
+        <div class="big-avatar" id="big-avatar" onclick="openColorPicker()">?</div>
+        <div class="avatar-edit-hint">click to change color</div>
+        <div class="color-picker" id="color-picker" style="display:none">
+          <div class="color-dot" style="background:#1565C0" onclick="setColor('#1565C0')"></div>
+          <div class="color-dot" style="background:#F57C00" onclick="setColor('#F57C00')"></div>
+          <div class="color-dot" style="background:#2E7D32" onclick="setColor('#2E7D32')"></div>
+          <div class="color-dot" style="background:#7B1FA2" onclick="setColor('#7B1FA2')"></div>
+          <div class="color-dot" style="background:#C62828" onclick="setColor('#C62828')"></div>
+          <div class="color-dot" style="background:#0277BD" onclick="setColor('#0277BD')"></div>
+          <div class="color-dot" style="background:#00695C" onclick="setColor('#00695C')"></div>
+          <div class="color-dot" style="background:#E65100" onclick="setColor('#E65100')"></div>
+        </div>
+      </div>
+      <div class="profile-info">
+        <div class="profile-name" id="display-name">Loading...</div>
+        <div class="profile-major" id="display-major">Loading...</div>
+        <div class="profile-badges">
+          <span class="badge">🎓 UTA Maverick</span>
+          <span class="badge" id="display-email-badge">...</span>
+        </div>
+        <button class="btn-edit" onclick="toggleEdit()">✏️ Edit Profile</button>
+      </div>
+    </div>
+
+    <!-- PERSONAL INFO -->
+    <div class="info-card">
+      <div class="info-card-title">
+        Personal Information
+        <button class="btn-save-sm" id="save-btn" onclick="saveProfile()">Save Changes</button>
+      </div>
+      <div class="fields-grid">
+        <div class="field-group">
+          <div class="field-label">First Name</div>
+          <input class="field-value editable" id="f-fname" type="text" readonly/>
+        </div>
+        <div class="field-group">
+          <div class="field-label">Last Name</div>
+          <input class="field-value editable" id="f-lname" type="text" readonly/>
+        </div>
+        <div class="field-group">
+          <div class="field-label">UTA Email</div>
+          <input class="field-value readonly" id="f-email" type="text" readonly/>
+        </div>
+        <div class="field-group">
+          <div class="field-label">UTA ID</div>
+          <input class="field-value readonly" id="f-utaid" type="text" readonly/>
+        </div>
+        <div class="field-group" style="grid-column:1/-1">
+          <div class="field-label">Major</div>
+          <select class="field-value editable" id="f-major" disabled>
+            <option>Information Systems (BBA)</option>
+            <option>Information Systems (BS)</option>
+            <option>Business Analytics (BS)</option>
+            <option>Accounting (BBA)</option>
+            <option>Finance (BBA)</option>
+            <option>Management (BBA)</option>
+            <option>Marketing (BBA)</option>
+            <option>Economics (BBA)</option>
+            <option>Human Resource Management (BBA)</option>
+            <option>Entrepreneurship (BBA)</option>
+            <option>Hospitality Management (BBA)</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+
+
+  </main>
+</div>
+
+<!-- CONFIRM SAVE MODAL -->
+<div class="modal-overlay" id="confirm-modal">
+  <div class="modal">
+    <h3>Save Changes?</h3>
+    <p>Your profile information will be updated across all of MavMatch.</p>
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="closeConfirm()">Cancel</button>
+      <button class="btn-confirm" onclick="confirmSave()">Save</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// Load user data
+function loadProfile(){
+  const fname = localStorage.getItem('mm_fname') || 'Maverick';
+  const lname = localStorage.getItem('mm_lname') || '';
+  const email = localStorage.getItem('mm_email') || 'student@mavs.uta.edu';
+  const utaid = localStorage.getItem('mm_utaid') || '1001000000';
+  const major = localStorage.getItem('mm_major') || 'Information Systems (BBA)';
+  const color = localStorage.getItem('mm_color') || '#1565C0';
+  const initials = localStorage.getItem('mm_initials') || 'M';
+
+  // Nav
+  document.getElementById('nav-avatar').textContent = initials;
+  document.getElementById('nav-avatar').style.background = color;
+  document.getElementById('nav-name').textContent = fname + (lname ? ' ' + lname[0] + '.' : '');
+
+  // Big avatar
+  const av = document.getElementById('big-avatar');
+  av.textContent = initials;
+  av.style.background = color;
+
+  // Display info
+  document.getElementById('display-name').textContent = fname + ' ' + lname;
+  document.getElementById('display-major').textContent = major;
+  document.getElementById('display-email-badge').textContent = email;
+
+  // Fields
+  document.getElementById('f-fname').value = fname;
+  document.getElementById('f-lname').value = lname;
+  document.getElementById('f-email').value = email;
+  document.getElementById('f-utaid').value = utaid;
+  document.getElementById('uta-id-display').textContent = utaid;
+
+  // Major dropdown
+  const sel = document.getElementById('f-major');
+  for(let i=0;i<sel.options.length;i++){
+    if(sel.options[i].text === major){ sel.selectedIndex=i; break; }
+  }
+
+  // Color dots
+  document.querySelectorAll('.color-dot').forEach(d=>{
+    d.classList.toggle('selected', d.style.background===color || d.style.backgroundColor===color);
+  });
+}
+
+let editing = false;
+function toggleEdit(){
+  editing = !editing;
+  const fields = ['f-fname','f-lname'];
+  fields.forEach(id=>{
+    const el = document.getElementById(id);
+    el.readOnly = !editing;
+    el.style.borderColor = editing ? 'var(--border)' : 'transparent';
+    el.style.background = editing ? '#fff' : '#f8fafc';
+  });
+  document.getElementById('f-major').disabled = !editing;
+  document.getElementById('save-btn').classList.toggle('visible', editing);
+  document.querySelector('.btn-edit').textContent = editing ? '✕ Cancel' : '✏️ Edit Profile';
+  if(!editing) loadProfile();
+}
+
+function saveProfile(){
+  document.getElementById('confirm-modal').classList.add('open');
+}
+
+function closeConfirm(){
+  document.getElementById('confirm-modal').classList.remove('open');
+}
+
+function confirmSave(){
+  const fname = document.getElementById('f-fname').value.trim();
+  const lname = document.getElementById('f-lname').value.trim();
+  const major = document.getElementById('f-major').value;
+  if(!fname){ alert('First name is required.'); closeConfirm(); return; }
+  const initials = (fname[0]+(lname[0]||'')).toUpperCase();
+  localStorage.setItem('mm_fname', fname);
+  localStorage.setItem('mm_lname', lname);
+  localStorage.setItem('mm_major', major);
+  localStorage.setItem('mm_initials', initials);
+  closeConfirm();
+  editing = false;
+  document.getElementById('save-btn').classList.remove('visible');
+  document.querySelector('.btn-edit').textContent = '✏️ Edit Profile';
+  ['f-fname','f-lname'].forEach(id=>{
+    const el=document.getElementById(id);
+    el.readOnly=true;
+    el.style.borderColor='transparent';
+    el.style.background='#f8fafc';
+  });
+  document.getElementById('f-major').disabled=true;
+  loadProfile();
+}
+
+function openColorPicker(){
+  const cp = document.getElementById('color-picker');
+  cp.style.display = cp.style.display==='none'?'flex':'none';
+}
+
+function setColor(c){
+  localStorage.setItem('mm_color', c);
+  document.getElementById('color-picker').style.display='none';
+  loadProfile();
+}
+
+document.getElementById('confirm-modal').addEventListener('click',function(e){if(e.target===this)closeConfirm()});
+loadProfile();
+</script>
+</body>
+</html>

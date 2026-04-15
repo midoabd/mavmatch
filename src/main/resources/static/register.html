@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Sign Up – MavMatch</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  :root{--blue:#1565C0;--blue-dark:#0D47A1;--orange:#F57C00;--orange-bright:#FF6F00;--white:#fff;--bg:#F0F4FF;--border:#E2E8F0;--text:#1e293b;--text-muted:#64748b;--radius:12px;--shadow:0 4px 24px rgba(21,101,192,.10)}
+  body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column}
+  nav{background:var(--white);border-bottom:1.5px solid var(--border);padding:0 5%;display:flex;align-items:center;justify-content:space-between;height:68px;box-shadow:0 2px 12px rgba(21,101,192,.07)}
+  .logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+  .logo-text{font-family:'Nunito',sans-serif;font-size:1.5rem;font-weight:900;color:#0D47A1}
+  .logo-text span{color:var(--orange)}
+  .main{flex:1;display:flex;align-items:center;justify-content:center;padding:40px 20px}
+  .card{background:var(--white);border-radius:20px;padding:44px 40px;width:100%;max-width:480px;box-shadow:var(--shadow);border:1.5px solid var(--border)}
+  .card-title{font-family:'Nunito',sans-serif;font-size:1.7rem;font-weight:900;color:var(--blue-dark);margin-bottom:6px}
+  .card-sub{font-size:.92rem;color:var(--text-muted);margin-bottom:28px}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .form-group{margin-bottom:16px}
+  label{display:block;font-size:.87rem;font-weight:600;color:var(--text);margin-bottom:6px}
+  input,select{width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:8px;font-size:.95rem;font-family:'Inter',sans-serif;outline:none;transition:.2s;background:#fafbfc;color:var(--text)}
+  input:focus,select:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(21,101,192,.1);background:#fff}
+  .btn-submit{width:100%;background:linear-gradient(135deg,var(--orange),var(--orange-bright));color:#fff;border:none;padding:13px;border-radius:10px;font-size:1rem;font-weight:700;cursor:pointer;transition:.2s;margin-top:6px;font-family:'Inter',sans-serif}
+  .btn-submit:hover{transform:translateY(-1px);box-shadow:0 4px 18px rgba(245,124,0,.35)}
+  .switch-link{text-align:center;font-size:.9rem;color:var(--text-muted);margin-top:20px}
+  .switch-link a{color:var(--blue);font-weight:600;text-decoration:none}
+  .uta-note{background:#E3F2FD;border:1px solid #BBDEFB;border-radius:8px;padding:10px 14px;font-size:.83rem;color:var(--blue-dark);margin-bottom:22px}
+  .err{color:#c62828;font-size:.83rem;margin-top:4px;display:none}
+  .step-indicator{display:flex;gap:8px;margin-bottom:28px}
+  .step-dot{height:4px;border-radius:2px;flex:1;background:var(--border)}
+  .step-dot.active{background:var(--orange)}
+  .step-dot.done{background:var(--blue)}
+</style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="logo">
+    <svg width="36" height="36" viewBox="0 0 42 42" fill="none"><circle cx="21" cy="21" r="21" fill="#1565C0"/><ellipse cx="21" cy="21" rx="12" ry="8" fill="none" stroke="#fff" stroke-width="2"/><path d="M13 17 Q17 10 21 14 Q25 10 29 17" stroke="#FF9800" stroke-width="2.5" fill="none" stroke-linecap="round"/><circle cx="15" cy="22" r="3" fill="#fff"/><circle cx="27" cy="22" r="3" fill="#FF9800"/></svg>
+    <span class="logo-text">Mav<span>Match</span></span>
+  </a>
+</nav>
+<div class="main">
+  <div class="card">
+    <div class="step-indicator">
+      <div class="step-dot done"></div>
+      <div class="step-dot active"></div>
+      <div class="step-dot"></div>
+    </div>
+    <div class="card-title">Create your account 🎓</div>
+    <div class="card-sub">Join thousands of UTA Mavericks studying smarter</div>
+    <div class="uta-note">🔒 UTA students only — use your @mavs.uta.edu email</div>
+    <div class="row2">
+      <div class="form-group">
+        <label>First Name</label>
+        <input type="text" id="fname" placeholder="Jorge" oninput="this.value=this.value.replace(/\b\w/g,c=>c.toUpperCase())"/>
+        <div class="err" id="fname-err">Required</div>
+      </div>
+      <div class="form-group">
+        <label>Last Name</label>
+        <input type="text" id="lname" placeholder="Rodriguez" oninput="this.value=this.value.replace(/\b\w/g,c=>c.toUpperCase())"/>
+        <div class="err" id="lname-err">Required</div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>UTA Email</label>
+      <input type="email" id="email" placeholder="jxr1234@mavs.uta.edu"/>
+      <div class="err" id="email-err">Must be a valid UTA email</div>
+    </div>
+    <div class="form-group">
+      <label>UTA ID</label>
+      <input type="text" id="utaid" placeholder="1001234567" maxlength="10"/>
+    </div>
+    <div class="form-group" style="position:relative">
+      <label>Major</label>
+      <input type="text" id="major" placeholder="Start typing your major..." autocomplete="off" oninput="filterMajors()" onfocus="showMajors()" onblur="setTimeout(hideMajors,200)"/>
+      <div id="major-dropdown" style="display:none;position:absolute;top:100%;left:0;right:0;background:#fff;border:1.5px solid #E2E8F0;border-radius:8px;max-height:200px;overflow-y:auto;z-index:100;box-shadow:0 4px 12px rgba(0,0,0,.1)"></div>
+    </div>
+    <div class="row2">
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="password" placeholder="Min. 8 characters"/>
+        <div class="err" id="pass-err">Min 8 characters</div>
+      </div>
+      <div class="form-group">
+        <label>Confirm Password</label>
+        <input type="password" id="confirm" placeholder="Repeat password"/>
+        <div class="err" id="confirm-err">Passwords don't match</div>
+      </div>
+    </div>
+    <button class="btn-submit" onclick="handleRegister()">Create Account →</button>
+    <div class="switch-link">Already have an account? <a href="login.html">Log in</a></div>
+  </div>
+</div>
+<script>
+const UTA_MAJORS = [
+  "Accounting (BBA)","Actuarial Science (BS)","Aerospace Engineering (BS)",
+  "Anthropology (BA)","Architecture (BS)","Art (BFA)","Art History (BA)",
+  "Athletic Training (BS)","Biology (BS)","Biomedical Engineering (BS)",
+  "Business Analytics (BS)","Chemistry (BS)","Civil Engineering (BS)",
+  "Communication (BA)","Computer Engineering (BS)","Computer Science (BS)",
+  "Criminology & Criminal Justice (BS)","Economics (BBA)","Economics (BA)",
+  "Electrical Engineering (BS)","English (BA)","Entrepreneurship (BBA)",
+  "Environmental Science (BS)","Finance (BBA)","French (BA)",
+  "Geography (BS)","Geology (BS)","History (BA)",
+  "Hospitality Management (BBA)","Human Resource Management (BBA)",
+  "Industrial Engineering (BS)","Information Systems (BBA)","Information Systems (BS)",
+  "Interior Design (BFA)","International Business (BBA)","Journalism (BA)",
+  "Kinesiology (BS)","Liberal Arts (BA)","Linguistics (BA)",
+  "Management (BBA)","Marketing (BBA)","Mathematics (BS)",
+  "Mechanical Engineering (BS)","Music (BM)","Nursing (BSN)",
+  "Nutrition (BS)","Philosophy (BA)","Physics (BS)",
+  "Political Science (BA)","Psychology (BS)","Public Administration (BS)",
+  "Real Estate (BBA)","Social Work (BS)","Sociology (BA)",
+  "Software Engineering (BS)","Spanish (BA)","Supply Chain Management (BBA)",
+  "Theatre Arts (BFA)","Urban & Public Affairs (BS)","Women's & Gender Studies (BA)"
+];
+
+let majorVisible = false;
+function filterMajors(){
+  const val = document.getElementById('major').value.toLowerCase();
+  const filtered = val.length < 2 ? [] : UTA_MAJORS.filter(m=>m.toLowerCase().includes(val));
+  renderMajorDropdown(filtered);
+}
+function showMajors(){
+  majorVisible = true;
+  filterMajors();
+}
+function hideMajors(){
+  majorVisible = false;
+  document.getElementById('major-dropdown').style.display='none';
+}
+function renderMajorDropdown(list){
+  const dd = document.getElementById('major-dropdown');
+  if(list.length === 0){ dd.style.display='none'; return; }
+  dd.style.display='block';
+  dd.innerHTML = list.map(m=>`<div onclick="selectMajor('${m.replace(/'/g,"\'")}')" style="padding:10px 14px;cursor:pointer;font-size:.9rem;border-bottom:1px solid #f0f0f0" onmouseover="this.style.background='#E3F2FD'" onmouseout="this.style.background=''">${m}</div>`).join('');
+}
+function selectMajor(m){
+  document.getElementById('major').value = m;
+  document.getElementById('major-dropdown').style.display='none';
+}
+
+async function handleRegister(){
+  let ok=true;
+  ['fname-err','lname-err','email-err','pass-err','confirm-err'].forEach(id=>document.getElementById(id).style.display='none');
+  const fname=document.getElementById('fname').value.trim();
+  const lname=document.getElementById('lname').value.trim();
+  if(!fname){document.getElementById('fname-err').style.display='block';ok=false}
+  if(!lname){document.getElementById('lname-err').style.display='block';ok=false}
+  const email=document.getElementById('email').value;
+  if(!email||!email.includes('@mavs.uta.edu')){document.getElementById('email-err').style.display='block';ok=false}
+  const pass=document.getElementById('password').value;
+  if(!pass||pass.length<8){document.getElementById('pass-err').style.display='block';ok=false}
+  if(document.getElementById('confirm').value!==pass){document.getElementById('confirm-err').style.display='block';ok=false}
+  if(!ok) return;
+
+  const major=document.getElementById('major').value.trim()||'Information Systems (BBA)';
+  const utaid=document.getElementById('utaid').value.trim()||'';
+  const btn=document.querySelector('.btn-submit');
+  btn.textContent='Creating account...';
+  btn.disabled=true;
+
+  try {
+    const resp = await fetch('/api/register', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({firstName:fname, lastName:lname, email, password:pass, utaId:utaid, major})
+    });
+    const data = await resp.json();
+    if(data.success){
+      const initials=(fname[0]+(lname[0]||'')).toUpperCase();
+      localStorage.setItem('mm_fname', fname);
+      localStorage.setItem('mm_lname', lname);
+      localStorage.setItem('mm_initials', initials);
+      localStorage.setItem('mm_email', email);
+      localStorage.setItem('mm_major', major);
+      localStorage.setItem('mm_utaid', utaid);
+      localStorage.setItem('mm_color', '#1565C0');
+      localStorage.setItem('mm_studentId', data.studentId);
+      window.location.href='onboarding.html';
+    } else {
+      alert(data.message || 'Registration failed. Please try again.');
+      btn.textContent='Create Account →';
+      btn.disabled=false;
+    }
+  } catch(e) {
+    // Fallback to localStorage if server not available
+    const initials=(fname[0]+(lname[0]||'')).toUpperCase();
+    localStorage.setItem('mm_fname', fname);
+    localStorage.setItem('mm_lname', lname);
+    localStorage.setItem('mm_initials', initials);
+    localStorage.setItem('mm_email', email);
+    localStorage.setItem('mm_major', major);
+    localStorage.setItem('mm_utaid', utaid);
+    localStorage.setItem('mm_color', '#1565C0');
+    window.location.href='onboarding.html';
+  }
+}
+</script>
+</body>
+</html>

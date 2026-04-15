@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>My Availability – MavMatch</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  :root{--blue:#1565C0;--blue-dark:#0D47A1;--orange:#F57C00;--white:#fff;--bg:#F0F4FF;--border:#E2E8F0;--text:#1e293b;--text-muted:#64748b;--radius:12px;--shadow:0 4px 24px rgba(21,101,192,.10)}
+  body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column}
+  nav{background:var(--white);border-bottom:1.5px solid var(--border);padding:0 5%;display:flex;align-items:center;justify-content:space-between;height:64px;box-shadow:0 2px 12px rgba(21,101,192,.07);position:sticky;top:0;z-index:50}
+  .logo{display:flex;align-items:center;gap:8px;text-decoration:none}
+  .logo-text{font-family:'Nunito',sans-serif;font-size:1.4rem;font-weight:900;color:#0D47A1}
+  .logo-text span{color:var(--orange)}
+  .user-chip{display:flex;align-items:center;gap:8px;background:var(--bg);border:1.5px solid var(--border);border-radius:24px;padding:5px 14px 5px 8px}
+  .user-avatar{width:30px;height:30px;border-radius:50%;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;font-size:.78rem;font-weight:800}
+  .app{display:flex;flex:1}
+  .sidebar{width:220px;background:var(--white);border-right:1.5px solid var(--border);padding:24px 0;flex-shrink:0}
+  .nav-item{display:flex;align-items:center;gap:10px;padding:10px 22px;font-size:.92rem;font-weight:600;color:var(--text-muted);text-decoration:none;transition:.15s}
+  .nav-item:hover{background:var(--bg);color:var(--blue)}
+  .nav-item.active{background:#E3F2FD;color:var(--blue);border-right:3px solid var(--blue)}
+  .nav-icon{font-size:1.1rem;width:22px;text-align:center}
+  .sidebar-section{font-size:.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);padding:16px 22px 6px}
+  .content{flex:1;padding:32px 5%}
+  .page-title{font-family:'Nunito',sans-serif;font-size:1.6rem;font-weight:900;color:var(--blue-dark);margin-bottom:6px}
+  .page-sub{font-size:.92rem;color:var(--text-muted);margin-bottom:28px}
+  .card{background:var(--white);border-radius:16px;padding:28px;border:1.5px solid var(--border);margin-bottom:24px}
+  .card-title{font-family:'Nunito',sans-serif;font-size:1.05rem;font-weight:800;color:var(--blue-dark);margin-bottom:18px}
+  .tip{background:#E3F2FD;border:1px solid #BBDEFB;border-radius:8px;padding:10px 14px;font-size:.83rem;color:var(--blue-dark);margin-bottom:20px}
+  .grid-header{display:grid;grid-template-columns:64px repeat(7,1fr);gap:3px;margin-bottom:3px}
+  .grid-header div{font-size:.72rem;font-weight:700;color:var(--text-muted);text-align:center;padding:4px 0}
+  .grid-body{display:grid;grid-template-columns:64px repeat(7,1fr);gap:3px}
+  .time-label{font-size:.7rem;color:var(--text-muted);display:flex;align-items:center;justify-content:flex-end;padding-right:6px;line-height:1.2}
+  .slot{height:32px;border-radius:5px;border:1.5px solid var(--border);background:#fafbfc;cursor:pointer;transition:.12s;position:relative;user-select:none}
+  .slot:hover{border-color:var(--blue);background:#E3F2FD}
+  .slot.selected{background:var(--blue);border-color:var(--blue-dark)}
+  .slot.selected::after{content:'✓';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#fff;font-size:.75rem;font-weight:700}
+  .legend{display:flex;gap:16px;margin-bottom:18px;align-items:center;flex-wrap:wrap}
+  .legend-item{display:flex;align-items:center;gap:6px;font-size:.82rem;color:var(--text-muted)}
+  .legend-box{width:16px;height:16px;border-radius:4px;border:1.5px solid}
+  .bottom-row{display:flex;align-items:center;gap:16px;margin-top:20px;flex-wrap:wrap}
+  .btn-save{background:var(--orange);color:#fff;border:none;padding:12px 32px;border-radius:10px;font-size:.95rem;font-weight:700;cursor:pointer;transition:.2s}
+  .btn-save:hover{background:#FF6F00;transform:translateY(-1px)}
+  .btn-clear{background:none;border:1.5px solid var(--border);color:var(--text-muted);padding:11px 20px;border-radius:10px;font-size:.92rem;font-weight:600;cursor:pointer;transition:.15s}
+  .btn-clear:hover{background:#fff2f2;color:#c62828;border-color:#ffcdd2}
+  .saved-msg{font-size:.87rem;color:#2E7D32;font-weight:600;display:none}
+  .selected-count{font-size:.85rem;color:var(--text-muted)}
+  @media(max-width:800px){.sidebar{display:none}}
+</style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="logo">
+    
+    <span class="logo-text">Mav<span>Match</span></span>
+  </a>
+  <div class="user-chip">
+    <div class="user-avatar" id="nav-avatar">M</div>
+    <span style="font-size:.87rem;font-weight:600" id="nav-name">Maverick</span>
+  </div>
+</nav>
+<div class="app">
+  <aside class="sidebar">
+    <div class="sidebar-section">Menu</div>
+    <a class="nav-item" href="dashboard.html"><span class="nav-icon">🏠</span> Dashboard</a>
+    <a class="nav-item active" href="availability.html"><span class="nav-icon">📅</span> My Availability</a>
+    <a class="nav-item" href="matches.html"><span class="nav-icon">🤝</span> My Matches</a>
+    <a class="nav-item" href="meetings.html"><span class="nav-icon">📆</span> Meetings</a>
+    <a class="nav-item" href="groups.html"><span class="nav-icon">👥</span> Study Groups</a>
+    <div class="sidebar-section">Account</div>
+    <a class="nav-item" href="profile.html"><span class="nav-icon">👤</span> Profile</a>
+    <a class="nav-item" href="login.html" onclick="localStorage.clear()"><span class="nav-icon">🚪</span> Log Out</a>
+  </aside>
+  <main class="content">
+    <div class="page-title">📅 My Weekly Availability</div>
+    <div class="page-sub">Click the time slots when you're free to study. We'll use this to find your best matches.</div>
+    <div class="card">
+      <div class="card-title">Select your free time slots</div>
+      <div class="tip">💡 Click any block to mark yourself as free. Click again to unmark it. Hit Save when done.</div>
+      <div class="legend">
+        <div class="legend-item"><div class="legend-box" style="background:#fafbfc;border-color:var(--border)"></div>Not available</div>
+        <div class="legend-item"><div class="legend-box" style="background:var(--blue);border-color:var(--blue-dark)"></div>Available</div>
+      </div>
+      <div class="grid-header" id="grid-header"></div>
+      <div class="grid-body" id="grid-body"></div>
+      <div class="bottom-row">
+        <button class="btn-save" id="save-btn" onclick="saveAvailability()">Save Availability</button>
+        <button class="btn-clear" onclick="clearAll()">Clear All</button>
+        <span class="selected-count" id="sel-count">0 slots selected</span>
+        <span class="saved-msg" id="saved-msg">✓ Saved! Redirecting to matches...</span>
+      </div>
+    </div>
+  </main>
+</div>
+<script>
+document.getElementById('nav-avatar').textContent=localStorage.getItem('mm_initials')||'M';
+document.getElementById('nav-name').textContent=(localStorage.getItem('mm_fname')||'Maverick');
+
+const days=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+const times=['8 AM','9 AM','10 AM','11 AM','12 PM','1 PM','2 PM','3 PM','4 PM','5 PM','6 PM','7 PM','8 PM'];
+
+const dayNames=['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+const timeVals=[8,9,10,11,12,13,14,15,16,17,18,19,20];
+const studentId = localStorage.getItem('mm_studentId');
+
+const hdr=document.getElementById('grid-header');
+const bdy=document.getElementById('grid-body');
+hdr.innerHTML='<div></div>'+days.map(d=>`<div>${d}</div>`).join('');
+
+// Build grid first
+times.forEach((t,ti)=>{
+  const lbl=document.createElement('div');
+  lbl.className='time-label';
+  lbl.textContent=t;
+  bdy.appendChild(lbl);
+  days.forEach((_,di)=>{
+    const slot=document.createElement('div');
+    slot.className='slot';
+    slot.dataset.key=di+'-'+ti;
+    slot.addEventListener('click',()=>{
+      slot.classList.toggle('selected');
+      updateCount();
+    });
+    bdy.appendChild(slot);
+  });
+});
+
+// Load from API
+if(studentId){
+  fetch('/api/availability?studentId='+studentId)
+    .then(r=>r.json())
+    .then(data=>{
+      if(!data||data.length===0) return;
+      data.forEach(slot=>{
+        const di = dayNames.indexOf(slot.day);
+        if(di === -1) return;
+        // Find all matching hour slots
+        for(let ti=0; ti<timeVals.length-1; ti++){
+          if(timeVals[ti] >= slot.startHour && timeVals[ti] < slot.endHour){
+            const el = document.querySelector('[data-key="'+di+'-'+ti+'"]');
+            if(el) el.classList.add('selected');
+          }
+        }
+      });
+      updateCount();
+    }).catch(()=>{});
+}
+
+function updateCount(){
+  const n=document.querySelectorAll('.slot.selected').length;
+  document.getElementById('sel-count').textContent=n+' slot'+(n===1?'':'s')+' selected';
+}
+updateCount();
+
+function clearAll(){
+  document.querySelectorAll('.slot.selected').forEach(s=>s.classList.remove('selected'));
+  updateCount();
+}
+
+function saveAvailability(){
+  const n=document.querySelectorAll('.slot.selected').length;
+  if(n===0){alert('Please select at least one time slot.');return;}
+
+  // Build slots array
+  const apiSlots=[];
+  days.forEach((_,di)=>{
+    let start=null;
+    times.forEach((__,ti)=>{
+      const el=document.querySelector('[data-key="'+di+'-'+ti+'"]');
+      const selected=el&&el.classList.contains('selected');
+      if(selected && start===null) start=ti;
+      if(!selected && start!==null){
+        apiSlots.push({day:dayNames[di],startHour:timeVals[start],endHour:timeVals[ti]});
+        start=null;
+      }
+    });
+    if(start!==null) apiSlots.push({day:dayNames[di],startHour:timeVals[start],endHour:timeVals[times.length-1]+1});
+  });
+
+  if(!studentId){alert('Not logged in!');return;}
+  
+  const btn=document.getElementById('save-btn');
+  if(btn){btn.textContent='Saving...';btn.disabled=true;}
+
+  fetch('/api/availability',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({studentId:parseInt(studentId), slots:apiSlots})
+  })
+  .then(r=>r.json())
+  .then(()=>{
+    document.getElementById('saved-msg').style.display='inline';
+    setTimeout(()=>window.location.href='dashboard.html',1200);
+  })
+  .catch(()=>{
+    alert('Failed to save. Please try again.');
+    if(btn){btn.textContent='Save Availability';btn.disabled=false;}
+  });
+}
+</script>
+</body>
+</html>

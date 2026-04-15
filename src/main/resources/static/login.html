@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Log In – MavMatch</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  :root{--blue:#1565C0;--blue-dark:#0D47A1;--orange:#F57C00;--orange-bright:#FF6F00;--white:#fff;--bg:#F0F4FF;--border:#E2E8F0;--text:#1e293b;--text-muted:#64748b;--radius:12px;--shadow:0 4px 24px rgba(21,101,192,.10)}
+  body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column}
+  nav{background:var(--white);border-bottom:1.5px solid var(--border);padding:0 5%;display:flex;align-items:center;justify-content:space-between;height:68px;box-shadow:0 2px 12px rgba(21,101,192,.07)}
+  .logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+  .logo-text{font-family:'Nunito',sans-serif;font-size:1.5rem;font-weight:900;color:#0D47A1}
+  .logo-text span{color:var(--orange)}
+  .main{flex:1;display:flex;align-items:center;justify-content:center;padding:40px 20px}
+  .card{background:var(--white);border-radius:20px;padding:44px 40px;width:100%;max-width:440px;box-shadow:var(--shadow);border:1.5px solid var(--border)}
+  .card-title{font-family:'Nunito',sans-serif;font-size:1.7rem;font-weight:900;color:var(--blue-dark);margin-bottom:6px}
+  .card-sub{font-size:.92rem;color:var(--text-muted);margin-bottom:30px}
+  .form-group{margin-bottom:18px}
+  label{display:block;font-size:.87rem;font-weight:600;color:var(--text);margin-bottom:6px}
+  input[type=email],input[type=password],input[type=text]{width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:8px;font-size:.95rem;font-family:'Inter',sans-serif;outline:none;transition:.2s;background:#fafbfc}
+  input:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(21,101,192,.1);background:#fff}
+  .btn-submit{width:100%;background:linear-gradient(135deg,var(--orange),var(--orange-bright));color:#fff;border:none;padding:13px;border-radius:10px;font-size:1rem;font-weight:700;cursor:pointer;transition:.2s;margin-top:6px;font-family:'Inter',sans-serif}
+  .btn-submit:hover{transform:translateY(-1px);box-shadow:0 4px 18px rgba(245,124,0,.35)}
+  .divider{text-align:center;font-size:.85rem;color:var(--text-muted);margin:20px 0;position:relative}
+  .divider::before{content:'';position:absolute;top:50%;left:0;right:0;height:1px;background:var(--border)}
+  .divider span{background:var(--white);padding:0 12px;position:relative}
+  .switch-link{text-align:center;font-size:.9rem;color:var(--text-muted);margin-top:22px}
+  .switch-link a{color:var(--blue);font-weight:600;text-decoration:none}
+  .switch-link a:hover{text-decoration:underline}
+  .err{color:#c62828;font-size:.83rem;margin-top:4px;display:none}
+  .uta-note{background:#E3F2FD;border:1px solid #BBDEFB;border-radius:8px;padding:10px 14px;font-size:.83rem;color:var(--blue-dark);margin-bottom:22px;display:flex;align-items:center;gap:8px}
+</style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="logo">
+    <svg width="36" height="36" viewBox="0 0 42 42" fill="none"><circle cx="21" cy="21" r="21" fill="#1565C0"/><ellipse cx="21" cy="21" rx="12" ry="8" fill="none" stroke="#fff" stroke-width="2"/><path d="M13 17 Q17 10 21 14 Q25 10 29 17" stroke="#FF9800" stroke-width="2.5" fill="none" stroke-linecap="round"/><circle cx="15" cy="22" r="3" fill="#fff"/><circle cx="27" cy="22" r="3" fill="#FF9800"/></svg>
+    <span class="logo-text">Mav<span>Match</span></span>
+  </a>
+</nav>
+<div class="main">
+  <div class="card">
+    <div class="card-title">Welcome back, Maverick 👋</div>
+    <div class="card-sub">Log in to find your study partner</div>
+    <div class="uta-note">🎓 Use your UTA email address to log in</div>
+    <div class="form-group">
+      <label for="email">UTA Email</label>
+      <input type="email" id="email" placeholder="yourname@mavs.uta.edu"/>
+      <div class="err" id="email-err">Please enter a valid UTA email.</div>
+    </div>
+    <div class="form-group">
+      <label for="password">Password</label>
+      <input type="password" id="password" placeholder="Enter your password"/>
+      <div class="err" id="pass-err">Password is required.</div>
+    </div>
+    <button class="btn-submit" onclick="handleLogin()">Log In</button>
+    <div class="switch-link" style="margin-top:16px;text-align:right"><a href="#">Forgot password?</a></div>
+    <div class="divider"><span>or</span></div>
+    <div class="switch-link">Don't have an account? <a href="register.html">Sign up free</a></div>
+  </div>
+</div>
+<script>
+async function handleLogin(){
+  const email=document.getElementById('email').value;
+  const pass=document.getElementById('password').value;
+  let ok=true;
+  document.getElementById('email-err').style.display='none';
+  document.getElementById('pass-err').style.display='none';
+  if(!email||!email.endsWith('.edu')){document.getElementById('email-err').style.display='block';ok=false}
+  if(!pass){document.getElementById('pass-err').style.display='block';ok=false}
+  if(!ok) return;
+
+  const btn=document.querySelector('.btn-submit');
+  btn.textContent='Logging in...';
+  btn.disabled=true;
+
+  try {
+    const resp = await fetch('/api/login', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({email, password:pass})
+    });
+    const data = await resp.json();
+    if(data.success){
+      const initials=(data.firstName[0]+(data.lastName?data.lastName[0]:'')).toUpperCase();
+      localStorage.setItem('mm_fname', data.firstName);
+      localStorage.setItem('mm_lname', data.lastName||'');
+      localStorage.setItem('mm_initials', initials);
+      localStorage.setItem('mm_email', data.email);
+      localStorage.setItem('mm_major', data.major||'');
+      localStorage.setItem('mm_utaid', data.utaId||'');
+      const newId = data.studentId;
+      // Clear match data from any previous account
+      const prevId = localStorage.getItem('mm_studentId');
+      if(prevId && prevId != newId){
+        localStorage.removeItem('mm_all_matches_'+prevId);
+        localStorage.removeItem('mm_picked_matches_'+prevId);
+      }
+      localStorage.setItem('mm_studentId', newId);
+      localStorage.setItem('mm_color', localStorage.getItem('mm_color')||'#1565C0');
+      window.location.href='dashboard.html';
+    } else {
+      document.getElementById('email-err').textContent='Invalid email or password.';
+      document.getElementById('email-err').style.display='block';
+      btn.textContent='Log In';
+      btn.disabled=false;
+    }
+  } catch(e){
+    if(!localStorage.getItem('mm_fname')){
+      const parts=email.split('@')[0].split('.');
+      const fname=parts[0]?parts[0][0].toUpperCase()+parts[0].slice(1):'User';
+      const lname=parts[1]?parts[1][0].toUpperCase()+parts[1].slice(1):'';
+      localStorage.setItem('mm_fname',fname);
+      localStorage.setItem('mm_lname',lname);
+      localStorage.setItem('mm_initials',(fname[0]+(lname[0]||'')).toUpperCase());
+      localStorage.setItem('mm_email',email);
+    }
+    window.location.href='dashboard.html';
+  }
+}
+</script>
+</body>
+</html>
