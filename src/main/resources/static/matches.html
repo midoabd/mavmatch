@@ -243,6 +243,16 @@ nav{background:var(--white);border-bottom:1.5px solid var(--border);padding:0 5%
   </div>
 </div>
 
+<!-- REPORT SUCCESS MODAL -->
+<div class="modal-overlay" id="report-success-modal">
+  <div class="modal" style="text-align:center;padding:40px 32px">
+    <div style="font-size:2.5rem;margin-bottom:12px">✅</div>
+    <h3 style="margin-bottom:8px">Report Submitted</h3>
+    <p style="font-size:.9rem;color:var(--text-muted);margin-bottom:24px">Thank you for helping keep MavMatch safe. We'll review this message shortly.</p>
+    <button class="btn-primary" onclick="document.getElementById('report-success-modal').classList.remove('open')">Done</button>
+  </div>
+</div>
+
 <!-- FIND MORE MODAL -->
 <div class="modal-overlay" id="find-more-modal">
   <div class="modal">
@@ -658,7 +668,7 @@ function submitReport(){
       .catch(()=>{});
   }
   closeReport();
-  alert('Message reported. Thank you for helping keep MavMatch safe.');
+  document.getElementById('report-success-modal').classList.add('open');
 }
 
 // Schedule
@@ -692,19 +702,24 @@ function sendSchedule(){
 
   // Save to API so it shows in meetings tab
   if(studentId && matches[activeMatch]){
+    const meetingData = {
+      studentId: parseInt(studentId),
+      partner: matches[activeMatch].name,
+      course: course,
+      date: date,
+      day: day,
+      time: meetTime,
+      duration: '1 hour',
+      location: location,
+      notes: note
+    };
     fetch('/api/meetings', {
       method:'POST',
       headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({
-        studentId: parseInt(studentId),
-        partner: matches[activeMatch].name,
-        course, date, day,
-        time: meetTime,
-        duration: '1 hour',
-        location,
-        notes: note
-      })
-    }).catch(()=>{});
+      body:JSON.stringify(meetingData)
+    }).then(r=>r.json())
+      .then(data=>console.log('Meeting saved:', data))
+      .catch(e=>console.error('Meeting save failed:', e));
   }
 
   closeSchedule();
@@ -717,6 +732,7 @@ document.getElementById('report-modal').addEventListener('click',function(e){if(
 document.getElementById('block-modal').addEventListener('click',function(e){if(e.target===this)closeBlock()});
 document.getElementById('remove-match-modal').addEventListener('click',function(e){if(e.target===this)this.classList.remove('open')});
 document.getElementById('find-more-modal').addEventListener('click',function(e){if(e.target===this)closeFindMore()});
+document.getElementById('report-success-modal').addEventListener('click',function(e){if(e.target===this)this.classList.remove('open')});
 
 loadMatches(0);
 </script>
