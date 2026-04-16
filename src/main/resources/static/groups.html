@@ -328,16 +328,18 @@ function kickMember(memberIdx){
   document.getElementById('chat-group-meta').textContent=groups[activeGroup].members.length+' members · '+(groups[activeGroup].course||'General');
 }
 
-// Your matches list — same as matches.html
-const allMatches = [
-  {name:'Sara Al-Amin',initials:'SA',color:'#1565C0',major:'Information Systems',course:'INSY 4325'},
-  {name:'Kevin Patel',initials:'KP',color:'#F57C00',major:'Computer Science',course:'INSY 4325'},
-  {name:'Mia Liu',initials:'ML',color:'#7B1FA2',major:'Information Systems',course:'BSTAT 3321'},
-  {name:'David Torres',initials:'DT',color:'#2E7D32',major:'Management',course:'MANA 3318'},
-  {name:'Priya Nair',initials:'PN',color:'#C62828',major:'Finance',course:'FINA 3313'},
-  {name:'Alex Chen',initials:'AC',color:'#0277BD',major:'Information Systems',course:'INSY 3304'},
-  {name:'Layla Hassan',initials:'LH',color:'#6A1B9A',major:'Business Analytics',course:'BANA 3308'},
-];
+// Load real matches from localStorage (set during onboarding/my matches)
+const sid = localStorage.getItem('mm_studentId');
+let allMatches = [];
+try{
+  const raw = localStorage.getItem('mm_picked_matches_'+sid);
+  const data = raw ? JSON.parse(raw) : [];
+  allMatches = data.map(m=>({
+    name: m.name||'',
+    major: m.major||'',
+    course: m.courseCode||''
+  })).filter(m=>m.name);
+}catch(e){}
 
 // CREATE MODAL
 function openCreateModal(){
