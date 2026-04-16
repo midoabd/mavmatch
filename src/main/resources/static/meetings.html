@@ -152,6 +152,7 @@
 
 <script>
 document.getElementById('nav-avatar').textContent=localStorage.getItem('mm_initials')||'M';
+document.getElementById('nav-avatar').style.background=localStorage.getItem('mm_color')||'#1565C0';
 document.getElementById('nav-name').textContent=localStorage.getItem('mm_fname')||'Maverick';
 
 const studentId = localStorage.getItem('mm_studentId');

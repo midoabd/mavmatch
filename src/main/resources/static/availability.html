@@ -88,13 +88,14 @@
         <button class="btn-save" id="save-btn" onclick="saveAvailability()">Save Availability</button>
         <button class="btn-clear" onclick="clearAll()">Clear All</button>
         <span class="selected-count" id="sel-count">0 slots selected</span>
-        <span class="saved-msg" id="saved-msg">✓ Saved! Redirecting to matches...</span>
+        <span class="saved-msg" id="saved-msg">✓ Availability saved!</span>
       </div>
     </div>
   </main>
 </div>
 <script>
 document.getElementById('nav-avatar').textContent=localStorage.getItem('mm_initials')||'M';
+document.getElementById('nav-avatar').style.background=localStorage.getItem('mm_color')||'#1565C0';
 document.getElementById('nav-name').textContent=(localStorage.getItem('mm_fname')||'Maverick');
 
 const days=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
@@ -191,7 +192,7 @@ function saveAvailability(){
   .then(r=>r.json())
   .then(()=>{
     document.getElementById('saved-msg').style.display='inline';
-    setTimeout(()=>window.location.href='dashboard.html',1200);
+    setTimeout(()=>document.getElementById('saved-msg').style.display='none',3000);
   })
   .catch(()=>{
     alert('Failed to save. Please try again.');
