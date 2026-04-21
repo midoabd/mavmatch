@@ -191,8 +191,15 @@ function saveAvailability(){
   })
   .then(r=>r.json())
   .then(()=>{
+    // Re-enable button
+    if(btn){btn.textContent='Save Availability';btn.disabled=false;}
     document.getElementById('saved-msg').style.display='inline';
     setTimeout(()=>document.getElementById('saved-msg').style.display='none',3000);
+    // Clear cached matches so they get recomputed with new availability
+    if(studentId){
+      localStorage.removeItem('mm_picked_matches_'+studentId);
+      localStorage.removeItem('mm_all_matches_'+studentId);
+    }
   })
   .catch(()=>{
     alert('Failed to save. Please try again.');
