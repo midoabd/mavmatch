@@ -192,9 +192,13 @@ function removeCourse(i){
   c.splice(i,1);
   saveCourses(c);
   renderCourses();
-  // Remove from DB
   if(course&&course.code&&sid){
-    fetch('/api/courses?studentId='+sid+'&courseCode='+encodeURIComponent(course.code),{method:'DELETE'}).catch(()=>{});
+    fetch('/api/courses?studentId='+sid+'&courseCode='+encodeURIComponent(course.code),{method:'DELETE'})
+      .then(()=>{
+        // Clear match cache so matches get recomputed without this course
+        localStorage.removeItem('mm_picked_matches_'+sid);
+        localStorage.removeItem('mm_all_matches_'+sid);
+      }).catch(()=>{});
   }
 }
 

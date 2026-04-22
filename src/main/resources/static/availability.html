@@ -195,10 +195,18 @@ function saveAvailability(){
     if(btn){btn.textContent='Save Availability';btn.disabled=false;}
     document.getElementById('saved-msg').style.display='inline';
     setTimeout(()=>document.getElementById('saved-msg').style.display='none',3000);
-    // Clear cached matches so they get recomputed with new availability
+    // Clear cache and trigger server-side recompute
     if(studentId){
       localStorage.removeItem('mm_picked_matches_'+studentId);
       localStorage.removeItem('mm_all_matches_'+studentId);
+      // Recompute matches with new availability
+      fetch('/api/matches?studentId='+studentId+'&page=0&refresh=true')
+        .then(r=>r.json())
+        .then(data=>{
+          if(data && data.length > 0){
+            localStorage.setItem('mm_picked_matches_'+studentId, JSON.stringify(data));
+          }
+        }).catch(()=>{});
     }
   })
   .catch(()=>{

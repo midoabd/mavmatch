@@ -42,6 +42,19 @@ public class MatchingService {
         return computeAndSaveMatches(student, studentId, blockedIds, page);
     }
 
+    public List<Map<String, Object>> recomputeMatches(Long studentId, int page) {
+        // Delete all existing matches for this student
+        List<Match> existing = matchRepo.findByStudentIdOrderByOverlapHoursDesc(studentId);
+        matchRepo.deleteAll(existing);
+
+        // Recompute fresh
+        Student student = studentRepo.findById(studentId).orElse(null);
+        if (student == null) return new ArrayList<>();
+        List<Long> blockedIds = blockedUserRepo.findByBlockerId(studentId)
+                .stream().map(b -> b.getBlocked().getId()).collect(Collectors.toList());
+        return computeAndSaveMatches(student, studentId, blockedIds, page);
+    }
+
     private List<Map<String, Object>> computeAndSaveMatches(Student student, Long studentId,
                                                             List<Long> blockedIds, int page) {
         // QUERY 1: My courses

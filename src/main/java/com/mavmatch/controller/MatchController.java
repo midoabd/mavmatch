@@ -18,7 +18,11 @@ public class MatchController {
     @GetMapping("/matches")
     public List<Map<String, Object>> getMatches(
             @RequestParam Long studentId,
-            @RequestParam(defaultValue = "0") int page) {
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "false") boolean refresh) {
+        if (refresh) {
+            return matchingService.recomputeMatches(studentId, page);
+        }
         return matchingService.findMatches(studentId, page);
     }
 }

@@ -22,12 +22,6 @@ public class MessageService {
 
     public List<Map<String, Object>> getMessages(Long matchId) {
         List<Message> messages = messageRepo.findByMatchIdOrderBySentAtAsc(matchId);
-
-        // If no messages exist, return demo messages
-        if (messages.isEmpty()) {
-            return getDemoMessages(matchId);
-        }
-
         return messages.stream().map(this::messageToMap).collect(Collectors.toList());
     }
 

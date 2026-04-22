@@ -360,7 +360,11 @@ function loadMatches(page){
       try{
         const pickedData = JSON.parse(picked);
         if(pickedData && pickedData.length > 0){
-          matches = pickedData.map(mapMatch);
+          // Filter out blocked users
+          const blockedKey = 'mm_blocked_'+studentId;
+          const blocked = JSON.parse(localStorage.getItem(blockedKey)||'[]');
+          const filtered = pickedData.filter(m=>!blocked.includes(m.studentId));
+          matches = filtered.map(mapMatch);
           buildFilters();
           renderMatchList();
           document.getElementById('find-more-btn').style.display = 'block';
@@ -692,13 +696,20 @@ function blockUser(){
     .then(r=>r.json())
     .then(()=>{
       matches = matches.filter(m=>m.matchedStudentId !== blockingStudentId);
+      // Save blocked ID to localStorage so it persists on refresh
+      const blockedKey = 'mm_blocked_'+studentId;
+      const blocked = JSON.parse(localStorage.getItem(blockedKey)||'[]');
+      if(!blocked.includes(blockingStudentId)) blocked.push(blockingStudentId);
+      localStorage.setItem(blockedKey, JSON.stringify(blocked));
+      // Update picked matches
+      const saved = matches.map(m=>({matchId:m.matchId,studentId:m.matchedStudentId,name:m.name,major:m.major,courseCode:m.course,overlapHours:m.overlap}));
+      localStorage.setItem('mm_picked_matches_'+studentId, JSON.stringify(saved));
       activeMatch = null;
       document.getElementById('chat-view').style.display='none';
       document.getElementById('chat-empty').style.display='flex';
       buildFilters();
       renderMatchList();
       closeBlock();
-      alert('User blocked successfully.');
     }).catch(()=>{ closeBlock(); alert('Block failed. Please try again.'); });
 }
 
