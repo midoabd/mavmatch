@@ -276,10 +276,53 @@ function getMyColor(){ return localStorage.getItem('mm_color') || '#1565C0'; }
 document.getElementById('nav-avatar').textContent = myInitials;
 document.getElementById('nav-name').textContent = localStorage.getItem('mm_fname') || 'Student';
 
-// Chats stored per student+match key
+// Chats stored per student+match key (localStorage for bot accounts, API for real users)
 function chatKey(matchIdx){ return 'chat_' + studentId + '_' + matchIdx; }
 function getChat(idx){ try{ return JSON.parse(localStorage.getItem(chatKey(idx))||'[]'); }catch(e){ return []; } }
 function saveChat(idx, msgs){ localStorage.setItem(chatKey(idx), JSON.stringify(msgs)); }
+
+// Real messaging via API
+let pollingInterval = null;
+let lastMessageCount = 0;
+
+function startPolling(idx){
+  stopPolling();
+  const m = matches[idx];
+  if(!m || !m.matchId) return;
+  // Only poll for real users (not bots)
+  if(m.matchedStudentId && m.matchedStudentId <= 100) return;
+  pollingInterval = setInterval(()=>fetchMessages(idx), 3000);
+  fetchMessages(idx);
+}
+
+function stopPolling(){
+  if(pollingInterval) { clearInterval(pollingInterval); pollingInterval = null; }
+  lastMessageCount = 0;
+}
+
+function fetchMessages(idx){
+  const m = matches[idx];
+  if(!m || !m.matchId || activeMatch !== idx) return;
+  fetch('/api/messages?matchId='+m.matchId)
+    .then(r=>r.json())
+    .then(data=>{
+      if(!data || data.length === 0) return;
+      // Convert API messages to chat format
+      const msgs = data.map(msg=>({
+        dbId: msg.id,
+        text: msg.content,
+        time: new Date(msg.sentAt).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}),
+        mine: msg.senderId == studentId,
+        sender: msg.senderName
+      }));
+      if(msgs.length !== lastMessageCount){
+        lastMessageCount = msgs.length;
+        saveChat(idx, msgs);
+        renderMessages(idx);
+        renderMatchList();
+      }
+    }).catch(()=>{});
+}
 
 const avatarColors=['#1565C0','#F57C00','#2E7D32','#7B1FA2','#C62828','#0277BD','#E65100','#4A148C'];
 function colorFor(name){let h=0;for(let i=0;i<(name||'').length;i++)h=(h*31+name.charCodeAt(i))%avatarColors.length;return avatarColors[h];}
@@ -494,12 +537,13 @@ function selectMatch(idx){
     // Don't set unread here - user is opening the chat now, so they'll see it
   }
   renderMessages(idx);
+  startPolling(idx);
 }
 
 function renderMessages(idx){
   const cont = document.getElementById('chat-messages');
   const m = matches[idx];
-  const msgs = getChat(idx).filter(m=>!m.cleared);
+  const msgs = getChat(idx).filter(msg=>!msg.cleared);
   cont.innerHTML = msgs.map((msg, msgIdx)=>{
     if(msg.type==='meeting'){
       return `<div class="msg ${msg.mine?'mine':'theirs'}">
@@ -544,33 +588,47 @@ function sendMsg(){
   const inp = document.getElementById('chat-input');
   const text = inp.value.trim();
   if(!text || activeMatch===null) return;
+  const m = matches[activeMatch];
+  const idx = activeMatch;
+
+  // Real users (id > 100) — save to database
+  if(m.matchedStudentId && m.matchedStudentId > 100 && m.matchId){
+    inp.value='';
+    fetch('/api/messages',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({matchId:m.matchId, senderId:parseInt(studentId), content:text})
+    }).then(r=>r.json()).then(data=>{
+      if(data.id){
+        const msgs=getChat(idx);
+        msgs.push({dbId:data.id,sender:'me',text,time:fmtTime(),mine:true});
+        saveChat(idx,msgs);
+        if(activeMatch===idx){ renderMessages(idx); renderMatchList(); }
+      }
+    }).catch(()=>{});
+    return;
+  }
+
+  // Bot accounts (id <= 100) — localStorage only
   const msgs = getChat(activeMatch);
   msgs.push({sender:'me', text, time:fmtTime(), mine:true});
   saveChat(activeMatch, msgs);
   inp.value='';
   renderMessages(activeMatch);
   renderMatchList();
-  const m = matches[activeMatch];
-  const replies = ['Sounds good! When works for you?','Yes definitely! I\'m free this week.','Great, let\'s meet at the library!','That works for me 👍','Cool, can we do it in the morning?','I\'ll be there! What chapter are we covering?'];
-  const idx = activeMatch;
-  // Only auto-reply for seeded dummy students (id <= 100)
+  const replies = ['Sounds good! When works for you?','Yes definitely, free this week.','Lets meet at the library!','That works for me!','Can we do mornings?','I will be there!'];
   if(m.matchedStudentId && m.matchedStudentId <= 100){
     setTimeout(()=>{
       const msgs2 = getChat(idx);
-      msgs2.push({sender:m.name, text:replies[Math.floor(Math.random()*replies.length)], time:fmtTime(), mine:false});
-      saveChat(idx, msgs2);
-      if(activeMatch===idx){
-        renderMessages(idx);
-      } else {
-        // Increment unread
-        const uk = 'unread_' + studentId + '_' + idx;
-        localStorage.setItem(uk, (parseInt(localStorage.getItem(uk)||'0')+1).toString());
+      msgs2.push({sender:m.name,text:replies[Math.floor(Math.random()*replies.length)],time:fmtTime(),mine:false});
+      saveChat(idx,msgs2);
+      if(activeMatch===idx){ renderMessages(idx); }
+      else {
+        const uk='unread_'+studentId+'_'+idx;
+        localStorage.setItem(uk,(parseInt(localStorage.getItem(uk)||'0')+1).toString());
       }
       renderMatchList();
     }, 1200);
   }
 }
-
 function handleKey(e){ if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMsg();} }
 
 // Header menu (block/clear)
@@ -679,7 +737,25 @@ function updateDayFromDate(){
   const day = days[new Date(dateVal + 'T12:00:00').getDay()];
   document.getElementById('s-day').value = day;
 }
-function openSchedule(){ document.getElementById('sched-modal').classList.add('open'); }
+function openSchedule(){
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('s-date').min = today;
+  // Set min time if today is selected
+  document.getElementById('s-date').oninput = function(){
+    updateDayFromDate();
+    const now = new Date();
+    const todayStr = now.toISOString().split('T')[0];
+    const timeInput = document.getElementById('s-time');
+    if(this.value === todayStr){
+      const hh = String(now.getHours()).padStart(2,'0');
+      const mm = String(now.getMinutes()).padStart(2,'0');
+      timeInput.min = hh+':'+mm;
+    } else {
+      timeInput.min = '';
+    }
+  };
+  document.getElementById('sched-modal').classList.add('open');
+}
 function closeSchedule(){ document.getElementById('sched-modal').classList.remove('open'); }
 function sendSchedule(){
   ['s-course-err','s-date-err','s-loc-err'].forEach(e=>document.getElementById(e).style.display='none');
@@ -702,9 +778,11 @@ function sendSchedule(){
 
   // Save to API so it shows in meetings tab
   if(studentId && matches[activeMatch]){
+    const matchedId = matches[activeMatch].matchedStudentId;
     const meetingData = {
       studentId: parseInt(studentId),
       partner: matches[activeMatch].name,
+      receiverId: matchedId > 100 ? matchedId : null,
       course: course,
       date: date,
       day: day,

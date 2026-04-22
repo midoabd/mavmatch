@@ -23,6 +23,7 @@ public class MeetingRequest {
     @JoinColumn(name = "requester_id", nullable = false)
     private Student requester;
 
+    private Long receiverId;
     private String partnerName;
     private String courseCode;
     private String meetingDate;

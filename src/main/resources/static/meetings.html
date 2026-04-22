@@ -227,8 +227,11 @@ function renderMeetings(tab){
           ${m.notes?`<span class="meta-item">📝 ${m.notes}</span>`:''}
         </div>
         <div class="meeting-actions">
-          ${m.status==='pending'?`<button class="btn-sm" style="background:var(--blue);color:#fff;border-color:var(--blue)" onclick="confirmMeeting(${allIdx})">Confirm</button>`:''}
-          <button class="btn-sm danger" onclick="cancelMeeting(${allIdx})">Cancel</button>
+          ${m.status==='pending' && m.isRequester===false?`
+            <button class="btn-sm" style="background:#2E7D32;color:#fff;border-color:#2E7D32" onclick="respondMeeting(${allIdx},'CONFIRMED')">✓ Accept</button>
+            <button class="btn-sm danger" onclick="respondMeeting(${allIdx},'DECLINED')">✗ Decline</button>
+          `:''}
+          ${m.status==='confirmed'?`<button class="btn-sm danger" onclick="cancelMeeting(${allIdx})">Cancel</button>`:''}
         </div>
       </div>
     </div>`;
@@ -240,6 +243,16 @@ function confirmMeeting(idx){
   m[idx].status='confirmed';
   setMeetings(m);
   renderMeetings(currentTab);
+}
+
+function respondMeeting(idx, status){
+  const meeting = meetingsCache[idx];
+  if(!meeting || !meeting.id) return;
+  fetch('/api/meetings/'+meeting.id, {
+    method:'PUT',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({status})
+  }).then(()=>loadMeetingsFromAPI()).catch(()=>alert('Failed to update meeting.'));
 }
 
 let cancelIdx = null;
@@ -259,6 +272,15 @@ function confirmCancel(){
     document.getElementById('cancel-modal').classList.remove('open');
     renderMeetings(currentTab);
   }
+}
+
+function getReceiverIdByName(name){
+  const sid2 = localStorage.getItem('mm_studentId');
+  try{
+    const picks = JSON.parse(localStorage.getItem('mm_picked_matches_'+sid2)||'[]');
+    const match = picks.find(m=>m.name===name);
+    return match ? match.studentId : null;
+  }catch(e){ return null; }
 }
 
 function updateMeetingDay(){
@@ -321,6 +343,9 @@ function syncChatMeetings(){
 
 function openModal(){
   populatePartners();
+  // Set min date to today
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('m-date').min = today;
   document.getElementById('modal').classList.add('open');
 }
 function closeModal(){document.getElementById('modal').classList.remove('open')}
@@ -353,7 +378,8 @@ function createMeeting(){
       time:timeStr,
       duration:document.getElementById('m-dur').value,
       location,
-      notes:document.getElementById('m-notes').value.trim()
+      notes:document.getElementById('m-notes').value.trim(),
+      receiverId: getReceiverIdByName(partner)
     })
   }).then(r=>r.json())
     .then(()=>{
