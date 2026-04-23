@@ -207,7 +207,9 @@ function filterDashCourses(){
   const val = document.getElementById('course-search-input').value.toLowerCase();
   if(val.length < 2){ document.getElementById('dash-course-dropdown').style.display='none'; return; }
   const allC = Object.values(typeof UTA_COURSES !== 'undefined' ? UTA_COURSES : {}).flat();
-  const filtered = allC.filter(c=>c.code.toLowerCase().includes(val)||c.name.toLowerCase().includes(val)).slice(0,10);
+  const seen = new Set();
+  const unique = allC.filter(c=>{ if(seen.has(c.code)) return false; seen.add(c.code); return true; });
+  const filtered = unique.filter(c=>c.code.toLowerCase().includes(val)||c.name.toLowerCase().includes(val)).slice(0,10);
   renderDashCourseDropdown(filtered);
 }
 function showDashCourses(){ filterDashCourses(); }
@@ -250,22 +252,9 @@ function saveCourse(){
   document.getElementById('course-name').value='';
   closeModal();
   renderCourses();
-  // Trigger recompute so new course matches appear
+  // Recompute in background so Find More will have fresh results
   if(sid){
-    fetch('/api/matches?studentId='+sid+'&page=0&refresh=true')
-      .then(r=>r.json())
-      .then(data=>{
-        if(data && data.length > 0){
-          const picked = JSON.parse(localStorage.getItem('mm_picked_matches_'+sid)||'[]');
-          // Add new matches not already in picks
-          const existingIds = picked.map(m=>m.studentId);
-          const newMatches = data.filter(m=>!existingIds.includes(m.studentId));
-          if(newMatches.length > 0){
-            const updated = [...picked, ...newMatches];
-            localStorage.setItem('mm_picked_matches_'+sid, JSON.stringify(updated));
-          }
-        }
-      }).catch(()=>{});
+    fetch('/api/matches?studentId='+sid+'&page=0&refresh=true').catch(()=>{});
   }
 }
 
