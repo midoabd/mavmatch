@@ -43,16 +43,36 @@ public class MatchingService {
     }
 
     public List<Map<String, Object>> recomputeMatches(Long studentId, int page) {
-        // Delete all existing matches for this student
-        List<Match> existing = matchRepo.findByStudentIdOrderByOverlapHoursDesc(studentId);
-        matchRepo.deleteAll(existing);
-
-        // Recompute fresh
         Student student = studentRepo.findById(studentId).orElse(null);
         if (student == null) return new ArrayList<>();
+
         List<Long> blockedIds = blockedUserRepo.findByBlockerId(studentId)
                 .stream().map(b -> b.getBlocked().getId()).collect(Collectors.toList());
-        return computeAndSaveMatches(student, studentId, blockedIds, page);
+
+        // Get existing matches and update their overlap hours instead of deleting
+        List<Match> existingMatches = matchRepo.findByStudentIdOrderByOverlapHoursDesc(studentId);
+        List<Availability> myAvailability = availabilityRepo.findByStudentId(studentId);
+
+        // Group availability by day for fast lookup
+        Map<String, List<Availability>> myAvailByDay = myAvailability.stream()
+                .collect(Collectors.groupingBy(Availability::getDayOfWeek));
+
+        for (Match match : existingMatches) {
+            Long otherId = match.getStudent1().getId().equals(studentId)
+                    ? match.getStudent2().getId() : match.getStudent1().getId();
+            List<Availability> otherAvail = availabilityRepo.findByStudentId(otherId);
+            double newOverlap = calculateOverlap(myAvailability, otherAvail);
+            match.setOverlapHours(newOverlap);
+            matchRepo.save(match);
+        }
+
+        // Re-sort and return paginated
+        existingMatches.sort((a, b) -> Double.compare(b.getOverlapHours(), a.getOverlapHours()));
+        int start = page * 10;
+        int end = Math.min(start + 10, existingMatches.size());
+        if (start >= existingMatches.size()) return new ArrayList<>();
+        return existingMatches.subList(start, end)
+                .stream().map(m -> matchToMap(m, studentId)).collect(Collectors.toList());
     }
 
     private List<Map<String, Object>> computeAndSaveMatches(Student student, Long studentId,
