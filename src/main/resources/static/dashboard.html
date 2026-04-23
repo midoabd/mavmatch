@@ -4,6 +4,7 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Dashboard – MavMatch</title>
+<script src="courses_db.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
 <style>
   *{margin:0;padding:0;box-sizing:border-box}
@@ -249,6 +250,23 @@ function saveCourse(){
   document.getElementById('course-name').value='';
   closeModal();
   renderCourses();
+  // Trigger recompute so new course matches appear
+  if(sid){
+    fetch('/api/matches?studentId='+sid+'&page=0&refresh=true')
+      .then(r=>r.json())
+      .then(data=>{
+        if(data && data.length > 0){
+          const picked = JSON.parse(localStorage.getItem('mm_picked_matches_'+sid)||'[]');
+          // Add new matches not already in picks
+          const existingIds = picked.map(m=>m.studentId);
+          const newMatches = data.filter(m=>!existingIds.includes(m.studentId));
+          if(newMatches.length > 0){
+            const updated = [...picked, ...newMatches];
+            localStorage.setItem('mm_picked_matches_'+sid, JSON.stringify(updated));
+          }
+        }
+      }).catch(()=>{});
+  }
 }
 
 document.getElementById('modal').addEventListener('click',function(e){if(e.target===this)closeModal()});
