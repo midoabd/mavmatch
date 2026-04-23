@@ -87,7 +87,7 @@
       <div class="user-avatar" id="nav-avatar">M</div>
       <span style="font-size:.87rem;font-weight:600" id="nav-name">Maverick</span>
     </div>
-    <a href="login.html" class="btn-logout" onclick="localStorage.clear()">Log Out</a>
+    <a href="login.html" class="btn-logout" onclick="logOut()">Log Out</a>
   </div>
 </nav>
 <div class="app">
@@ -100,7 +100,7 @@
     <a class="nav-item" href="groups.html"><span class="nav-icon">👥</span> Study Groups</a>
     <div class="sidebar-section">Account</div>
     <a class="nav-item" href="profile.html"><span class="nav-icon">👤</span> Profile</a>
-    <a class="nav-item" href="login.html" onclick="localStorage.clear()"><span class="nav-icon">🚪</span> Log Out</a>
+    <a class="nav-item" href="login.html" onclick="logOut()"><span class="nav-icon">🚪</span> Log Out</a>
   </aside>
   <main class="content">
     <div class="welcome">
@@ -194,11 +194,7 @@ function removeCourse(i){
   renderCourses();
   if(course&&course.code&&sid){
     fetch('/api/courses?studentId='+sid+'&courseCode='+encodeURIComponent(course.code),{method:'DELETE'})
-      .then(()=>{
-        // Clear match cache so matches get recomputed without this course
-        localStorage.removeItem('mm_picked_matches_'+sid);
-        localStorage.removeItem('mm_all_matches_'+sid);
-      }).catch(()=>{});
+      .catch(()=>{});
   }
 }
 
@@ -331,6 +327,16 @@ function renderDashboardMatches(data){
       <a href="matches.html" class="btn-connect">View</a>
     </div>`;
   }).join('');
+}
+function logOut(){
+  const sid = localStorage.getItem('mm_studentId');
+  // Keep per-user data, only clear session keys
+  const keysToKeep = ['mm_blocked_'+sid, 'mm_picked_matches_'+sid];
+  const preserved = {};
+  keysToKeep.forEach(k=>{ const v=localStorage.getItem(k); if(v) preserved[k]=v; });
+  localStorage.clear();
+  Object.keys(preserved).forEach(k=>localStorage.setItem(k,preserved[k]));
+  window.location.href='login.html';
 }
 </script>
 </body>

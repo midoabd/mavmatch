@@ -70,7 +70,7 @@
     <a class="nav-item" href="groups.html"><span class="nav-icon">👥</span> Study Groups</a>
     <div class="sidebar-section">Account</div>
     <a class="nav-item" href="profile.html"><span class="nav-icon">👤</span> Profile</a>
-    <a class="nav-item" href="login.html" onclick="localStorage.clear()"><span class="nav-icon">🚪</span> Log Out</a>
+    <a class="nav-item" href="login.html" onclick="logOut()"><span class="nav-icon">🚪</span> Log Out</a>
   </aside>
   <main class="content">
     <div class="page-title">📅 My Weekly Availability</div>
@@ -195,16 +195,22 @@ function saveAvailability(){
     if(btn){btn.textContent='Save Availability';btn.disabled=false;}
     document.getElementById('saved-msg').style.display='inline';
     setTimeout(()=>document.getElementById('saved-msg').style.display='none',3000);
-    // Clear cache and trigger server-side recompute
+    // Recompute overlap hours but keep existing picks
     if(studentId){
-      localStorage.removeItem('mm_picked_matches_'+studentId);
-      localStorage.removeItem('mm_all_matches_'+studentId);
-      // Recompute matches with new availability
       fetch('/api/matches?studentId='+studentId+'&page=0&refresh=true')
         .then(r=>r.json())
         .then(data=>{
           if(data && data.length > 0){
-            localStorage.setItem('mm_picked_matches_'+studentId, JSON.stringify(data));
+            // Update overlap hours for existing picked matches
+            const pickedKey = 'mm_picked_matches_'+studentId;
+            const picked = JSON.parse(localStorage.getItem(pickedKey)||'[]');
+            if(picked.length > 0){
+              const updatedPicks = picked.map(p=>{
+                const refreshed = data.find(d=>d.studentId === p.studentId);
+                return refreshed ? {...p, overlapHours: refreshed.overlapHours} : p;
+              });
+              localStorage.setItem(pickedKey, JSON.stringify(updatedPicks));
+            }
           }
         }).catch(()=>{});
     }
@@ -213,6 +219,16 @@ function saveAvailability(){
     alert('Failed to save. Please try again.');
     if(btn){btn.textContent='Save Availability';btn.disabled=false;}
   });
+}
+function logOut(){
+  const sid = localStorage.getItem('mm_studentId');
+  // Keep per-user data, only clear session keys
+  const keysToKeep = ['mm_blocked_'+sid, 'mm_picked_matches_'+sid];
+  const preserved = {};
+  keysToKeep.forEach(k=>{ const v=localStorage.getItem(k); if(v) preserved[k]=v; });
+  localStorage.clear();
+  Object.keys(preserved).forEach(k=>localStorage.setItem(k,preserved[k]));
+  window.location.href='login.html';
 }
 </script>
 </body>

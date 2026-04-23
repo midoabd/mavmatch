@@ -118,7 +118,7 @@ nav{background:var(--white);border-bottom:1.5px solid var(--border);padding:0 5%
     <a class="nav-item" href="groups.html"><span class="nav-icon">👥</span> Study Groups</a>
     <div class="sidebar-section">Account</div>
     <a class="nav-item" href="profile.html"><span class="nav-icon">👤</span> Profile</a>
-    <a class="nav-item" href="login.html" onclick="localStorage.clear()"><span class="nav-icon">🚪</span> Log Out</a>
+    <a class="nav-item" href="login.html" onclick="logOut()"><span class="nav-icon">🚪</span> Log Out</a>
   </aside>
 
   <div class="matches-panel">
@@ -253,6 +253,15 @@ nav{background:var(--white);border-bottom:1.5px solid var(--border);padding:0 5%
   </div>
 </div>
 
+<!-- NICE ALERT MODAL -->
+<div class="modal-overlay" id="nice-alert-modal">
+  <div class="modal" style="text-align:center;padding:36px 32px">
+    <div style="font-size:2rem;margin-bottom:12px">⚠️</div>
+    <p id="nice-alert-msg" style="font-size:.95rem;color:var(--text);margin-bottom:24px"></p>
+    <button class="btn-primary" onclick="document.getElementById('nice-alert-modal').classList.remove('open')">Got it</button>
+  </div>
+</div>
+
 <!-- FIND MORE MODAL -->
 <div class="modal-overlay" id="find-more-modal">
   <div class="modal">
@@ -360,11 +369,7 @@ function loadMatches(page){
       try{
         const pickedData = JSON.parse(picked);
         if(pickedData && pickedData.length > 0){
-          // Filter out blocked users
-          const blockedKey = 'mm_blocked_'+studentId;
-          const blocked = JSON.parse(localStorage.getItem(blockedKey)||'[]');
-          const filtered = pickedData.filter(m=>!blocked.includes(m.studentId));
-          matches = filtered.map(mapMatch);
+          matches = pickedData.map(mapMatch);
           buildFilters();
           renderMatchList();
           document.getElementById('find-more-btn').style.display = 'block';
@@ -392,6 +397,34 @@ function loadMatches(page){
 }
 
 function openFindMore(){
+  if(!studentId) return;
+  // Check if user has courses
+  fetch('/api/courses?studentId='+studentId)
+    .then(r=>r.json())
+    .then(courses=>{
+      if(!courses || courses.length === 0){
+        showNiceAlert('Please add courses first before finding more matches!');
+        return;
+      }
+      // Check availability
+      fetch('/api/availability?studentId='+studentId)
+        .then(r=>r.json())
+        .then(avail=>{
+          if(!avail || avail.length === 0){
+            showNiceAlert('Please add your availability first before finding more matches!');
+            return;
+          }
+          doFindMore();
+        }).catch(()=>doFindMore());
+    }).catch(()=>doFindMore());
+}
+
+function showNiceAlert(msg){
+  document.getElementById('nice-alert-msg').textContent = msg;
+  document.getElementById('nice-alert-modal').classList.add('open');
+}
+
+function doFindMore(){
   if(!studentId) return;
   const btn = document.getElementById('find-more-btn');
   if(btn){ btn.textContent='⏳ Finding more matches...'; btn.disabled=true; }
@@ -710,7 +743,7 @@ function blockUser(){
       buildFilters();
       renderMatchList();
       closeBlock();
-    }).catch(()=>{ closeBlock(); alert('Block failed. Please try again.'); });
+    }).catch(()=>{ closeBlock(); showNiceAlert('Block failed. Please try again.'); });
 }
 
 function closeBlock(){ document.getElementById('block-modal').classList.remove('open'); }
@@ -822,8 +855,19 @@ document.getElementById('block-modal').addEventListener('click',function(e){if(e
 document.getElementById('remove-match-modal').addEventListener('click',function(e){if(e.target===this)this.classList.remove('open')});
 document.getElementById('find-more-modal').addEventListener('click',function(e){if(e.target===this)closeFindMore()});
 document.getElementById('report-success-modal').addEventListener('click',function(e){if(e.target===this)this.classList.remove('open')});
+document.getElementById('nice-alert-modal').addEventListener('click',function(e){if(e.target===this)this.classList.remove('open')});
 
 loadMatches(0);
+function logOut(){
+  const sid = localStorage.getItem('mm_studentId');
+  // Keep per-user data, only clear session keys
+  const keysToKeep = ['mm_blocked_'+sid, 'mm_picked_matches_'+sid];
+  const preserved = {};
+  keysToKeep.forEach(k=>{ const v=localStorage.getItem(k); if(v) preserved[k]=v; });
+  localStorage.clear();
+  Object.keys(preserved).forEach(k=>localStorage.setItem(k,preserved[k]));
+  window.location.href='login.html';
+}
 </script>
 </body>
 </html>

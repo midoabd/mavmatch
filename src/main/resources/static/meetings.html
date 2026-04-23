@@ -94,7 +94,7 @@
     <a class="nav-item" href="groups.html"><span class="nav-icon">👥</span> Study Groups</a>
     <div class="sidebar-section">Account</div>
     <a class="nav-item" href="profile.html"><span class="nav-icon">👤</span> Profile</a>
-    <a class="nav-item" href="login.html" onclick="localStorage.clear()"><span class="nav-icon">🚪</span> Log Out</a>
+    <a class="nav-item" href="login.html" onclick="logOut()"><span class="nav-icon">🚪</span> Log Out</a>
   </aside>
   <main class="content">
     <div class="page-header">
@@ -394,6 +394,16 @@ function createMeeting(){
 document.getElementById('modal').addEventListener('click',function(e){if(e.target===this)closeModal()});
 document.getElementById('cancel-modal').addEventListener('click',function(e){if(e.target===this)this.classList.remove('open')});
 loadMeetingsFromAPI();
+function logOut(){
+  const sid = localStorage.getItem('mm_studentId');
+  // Keep per-user data, only clear session keys
+  const keysToKeep = ['mm_blocked_'+sid, 'mm_picked_matches_'+sid];
+  const preserved = {};
+  keysToKeep.forEach(k=>{ const v=localStorage.getItem(k); if(v) preserved[k]=v; });
+  localStorage.clear();
+  Object.keys(preserved).forEach(k=>localStorage.setItem(k,preserved[k]));
+  window.location.href='login.html';
+}
 </script>
 </body>
 </html>
