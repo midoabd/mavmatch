@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -71,6 +73,18 @@ public class AuthService {
         if (!passwordEncoder.matches(password, student.getPasswordHash())) {
             result.put("success", false);
             result.put("message", "Invalid email or password");
+            return result;
+        }
+
+        // Check if banned
+        if (student.getBannedUntil() != null && student.getBannedUntil().isAfter(LocalDateTime.now())) {
+            LocalDateTime bannedUntil = student.getBannedUntil();
+            long daysLeft = ChronoUnit.DAYS.between(LocalDateTime.now(), bannedUntil);
+            long hoursLeft = ChronoUnit.HOURS.between(LocalDateTime.now(), bannedUntil) % 24;
+            String timeLeft = daysLeft > 0 ? daysLeft + " day" + (daysLeft != 1 ? "s" : "") + " and " + hoursLeft + " hour" + (hoursLeft != 1 ? "s" : "") : hoursLeft + " hour" + (hoursLeft != 1 ? "s" : "");
+            result.put("success", false);
+            result.put("message", "Your account has been suspended. Ban lifts in " + timeLeft + ".");
+            result.put("banned", true);
             return result;
         }
 

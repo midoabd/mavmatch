@@ -110,8 +110,14 @@ async function handleLogin(){
       localStorage.setItem('mm_color', localStorage.getItem('mm_color')||'#1565C0');
       window.location.href='dashboard.html';
     } else {
-      document.getElementById('email-err').textContent='Invalid email or password.';
-      document.getElementById('email-err').style.display='block';
+      const errEl = document.getElementById('email-err');
+      if(data.banned){
+        errEl.innerHTML = '🚫 <strong>Account Suspended</strong><br>' + (data.message || 'Your account has been suspended.');
+        errEl.style.cssText = 'display:block;background:#fff3e0;border-left:4px solid #e65100;padding:10px 14px;border-radius:8px;line-height:1.5;color:#bf360c';
+      } else {
+        errEl.textContent = data.message || 'Invalid email or password.';
+        errEl.style.cssText = 'display:block';
+      }
       btn.textContent='Log In';
       btn.disabled=false;
     }
