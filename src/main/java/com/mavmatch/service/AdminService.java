@@ -32,11 +32,8 @@ public class AdminService {
         // Stats
         Map<String, Object> stats = new HashMap<>();
         stats.put("totalStudents", studentRepo.count());
-        stats.put("totalMatches", matchRepo.count());
-        stats.put("totalMessages", messageRepo.count());
         stats.put("totalMeetings", meetingRepo.count());
         stats.put("reportedMessages", messageRepo.countByIsReportedTrue());
-        stats.put("blockedUsers", blockedUserRepo.count());
         dashboard.put("stats", stats);
 
         // Recent students
@@ -75,10 +72,12 @@ public class AdminService {
                 .map(msg -> {
                     Map<String, Object> m = new HashMap<>();
                     m.put("id", msg.getId());
-                    m.put("sender", msg.getSender().getFirstName() + " " + msg.getSender().getLastName());
+                    m.put("senderId", msg.getSender() != null ? msg.getSender().getId() : null);
+                    m.put("sender", msg.getSender() != null ? msg.getSender().getFirstName() + " " + msg.getSender().getLastName() : "Unknown");
+                    m.put("senderEmail", msg.getSender() != null ? msg.getSender().getEmail() : "");
                     m.put("content", msg.getContent());
                     m.put("reason", msg.getReportReason());
-                    m.put("sentAt", msg.getSentAt().toString());
+                    m.put("sentAt", msg.getSentAt() != null ? msg.getSentAt().toString() : "");
                     return m;
                 }).collect(Collectors.toList());
         dashboard.put("reportedMessages", reported);

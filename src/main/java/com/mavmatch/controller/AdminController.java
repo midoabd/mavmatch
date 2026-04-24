@@ -1,10 +1,12 @@
 package com.mavmatch.controller;
 
+import com.mavmatch.model.Student;
 import com.mavmatch.repository.*;
 import com.mavmatch.service.AdminService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -20,6 +22,7 @@ public class AdminController {
     @Autowired private MatchRepository matchRepo;
     @Autowired private MeetingRequestRepository meetingRepo;
     @Autowired private BlockedUserRepository blockedUserRepo;
+    @Autowired private MessageRepository messageRepo;
 
     @GetMapping("/dashboard")
     public Map<String, Object> getDashboard() {
@@ -34,7 +37,7 @@ public class AdminController {
     @DeleteMapping("/students/{id}")
     public Map<String, Object> deleteStudent(@PathVariable Long id) {
         try {
-            // Delete all related records first
+            messageRepo.deleteAll(messageRepo.findBySenderId(id));
             studentCourseRepo.deleteAll(studentCourseRepo.findByStudentId(id));
             availabilityRepo.deleteAll(availabilityRepo.findByStudentId(id));
             matchRepo.deleteAll(matchRepo.findByStudentIdOrderByOverlapHoursDesc(id));
@@ -45,5 +48,24 @@ public class AdminController {
         } catch (Exception e) {
             return Map.of("success", false, "message", e.getMessage());
         }
+    }
+
+    @PostMapping("/students/{id}/ban")
+    public Map<String, Object> banStudent(@PathVariable Long id) {
+        try {
+            Student student = studentRepo.findById(id).orElse(null);
+            if(student == null) return Map.of("success", false, "message", "Student not found");
+            student.setBannedUntil(LocalDateTime.now().plusWeeks(1));
+            studentRepo.save(student);
+            return Map.of("success", true, "message", "Student banned for 1 week");
+        } catch (Exception e) {
+            return Map.of("success", false, "message", e.getMessage());
+        }
+    }
+
+    @DeleteMapping("/messages/{id}")
+    public Map<String, Object> deleteMessage(@PathVariable Long id) {
+        messageRepo.deleteById(id);
+        return Map.of("success", true);
     }
 }

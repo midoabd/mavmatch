@@ -11,5 +11,6 @@ public interface MessageRepository extends JpaRepository<Message, Long> {
     List<Message> findByMatchOrderBySentAtAsc(Match match);
     List<Message> findByMatchIdOrderBySentAtAsc(Long matchId);
     List<Message> findByIsReportedTrue();
+    List<Message> findBySenderId(Long senderId);
     long countByIsReportedTrue();
 }

@@ -32,6 +32,7 @@ public class Student {
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
+    private LocalDateTime bannedUntil;
 
     private boolean active = true;
 }

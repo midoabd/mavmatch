@@ -297,9 +297,9 @@ let lastMessageCount = 0;
 function startPolling(idx){
   stopPolling();
   const m = matches[idx];
-  if(!m || !m.matchId) return;
+  if(!m || !m.matchId || !m.matchedStudentId) return;
   // Only poll for real users (not bots)
-  if(m.matchedStudentId && m.matchedStudentId <= 100) return;
+  if(m.matchedStudentId <= 100) return;
   pollingInterval = setInterval(()=>fetchMessages(idx), 3000);
   fetchMessages(idx);
 }
@@ -313,7 +313,7 @@ function fetchMessages(idx){
   const m = matches[idx];
   if(!m || !m.matchId || activeMatch !== idx) return;
   fetch('/api/messages?matchId='+m.matchId)
-    .then(r=>r.json())
+    .then(r=>{ if(!r.ok) return []; return r.json(); })
     .then(data=>{
       if(!data || data.length === 0) return;
       // Convert API messages to chat format
@@ -762,12 +762,26 @@ function submitReport(){
   const reason = document.getElementById('report-reason').value;
   if(!reason){ alert('Please select a reason.'); return; }
   const details = document.getElementById('report-details').value;
-  // Call backend to report
   const msgs = getChat(activeMatch);
   const msg = msgs[reportingMsgId];
-  if(msg && msg.dbId){
-    fetch('/api/messages/report', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({messageId:msg.dbId, reason:reason+' — '+details}) })
-      .catch(()=>{});
+  const m = matches[activeMatch];
+  if(msg){
+    if(msg.dbId){
+      // Real message - report by ID
+      fetch('/api/messages/report', {method:'POST', headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({messageId:msg.dbId, reason:reason+(details?' — '+details:'')})
+      }).catch(()=>{});
+    } else {
+      // Bot/localStorage message - report by content
+      fetch('/api/messages/report-content', {method:'POST', headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({
+          content: msg.text,
+          senderName: m ? m.name : 'Unknown',
+          reporterId: parseInt(studentId),
+          reason: reason+(details?' — '+details:'')
+        })
+      }).catch(()=>{});
+    }
   }
   closeReport();
   document.getElementById('report-success-modal').classList.add('open');

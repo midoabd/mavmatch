@@ -5,113 +5,167 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>MavMatch Admin</title>
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f5f5; color: #1a1a1a; }
-  .header { background: #1a237e; color: white; padding: 16px 32px; display: flex; align-items: center; justify-content: space-between; }
-  .header h1 { font-size: 20px; font-weight: 600; }
-  .header span { font-size: 13px; opacity: 0.8; }
-  .container { max-width: 1200px; margin: 0 auto; padding: 24px; }
-  .stats-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; margin-bottom: 24px; }
-  .stat-card { background: white; border-radius: 10px; padding: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
-  .stat-label { font-size: 12px; color: #666; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
-  .stat-val { font-size: 28px; font-weight: 600; color: #1a237e; }
-  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
-  .card { background: white; border-radius: 10px; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
-  .card h3 { font-size: 15px; font-weight: 600; margin-bottom: 14px; color: #1a237e; border-bottom: 2px solid #e8eaf6; padding-bottom: 10px; }
-  .row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #f0f0f0; font-size: 13px; }
-  .row:last-child { border-bottom: none; }
-  .row .name { font-weight: 500; color: #1a1a1a; }
-  .row .sub { color: #666; font-size: 12px; }
-  .badge { font-size: 11px; padding: 3px 8px; border-radius: 20px; font-weight: 500; }
-  .badge-blue { background: #e3f2fd; color: #1565c0; }
-  .badge-green { background: #e8f5e9; color: #2e7d32; }
-  .badge-orange { background: #fff3e0; color: #e65100; }
-  .badge-red { background: #ffebee; color: #c62828; }
-  .empty { color: #999; font-size: 13px; text-align: center; padding: 20px 0; }
-  .refresh-btn { background: white; border: 1px solid #ccc; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-size: 13px; color: #1a237e; font-weight: 500; }
-  .refresh-btn:hover { background: #e8eaf6; }
-  .activity-log { background: white; border-radius: 10px; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); margin-bottom: 16px; }
-  .activity-log h3 { font-size: 15px; font-weight: 600; margin-bottom: 14px; color: #1a237e; border-bottom: 2px solid #e8eaf6; padding-bottom: 10px; }
-  .log-entry { display: flex; align-items: center; gap: 12px; padding: 8px 0; border-bottom: 1px solid #f0f0f0; font-size: 13px; }
-  .log-entry:last-child { border-bottom: none; }
-  .log-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
-  .dot-blue { background: #1565c0; }
-  .dot-green { background: #2e7d32; }
-  .dot-orange { background: #e65100; }
-  .log-time { color: #999; font-size: 11px; margin-left: auto; }
-  @media (max-width: 900px) {
-    .stats-grid { grid-template-columns: repeat(3, 1fr); }
-    .grid-2 { grid-template-columns: 1fr; }
-  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f5f5f5;color:#1a1a1a}
+  .header{background:#1a237e;color:white;padding:16px 32px;display:flex;align-items:center;justify-content:space-between}
+  .header h1{font-size:20px;font-weight:600}
+  .header span{font-size:13px;opacity:.8}
+  .container{max-width:1100px;margin:0 auto;padding:24px}
+  .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px}
+  .stat-card{background:white;border-radius:10px;padding:16px;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+  .stat-label{font-size:12px;color:#666;margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px}
+  .stat-val{font-size:28px;font-weight:600;color:#1a237e}
+  .card{background:white;border-radius:10px;padding:20px;box-shadow:0 1px 3px rgba(0,0,0,.08);margin-bottom:16px}
+  .card h3{font-size:15px;font-weight:600;margin-bottom:14px;color:#1a237e;border-bottom:2px solid #e8eaf6;padding-bottom:10px}
+  .row{display:flex;justify-content:space-between;align-items:flex-start;padding:12px 0;border-bottom:1px solid #f0f0f0;font-size:13px;gap:12px}
+  .row:last-child{border-bottom:none}
+  .row .name{font-weight:500;color:#1a1a1a}
+  .row .sub{color:#666;font-size:12px;margin-top:2px}
+  .row .msg-content{background:#fff8e1;border-left:3px solid #f57c00;padding:6px 10px;border-radius:4px;font-size:12px;color:#333;margin-top:4px;max-width:400px}
+  .row .reason{font-size:11px;color:#c62828;margin-top:3px}
+  .badge{font-size:11px;padding:3px 8px;border-radius:20px;font-weight:500}
+  .badge-blue{background:#e3f2fd;color:#1565c0}
+  .badge-green{background:#e8f5e9;color:#2e7d32}
+  .badge-orange{background:#fff3e0;color:#e65100}
+  .badge-red{background:#ffebee;color:#c62828}
+  .empty{color:#999;font-size:13px;text-align:center;padding:20px 0}
+  .refresh-btn{background:white;border:1px solid #ccc;padding:8px 16px;border-radius:8px;cursor:pointer;font-size:13px;color:#1a237e;font-weight:500}
+  .refresh-btn:hover{background:#e8eaf6}
+  .action-btns{display:flex;gap:8px;flex-shrink:0}
+  .btn-ban{background:#fff3e0;color:#e65100;border:1px solid #ffcc80;padding:5px 12px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer}
+  .btn-ban:hover{background:#ffe0b2}
+  .btn-delete{background:#ffebee;color:#c62828;border:1px solid #ffcdd2;padding:5px 12px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer}
+  .btn-delete:hover{background:#ffcdd2}
+  .btn-dismiss{background:#f5f5f5;color:#666;border:1px solid #ddd;padding:5px 12px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer}
+  .log-entry{display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid #f0f0f0;font-size:13px}
+  .log-entry:last-child{border-bottom:none}
+  .log-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+  .dot-blue{background:#1565c0}
+  .dot-green{background:#2e7d32}
+  .dot-orange{background:#e65100}
+  .log-time{color:#999;font-size:11px;margin-left:auto}
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  /* Confirm modal */
+  .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;display:none;align-items:center;justify-content:center}
+  .modal-overlay.open{display:flex}
+  .modal{background:white;border-radius:16px;padding:32px;width:100%;max-width:400px;text-align:center}
+  .modal h3{font-size:1.1rem;font-weight:700;color:#1a237e;margin-bottom:12px}
+  .modal p{font-size:.9rem;color:#666;margin-bottom:20px}
+  .modal-btns{display:flex;gap:10px;justify-content:center}
+  @media(max-width:900px){.stats-grid{grid-template-columns:repeat(2,1fr)}.grid-2{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
-
 <div class="header">
-  <div>
-    <h1>MavMatch Admin Dashboard</h1>
-    <span>University of Texas at Arlington — IS Senior Project</span>
+  <h1>🛡️ MavMatch Admin</h1>
+  <div style="display:flex;align-items:center;gap:12px">
+    <span id="last-updated">Loading...</span>
+    <button class="refresh-btn" onclick="loadData()">↻ Refresh</button>
+    <a href="login.html" style="color:white;font-size:13px;opacity:.8">← Exit</a>
   </div>
-  <button class="refresh-btn" onclick="loadData()">Refresh Data</button>
 </div>
 
 <div class="container">
-
   <div class="stats-grid">
     <div class="stat-card"><div class="stat-label">Total Students</div><div class="stat-val" id="val-students">—</div></div>
-    <div class="stat-card"><div class="stat-label">Total Matches</div><div class="stat-val" id="val-matches">—</div></div>
-    <div class="stat-card"><div class="stat-label">Messages Sent</div><div class="stat-val" id="val-messages">—</div></div>
-    <div class="stat-card"><div class="stat-label">Meetings</div><div class="stat-val" id="val-meetings">—</div></div>
-    <div class="stat-card"><div class="stat-label">Reported</div><div class="stat-val" id="val-reported" style="color:#c62828;">—</div></div>
-    <div class="stat-card"><div class="stat-label">Blocked Users</div><div class="stat-val" id="val-blocked">—</div></div>
+    <div class="stat-card"><div class="stat-label">Total Meetings</div><div class="stat-val" id="val-meetings">—</div></div>
+    <div class="stat-card"><div class="stat-label">Reported Messages</div><div class="stat-val" id="val-reported" style="color:#c62828">—</div></div>
+    <div class="stat-card"><div class="stat-label">Last Refresh</div><div class="stat-val" id="val-time" style="font-size:14px;padding-top:6px">—</div></div>
   </div>
 
-  <div class="activity-log">
-    <h3>Live Activity Log</h3>
-    <div id="activity-log">Loading...</div>
-  </div>
-
-  <div class="grid-2">
-    <div class="card">
-      <h3>Recent Students</h3>
-      <div id="students-list">Loading...</div>
-    </div>
-    <div class="card">
-      <h3>Recent Matches</h3>
-      <div id="matches-list">Loading...</div>
-    </div>
+  <!-- Reported Messages - Main Focus -->
+  <div class="card">
+    <h3>🚨 Reported Messages</h3>
+    <div id="reported-list"><div class="empty">Loading...</div></div>
   </div>
 
   <div class="grid-2">
+    <!-- Recent Students -->
     <div class="card">
-      <h3>Reported Messages</h3>
-      <div id="reported-list">Loading...</div>
+      <h3>👥 Recent Students</h3>
+      <div id="students-list"><div class="empty">Loading...</div></div>
     </div>
+
+    <!-- Recent Activity -->
     <div class="card">
-      <h3>Recent Meetings</h3>
-      <div id="meetings-list">Loading...</div>
+      <h3>📋 Recent Activity</h3>
+      <div id="activity-log"><div class="empty">Loading...</div></div>
     </div>
   </div>
+</div>
 
+<!-- BAN CONFIRM MODAL -->
+<div class="modal-overlay" id="ban-modal">
+  <div class="modal">
+    <h3>⛔ Ban User</h3>
+    <p>Ban <strong id="ban-name"></strong> for 1 week? They will not be able to log in.</p>
+    <div class="modal-btns">
+      <button class="btn-dismiss" onclick="document.getElementById('ban-modal').classList.remove('open')">Cancel</button>
+      <button class="btn-ban" onclick="confirmBan()">Yes, Ban</button>
+    </div>
+  </div>
+</div>
+
+<!-- DELETE CONFIRM MODAL -->
+<div class="modal-overlay" id="delete-modal">
+  <div class="modal">
+    <h3>🗑️ Delete Account</h3>
+    <p>Permanently delete <strong id="delete-name"></strong>'s account? This cannot be undone.</p>
+    <div class="modal-btns">
+      <button class="btn-dismiss" onclick="document.getElementById('delete-modal').classList.remove('open')">Cancel</button>
+      <button class="btn-delete" onclick="confirmDelete()">Yes, Delete</button>
+    </div>
+  </div>
 </div>
 
 <script>
 const API_BASE = '/api';
+let pendingBanId = null;
+let pendingDeleteId = null;
+let pendingMsgId = null;
 
-function timeAgo(dt) {
-  if (!dt) return '—';
-  const diff = Date.now() - new Date(dt).getTime();
-  const mins = Math.floor(diff / 60000);
-  const hrs = Math.floor(mins / 60);
-  if (mins < 1) return 'just now';
-  if (mins < 60) return mins + 'm ago';
-  if (hrs < 24) return hrs + 'h ago';
-  return new Date(dt).toLocaleDateString();
+function timeAgo(str){
+  if(!str) return '';
+  const d = new Date(str), now = new Date();
+  const diff = Math.floor((now-d)/1000);
+  if(diff < 60) return diff+'s ago';
+  if(diff < 3600) return Math.floor(diff/60)+'m ago';
+  if(diff < 86400) return Math.floor(diff/3600)+'h ago';
+  return Math.floor(diff/86400)+'d ago';
 }
 
-function fmt(dt) {
-  if (!dt) return '—';
-  return new Date(dt).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+function openBan(id, name){
+  pendingBanId = id;
+  document.getElementById('ban-name').textContent = name;
+  document.getElementById('ban-modal').classList.add('open');
+}
+
+function confirmBan(){
+  if(!pendingBanId) return;
+  fetch(API_BASE+'/admin/students/'+pendingBanId+'/ban', {method:'POST'})
+    .then(r=>r.json())
+    .then(()=>{ document.getElementById('ban-modal').classList.remove('open'); loadData(); })
+    .catch(()=>alert('Ban failed.'));
+}
+
+function openDelete(id, name){
+  pendingDeleteId = id;
+  document.getElementById('delete-name').textContent = name;
+  document.getElementById('delete-modal').classList.add('open');
+}
+
+function confirmDelete(){
+  if(!pendingDeleteId) return;
+  fetch(API_BASE+'/admin/students/'+pendingDeleteId, {method:'DELETE'})
+    .then(r=>r.json())
+    .then(()=>{ document.getElementById('delete-modal').classList.remove('open'); loadData(); })
+    .catch(()=>alert('Delete failed.'));
+}
+
+function dismissReport(msgId){
+  fetch(API_BASE+'/admin/messages/'+msgId, {method:'DELETE'})
+    .then(()=>loadData())
+    .catch(()=>{});
 }
 
 async function loadData() {
@@ -122,83 +176,65 @@ async function loadData() {
     const s = d.stats;
 
     document.getElementById('val-students').textContent = s.totalStudents;
-    document.getElementById('val-matches').textContent = s.totalMatches;
-    document.getElementById('val-messages').textContent = s.totalMessages;
     document.getElementById('val-meetings').textContent = s.totalMeetings;
     document.getElementById('val-reported').textContent = s.reportedMessages;
-    
+    document.getElementById('val-time').textContent = new Date().toLocaleTimeString();
+    document.getElementById('last-updated').textContent = 'Updated ' + new Date().toLocaleTimeString();
 
-    // Activity log - combine recent events
+    // Reported messages
+    const reported = d.reportedMessages || [];
+    document.getElementById('reported-list').innerHTML = reported.length > 0
+      ? reported.map(m=>`
+        <div class="row">
+          <div style="flex:1">
+            <div class="name">Sender: ${m.sender} <span style="color:#888;font-weight:400;font-size:11px">${m.senderEmail||''}</span></div>
+            <div class="msg-content">"${(m.content||'').substring(0,200)}"</div>
+            <div class="reason">Reason: ${m.reason||'Not specified'} · ${timeAgo(m.sentAt)}</div>
+          </div>
+          <div class="action-btns">
+            <button class="btn-dismiss" onclick="dismissReport(${m.id})">Dismiss</button>
+            <button class="btn-ban" onclick="openBan(${m.senderId},'${(m.sender||'').replace(/'/g,'')}')" ${!m.senderId?'disabled':''}>Ban 1 Week</button>
+            <button class="btn-delete" onclick="openDelete(${m.senderId},'${(m.sender||'').replace(/'/g,'')}')" ${!m.senderId?'disabled':''}>Delete Account</button>
+          </div>
+        </div>`).join('')
+      : '<div class="empty">✅ No reported messages</div>';
+
+    // Recent students
+    document.getElementById('students-list').innerHTML = (d.recentStudents||[]).slice(0,10).map(s=>`
+      <div class="row">
+        <div>
+          <div class="name">${s.name}</div>
+          <div class="sub">${s.email} · ${s.major?.split('(')[0]||''}</div>
+        </div>
+        <div style="text-align:right">
+          <div class="sub">${timeAgo(s.createdAt)}</div>
+          <div class="action-btns" style="margin-top:4px">
+            <button class="btn-delete" onclick="openDelete(${s.id},'${(s.name||'').replace(/'/g,'')}')">Delete</button>
+          </div>
+        </div>
+      </div>`).join('') || '<div class="empty">No students yet</div>';
+
+    // Activity log
     const events = [];
-    (d.recentStudents || []).slice(0, 5).forEach(s => events.push({ type: 'student', text: s.name + ' registered', time: s.createdAt, dot: 'dot-blue' }));
-    (d.recentMatches || []).slice(0, 5).forEach(m => events.push({ type: 'match', text: m.student1 + ' matched with ' + m.student2, time: m.matchedAt, dot: 'dot-green' }));
-    (d.recentMeetings || []).slice(0, 3).forEach(m => events.push({ type: 'meeting', text: m.requester + ' scheduled a meeting', time: m.createdAt, dot: 'dot-orange' }));
-    events.sort((a, b) => new Date(b.time) - new Date(a.time));
-
-    document.getElementById('activity-log').innerHTML = events.slice(0, 10).map(e =>
-      `<div class="log-entry">
+    (d.recentStudents||[]).slice(0,5).forEach(s=>events.push({text:s.name+' registered',time:s.createdAt,dot:'dot-blue'}));
+    (d.recentMatches||[]).slice(0,5).forEach(m=>events.push({text:m.student1+' matched with '+m.student2,time:m.matchedAt,dot:'dot-green'}));
+    (d.recentMeetings||[]).slice(0,3).forEach(m=>events.push({text:m.requester+' scheduled a meeting',time:m.createdAt,dot:'dot-orange'}));
+    events.sort((a,b)=>new Date(b.time)-new Date(a.time));
+    document.getElementById('activity-log').innerHTML = events.slice(0,10).map(e=>`
+      <div class="log-entry">
         <div class="log-dot ${e.dot}"></div>
         <span>${e.text}</span>
         <span class="log-time">${timeAgo(e.time)}</span>
-      </div>`
-    ).join('') || '<div class="empty">No activity yet</div>';
-
-    document.getElementById('students-list').innerHTML = (d.recentStudents || []).slice(0, 8).map(s =>
-      `<div class="row">
-        <div>
-          <div class="name">${s.name}</div>
-          <div class="sub">${s.email}</div>
-        </div>
-        <div style="text-align:right">
-          <div class="badge badge-blue">${s.major?.split('(')[1]?.replace(')', '') || 'BBA'}</div>
-          <div class="sub" style="margin-top:2px">${timeAgo(s.createdAt)}</div>
-        </div>
-      </div>`
-    ).join('') || '<div class="empty">No students yet</div>';
-
-    document.getElementById('matches-list').innerHTML = (d.recentMatches || []).slice(0, 8).map(m =>
-      `<div class="row">
-        <div>
-          <div class="name">${m.student1} × ${m.student2}</div>
-          <div class="sub">${m.course}</div>
-        </div>
-        <div style="text-align:right">
-          <div class="badge badge-green">${m.overlapHours}h overlap</div>
-          <div class="sub" style="margin-top:2px">${timeAgo(m.matchedAt)}</div>
-        </div>
-      </div>`
-    ).join('') || '<div class="empty">No matches yet</div>';
-
-    document.getElementById('reported-list').innerHTML = (d.reportedMessages || []).length > 0
-      ? d.reportedMessages.map(m =>
-          `<div class="row">
-            <div>
-              <div class="name">${m.sender}</div>
-              <div class="sub">"${(m.content || '').substring(0, 60)}..."</div>
-              <div class="sub">Reason: ${m.reason || 'Not specified'}</div>
-            </div>
-            <span class="badge badge-red">Reported</span>
-          </div>`
-        ).join('')
-      : '<div class="empty">No reported messages</div>';
-
-    document.getElementById('meetings-list').innerHTML = (d.recentMeetings || []).length > 0
-      ? d.recentMeetings.map(m =>
-          `<div class="row">
-            <div>
-              <div class="name">${m.requester}</div>
-              <div class="sub">${m.day || ''} ${m.time || ''} @ ${m.location || 'TBD'}</div>
-            </div>
-            <span class="badge ${m.status === 'CONFIRMED' ? 'badge-green' : m.status === 'CANCELLED' ? 'badge-red' : 'badge-orange'}">${m.status}</span>
-          </div>`
-        ).join('')
-      : '<div class="empty">No meetings yet</div>';
+      </div>`).join('') || '<div class="empty">No activity yet</div>';
 
   } catch(e) {
     console.error(e);
-    document.getElementById('activity-log').innerHTML = '<div class="empty" style="color:#c62828;">Could not load dashboard data. Please try again.</div>';
+    document.getElementById('reported-list').innerHTML = '<div class="empty" style="color:#c62828">Could not load data. Please try again.</div>';
   }
 }
+
+document.getElementById('ban-modal').addEventListener('click',function(e){if(e.target===this)this.classList.remove('open')});
+document.getElementById('delete-modal').addEventListener('click',function(e){if(e.target===this)this.classList.remove('open')});
 
 loadData();
 setInterval(loadData, 30000);
