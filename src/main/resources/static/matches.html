@@ -103,11 +103,20 @@ nav{background:var(--white);border-bottom:1.5px solid var(--border);padding:0 5%
     
     <span class="logo-text">Mav<span>Match</span></span>
   </a>
+      <div style="position:relative;cursor:pointer" onclick="toggleNotifications()" id="bell-btn">
+      <span style="font-size:1.3rem">🔔</span>
+      <div id="notif-badge" style="display:none;position:absolute;top:-4px;right:-4px;background:#E53935;color:#fff;font-size:.6rem;font-weight:800;width:16px;height:16px;border-radius:50%;display:flex;align-items:center;justify-content:center"></div>
+    </div>
   <div class="user-chip">
     <div class="user-avatar" id="nav-avatar">M</div>
     <span style="font-size:.87rem;font-weight:600" id="nav-name">Maverick</span>
   </div>
 </nav>
+<!-- NOTIFICATION DROPDOWN -->
+<div id="notif-dropdown" style="display:none;position:fixed;top:64px;right:80px;background:#fff;border:1.5px solid #E2E8F0;border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.12);z-index:300;min-width:320px;max-width:380px;max-height:400px;overflow-y:auto">
+  <div style="padding:12px 16px;border-bottom:1px solid #E2E8F0;font-family:'Nunito',sans-serif;font-weight:800;font-size:.95rem;color:#0D47A1">🔔 Notifications</div>
+  <div id="notif-list" style="padding:8px 0"><div style="padding:16px;text-align:center;color:#64748b;font-size:.88rem">Loading...</div></div>
+</div>
 <div class="app">
   <aside class="sidebar">
     <div class="sidebar-section">Menu</div>
@@ -384,11 +393,24 @@ function loadMatches(page){
     .then(r=>r.json())
     .then(data=>{
       if(data && data.length > 0){
-        matches = [...matches, ...data.map(mapMatch)];
-        // DO NOT auto-save API results - only save what user explicitly picks
+        if(page === 0){
+          // Merge: add any API matches not already in picked list
+          const picked = JSON.parse(localStorage.getItem('mm_picked_matches_'+studentId)||'[]');
+          const pickedIds = new Set(picked.map(m=>m.studentId));
+          const newFromApi = data.filter(m=>!pickedIds.has(m.studentId));
+          if(newFromApi.length > 0){
+            const merged = [...picked, ...newFromApi];
+            localStorage.setItem('mm_picked_matches_'+studentId, JSON.stringify(merged));
+            matches = merged.map(mapMatch);
+          } else {
+            matches = picked.length > 0 ? picked.map(mapMatch) : data.map(mapMatch);
+          }
+        } else {
+          matches = [...matches, ...data.map(mapMatch)];
+        }
         buildFilters();
         renderMatchList();
-      } else if(page === 0){
+      } else if(page === 0 && matches.length === 0){
         document.getElementById('match-list').innerHTML='<div style="padding:20px;text-align:center;color:var(--text-muted)">No matches yet. Add more courses and availability!</div>';
       }
       const btn = document.getElementById('find-more-btn');

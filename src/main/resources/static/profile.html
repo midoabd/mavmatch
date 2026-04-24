@@ -77,11 +77,20 @@
     
     <span class="logo-text">Mav<span>Match</span></span>
   </a>
+      <div style="position:relative;cursor:pointer" onclick="toggleNotifications()" id="bell-btn">
+      <span style="font-size:1.3rem">🔔</span>
+      <div id="notif-badge" style="display:none;position:absolute;top:-4px;right:-4px;background:#E53935;color:#fff;font-size:.6rem;font-weight:800;width:16px;height:16px;border-radius:50%;display:flex;align-items:center;justify-content:center"></div>
+    </div>
   <div class="user-chip">
     <div class="user-avatar-sm" id="nav-avatar">M</div>
     <span style="font-size:.87rem;font-weight:600" id="nav-name">Maverick</span>
   </div>
 </nav>
+<!-- NOTIFICATION DROPDOWN -->
+<div id="notif-dropdown" style="display:none;position:fixed;top:64px;right:80px;background:#fff;border:1.5px solid #E2E8F0;border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.12);z-index:300;min-width:320px;max-width:380px;max-height:400px;overflow-y:auto">
+  <div style="padding:12px 16px;border-bottom:1px solid #E2E8F0;font-family:'Nunito',sans-serif;font-weight:800;font-size:.95rem;color:#0D47A1">🔔 Notifications</div>
+  <div id="notif-list" style="padding:8px 0"><div style="padding:16px;text-align:center;color:#64748b;font-size:.88rem">Loading...</div></div>
+</div>
 
 <div class="app">
   <aside class="sidebar">
