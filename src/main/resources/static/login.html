@@ -63,6 +63,14 @@
 </div>
 <script>
 async function handleLogin(){
+  // Secret admin login
+  const emailVal = document.getElementById('email').value.trim();
+  const passVal = document.getElementById('password').value;
+  if(emailVal === 'admin1101' && passVal === 'IamAdmin'){
+    window.location.href = 'admin.html';
+    return;
+  }
+
   const email=document.getElementById('email').value;
   const pass=document.getElementById('password').value;
   let ok=true;
