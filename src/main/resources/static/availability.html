@@ -137,7 +137,7 @@ if(studentId){
         const di = dayNames.indexOf(slot.day);
         if(di === -1) return;
         // Find all matching hour slots
-        for(let ti=0; ti<timeVals.length-1; ti++){
+        for(let ti=0; ti<timeVals.length; ti++){
           if(timeVals[ti] >= slot.startHour && timeVals[ti] < slot.endHour){
             const el = document.querySelector('[data-key="'+di+'-'+ti+'"]');
             if(el) el.classList.add('selected');
@@ -176,7 +176,7 @@ function saveAvailability(){
         start=null;
       }
     });
-    if(start!==null) apiSlots.push({day:dayNames[di],startHour:timeVals[start],endHour:timeVals[times.length-1]+1});
+    if(start!==null) apiSlots.push({day:dayNames[di],startHour:timeVals[start],endHour:timeVals[timeVals.length-1]+1});
   });
 
   if(!studentId){alert('Not logged in!');return;}
