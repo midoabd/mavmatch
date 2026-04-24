@@ -65,12 +65,11 @@ public class MatchingService {
             Long otherId = match.getStudent1().getId().equals(studentId)
                     ? match.getStudent2().getId() : match.getStudent1().getId();
 
-            // Check if match still shares a course with student
-            List<StudentCourse> otherCourses = studentCourseRepo.findByStudentId(otherId);
-            boolean stillShares = otherCourses.stream()
-                    .anyMatch(sc -> myCourseIds.contains(sc.getCourse().getId()));
+            // Check if the course this match was based on is still in MY courses
+            Long matchCourseId = match.getCourse() != null ? match.getCourse().getId() : null;
+            boolean matchCourseStillMine = matchCourseId != null && myCourseIds.contains(matchCourseId);
 
-            if (!stillShares || myCourseIds.isEmpty()) {
+            if (!matchCourseStillMine || myCourseIds.isEmpty()) {
                 toDelete.add(match);
             } else {
                 // Update overlap hours
