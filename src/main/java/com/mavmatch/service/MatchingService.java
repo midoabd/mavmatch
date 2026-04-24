@@ -49,29 +49,48 @@ public class MatchingService {
         List<Long> blockedIds = blockedUserRepo.findByBlockerId(studentId)
                 .stream().map(b -> b.getBlocked().getId()).collect(Collectors.toList());
 
-        // Get existing matches and update their overlap hours instead of deleting
-        List<Match> existingMatches = matchRepo.findByStudentIdOrderByOverlapHoursDesc(studentId);
+        // Get my current courses
+        List<StudentCourse> myCourses = studentCourseRepo.findByStudentId(studentId);
+        Set<Long> myCourseIds = myCourses.stream()
+                .map(sc -> sc.getCourse().getId()).collect(Collectors.toSet());
+
         List<Availability> myAvailability = availabilityRepo.findByStudentId(studentId);
 
-        // Group availability by day for fast lookup
-        Map<String, List<Availability>> myAvailByDay = myAvailability.stream()
-                .collect(Collectors.groupingBy(Availability::getDayOfWeek));
+        // Get existing matches
+        List<Match> existingMatches = matchRepo.findByStudentIdOrderByOverlapHoursDesc(studentId);
+        List<Match> toDelete = new ArrayList<>();
+        List<Match> toKeep = new ArrayList<>();
 
         for (Match match : existingMatches) {
             Long otherId = match.getStudent1().getId().equals(studentId)
                     ? match.getStudent2().getId() : match.getStudent1().getId();
-            List<Availability> otherAvail = availabilityRepo.findByStudentId(otherId);
-            double newOverlap = calculateOverlap(myAvailability, otherAvail);
-            match.setOverlapHours(newOverlap);
-            matchRepo.save(match);
+
+            // Check if match still shares a course with student
+            List<StudentCourse> otherCourses = studentCourseRepo.findByStudentId(otherId);
+            boolean stillShares = otherCourses.stream()
+                    .anyMatch(sc -> myCourseIds.contains(sc.getCourse().getId()));
+
+            if (!stillShares || myCourseIds.isEmpty()) {
+                toDelete.add(match);
+            } else {
+                // Update overlap hours
+                List<Availability> otherAvail = availabilityRepo.findByStudentId(otherId);
+                double newOverlap = calculateOverlap(myAvailability, otherAvail);
+                match.setOverlapHours(newOverlap);
+                matchRepo.save(match);
+                toKeep.add(match);
+            }
         }
 
+        // Delete invalid matches
+        if (!toDelete.isEmpty()) matchRepo.deleteAll(toDelete);
+
         // Re-sort and return paginated
-        existingMatches.sort((a, b) -> Double.compare(b.getOverlapHours(), a.getOverlapHours()));
+        toKeep.sort((a, b) -> Double.compare(b.getOverlapHours(), a.getOverlapHours()));
         int start = page * 10;
-        int end = Math.min(start + 10, existingMatches.size());
-        if (start >= existingMatches.size()) return new ArrayList<>();
-        return existingMatches.subList(start, end)
+        int end = Math.min(start + 10, toKeep.size());
+        if (start >= toKeep.size()) return new ArrayList<>();
+        return toKeep.subList(start, end)
                 .stream().map(m -> matchToMap(m, studentId)).collect(Collectors.toList());
     }
 

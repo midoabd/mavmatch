@@ -195,7 +195,10 @@ function removeCourse(i){
   renderCourses();
   if(course&&course.code&&sid){
     fetch('/api/courses?studentId='+sid+'&courseCode='+encodeURIComponent(course.code),{method:'DELETE'})
-      .catch(()=>{});
+      .then(()=>{
+        // Recompute matches without removed course
+        fetch('/api/matches?studentId='+sid+'&page=0&refresh=true').catch(()=>{});
+      }).catch(()=>{});
   }
 }
 
