@@ -395,17 +395,19 @@ function loadMatches(page){
     .then(data=>{
       if(data && data.length > 0){
         if(page === 0){
-          // Merge: add any API matches not already in picked list
           const picked = JSON.parse(localStorage.getItem('mm_picked_matches_'+studentId)||'[]');
           const pickedIds = new Set(picked.map(m=>m.studentId));
-          const newFromApi = data.filter(m=>!pickedIds.has(m.studentId));
-          if(newFromApi.length > 0){
-            const merged = [...picked, ...newFromApi];
-            localStorage.setItem('mm_picked_matches_'+studentId, JSON.stringify(merged));
-            matches = merged.map(mapMatch);
-          } else {
-            matches = picked.length > 0 ? picked.map(mapMatch) : data.map(mapMatch);
+          // Only auto-add real users (id > 100) who matched with YOU but you haven't seen yet
+          // This handles the case where person B matched with person A but A never picked B
+          const realNewMatches = data.filter(m=>m.studentId > 100 && !pickedIds.has(m.studentId));
+          const base = realNewMatches.length > 0 ? [...picked, ...realNewMatches] : picked;
+          // Always deduplicate by studentId
+          const seen = new Set();
+          const deduped = base.filter(m=>{ if(seen.has(m.studentId)) return false; seen.add(m.studentId); return true; });
+          if(deduped.length !== picked.length || realNewMatches.length > 0){
+            localStorage.setItem('mm_picked_matches_'+studentId, JSON.stringify(deduped));
           }
+          matches = deduped.length > 0 ? deduped.map(mapMatch) : data.map(mapMatch);
         } else {
           matches = [...matches, ...data.map(mapMatch)];
         }
@@ -460,7 +462,15 @@ function doFindMore(){
         document.getElementById('find-more-btn').style.display='none';
         return;
       }
-      pendingMoreMatches = data.map(mapMatch);
+      // Filter out matches already in list
+      const existingIds = new Set(matches.map(m=>m.matchedStudentId));
+      pendingMoreMatches = data.map(mapMatch).filter(m=>!existingIds.has(m.matchedStudentId));
+      if(pendingMoreMatches.length === 0){
+        const b = document.getElementById('find-more-btn');
+        if(b){ b.textContent='🔄 Find More Matches'; b.disabled=false; }
+        showNiceAlert('No new matches found! Try adding more courses or availability.');
+        return;
+      }
       const grid = document.getElementById('find-more-grid');
       grid.innerHTML = pendingMoreMatches.map((m,i)=>`
         <div class="find-more-row" id="fmr-${i}" onclick="toggleFindMore(${i})">
