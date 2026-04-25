@@ -1,113 +1,113 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>My Matches – MavMatch</title>
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
-<style>
-*{margin:0;padding:0;box-sizing:border-box}
-:root{--blue:#1565C0;--blue-dark:#0D47A1;--orange:#F57C00;--orange-bright:#FF6F00;--white:#fff;--bg:#F0F4FF;--border:#E2E8F0;--text:#1e293b;--text-muted:#64748b;--radius:12px}
-body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);height:100vh;display:flex;flex-direction:column;overflow:hidden}
-nav{background:var(--white);border-bottom:1.5px solid var(--border);padding:0 5%;display:flex;align-items:center;justify-content:space-between;height:64px;position:sticky;top:0;z-index:50}
-.logo{display:flex;align-items:center;gap:8px;text-decoration:none}
-.logo-text{font-family:'Nunito',sans-serif;font-size:1.4rem;font-weight:900;color:#0D47A1}
-.logo-text span{color:var(--orange)}
-.user-chip{display:flex;align-items:center;gap:8px;background:var(--bg);border:1.5px solid var(--border);border-radius:24px;padding:5px 14px 5px 8px}
-.user-avatar{width:30px;height:30px;border-radius:50%;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;font-size:.78rem;font-weight:800}
-.app{display:flex;flex:1;min-height:0;height:calc(100vh - 64px);max-height:calc(100vh - 64px);overflow:hidden}
-.sidebar{width:220px;background:var(--white);border-right:1.5px solid var(--border);padding:24px 0;flex-shrink:0}
-.nav-item{display:flex;align-items:center;gap:10px;padding:10px 22px;font-size:.92rem;font-weight:600;color:var(--text-muted);text-decoration:none;transition:.15s}
-.nav-item:hover{background:var(--bg);color:var(--blue)}
-.nav-item.active{background:#E3F2FD;color:var(--blue);border-right:3px solid var(--blue)}
-.nav-icon{font-size:1.1rem;width:22px;text-align:center}
-.sidebar-section{font-size:.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);padding:16px 22px 6px}
-.matches-panel{width:320px;flex-shrink:0;border-right:1.5px solid var(--border);background:var(--white);display:flex;flex-direction:column;overflow:hidden}
-.matches-panel-header{padding:18px 20px;border-bottom:1.5px solid var(--border)}
-.matches-panel-title{font-family:'Nunito',sans-serif;font-size:1.05rem;font-weight:900;color:var(--blue-dark);margin-bottom:10px}
-.filter-bar{display:flex;gap:6px;flex-wrap:wrap}
-.filter-chip{padding:4px 12px;border-radius:20px;border:1.5px solid var(--border);font-size:.78rem;font-weight:600;cursor:pointer;background:#fafbfc;color:var(--text-muted)}
-.filter-chip.active{background:var(--blue);color:#fff;border-color:var(--blue)}
-.match-list{flex:1;overflow-y:auto;padding:10px}
-.match-row{display:flex;align-items:center;gap:12px;padding:12px 10px;border-radius:10px;cursor:pointer;border:1.5px solid transparent;margin-bottom:4px}
-.match-row:hover{background:var(--bg)}
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>My Matches – MavMatch</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    :root{--blue:#1565C0;--blue-dark:#0D47A1;--orange:#F57C00;--orange-bright:#FF6F00;--white:#fff;--bg:#F0F4FF;--border:#E2E8F0;--text:#1e293b;--text-muted:#64748b;--radius:12px}
+    body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);height:100vh;display:flex;flex-direction:column;overflow:hidden}
+    nav{background:var(--white);border-bottom:1.5px solid var(--border);padding:0 5%;display:flex;align-items:center;justify-content:space-between;height:64px;position:sticky;top:0;z-index:50}
+    .logo{display:flex;align-items:center;gap:8px;text-decoration:none}
+    .logo-text{font-family:'Nunito',sans-serif;font-size:1.4rem;font-weight:900;color:#0D47A1}
+    .logo-text span{color:var(--orange)}
+    .user-chip{display:flex;align-items:center;gap:8px;background:var(--bg);border:1.5px solid var(--border);border-radius:24px;padding:5px 14px 5px 8px}
+    .user-avatar{width:30px;height:30px;border-radius:50%;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;font-size:.78rem;font-weight:800}
+    .app{display:flex;flex:1;min-height:0;height:calc(100vh - 64px);max-height:calc(100vh - 64px);overflow:hidden}
+    .sidebar{width:220px;background:var(--white);border-right:1.5px solid var(--border);padding:24px 0;flex-shrink:0}
+    .nav-item{display:flex;align-items:center;gap:10px;padding:10px 22px;font-size:.92rem;font-weight:600;color:var(--text-muted);text-decoration:none;transition:.15s}
+    .nav-item:hover{background:var(--bg);color:var(--blue)}
+    .nav-item.active{background:#E3F2FD;color:var(--blue);border-right:3px solid var(--blue)}
+    .nav-icon{font-size:1.1rem;width:22px;text-align:center}
+    .sidebar-section{font-size:.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);padding:16px 22px 6px}
+    .matches-panel{width:320px;flex-shrink:0;border-right:1.5px solid var(--border);background:var(--white);display:flex;flex-direction:column;overflow:hidden}
+    .matches-panel-header{padding:18px 20px;border-bottom:1.5px solid var(--border)}
+    .matches-panel-title{font-family:'Nunito',sans-serif;font-size:1.05rem;font-weight:900;color:var(--blue-dark);margin-bottom:10px}
+    .filter-bar{display:flex;gap:6px;flex-wrap:wrap}
+    .filter-chip{padding:4px 12px;border-radius:20px;border:1.5px solid var(--border);font-size:.78rem;font-weight:600;cursor:pointer;background:#fafbfc;color:var(--text-muted)}
+    .filter-chip.active{background:var(--blue);color:#fff;border-color:var(--blue)}
+    .match-list{flex:1;overflow-y:auto;padding:10px}
+    .match-row{display:flex;align-items:center;gap:12px;padding:12px 10px;border-radius:10px;cursor:pointer;border:1.5px solid transparent;margin-bottom:4px}
+    .match-row:hover{background:var(--bg)}
 
-.match-row.active{background:#E3F2FD;border-color:#BBDEFB}
-.m-av{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.85rem;font-weight:800;color:#fff;flex-shrink:0}
-.match-row-info{flex:1;min-width:0}
-.match-row-name{font-weight:700;font-size:.9rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.match-row-detail{font-size:.75rem;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.overlap-pill{background:#E8F5E9;color:#2E7D32;font-size:.7rem;font-weight:700;padding:2px 8px;border-radius:20px;white-space:nowrap}
-.chat-panel{flex:1;display:flex;flex-direction:column;min-width:0;overflow:hidden}
-.chat-empty{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--text-muted);gap:12px;padding:20px}
-.chat-empty-icon{font-size:3rem}
-.chat-header{padding:14px 20px;border-bottom:1.5px solid var(--border);background:var(--white);display:flex;align-items:center;gap:14px;flex-shrink:0;position:relative}
-.chat-header-av{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.85rem;color:#fff}
-.chat-header-name{font-family:'Nunito',sans-serif;font-size:1rem;font-weight:800;color:var(--blue-dark);cursor:pointer;text-decoration:underline dotted}
-.chat-header-sub{font-size:.78rem;color:var(--text-muted)}
-.btn-schedule{background:var(--orange);color:#fff;border:none;padding:7px 16px;border-radius:8px;font-size:.82rem;font-weight:700;cursor:pointer;margin-left:auto}
-.chat-messages{flex:1;overflow-y:auto;padding:16px 20px;display:flex;flex-direction:column;gap:10px;background:var(--bg)}
-.msg{display:flex;gap:8px;align-items:flex-end;max-width:75%}
-.msg.mine{align-self:flex-end;flex-direction:row-reverse}
-.msg-av{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:800;color:#fff;flex-shrink:0}
-.msg-content{display:flex;flex-direction:column;gap:3px;position:relative}
-.msg.mine .msg-content{align-items:flex-end}
-.msg-sender{font-size:.7rem;color:var(--text-muted)}
-.msg-bubble{padding:9px 13px;border-radius:14px;font-size:.88rem;line-height:1.5;word-break:break-word}
-.msg.theirs .msg-bubble{background:var(--white);border:1.5px solid var(--border);border-bottom-left-radius:4px}
-.msg.mine .msg-bubble{background:var(--blue);color:#fff;border-bottom-right-radius:4px}
-.msg-time{font-size:.65rem;color:var(--text-muted)}
-.msg-row{display:flex;align-items:flex-end;gap:4px}
-.msg-options-btn{background:none;border:none;cursor:pointer;font-size:14px;color:var(--text-muted);padding:2px 4px;opacity:0;border-radius:4px;line-height:1}
-.msg:hover .msg-options-btn{opacity:1}
-.meeting-bubble{background:var(--white);border:1.5px solid #BBDEFB;border-radius:12px;padding:12px 14px;min-width:220px;max-width:280px}
-.meeting-bubble-title{font-family:'Nunito',sans-serif;font-size:.88rem;font-weight:800;color:var(--blue-dark);margin-bottom:4px}
-.meeting-bubble-detail{font-size:.78rem;color:var(--text-muted);margin-bottom:2px}
-.meeting-bubble-status{font-size:.75rem;font-weight:700;color:#2E7D32;margin-top:6px}
-.chat-input-row{padding:12px 16px;background:var(--white);border-top:1.5px solid var(--border);display:flex;gap:10px;align-items:flex-end}
-.chat-input{flex:1;border:1.5px solid var(--border);border-radius:10px;padding:9px 14px;font-size:.92rem;font-family:'Inter',sans-serif;outline:none;resize:none;max-height:80px;min-height:38px;line-height:1.4}
-.chat-input:focus{border-color:var(--blue)}
-.btn-send{background:var(--blue);color:#fff;border:none;width:38px;height:38px;border-radius:9px;font-size:1rem;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center}
-/* Dropdown menu */
-.dropdown{position:absolute;background:var(--white);border:1.5px solid var(--border);border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.12);z-index:100;min-width:160px;overflow:hidden}
-.dropdown-item{padding:10px 16px;font-size:.88rem;cursor:pointer;display:flex;align-items:center;gap:8px}
-.dropdown-item:hover{background:var(--bg)}
-.dropdown-item.danger{color:#c62828}
-/* Modals */
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;display:none;align-items:center;justify-content:center}
-.modal-overlay.open{display:flex}
-.modal{background:var(--white);border-radius:20px;padding:32px;width:100%;max-width:440px;max-height:90vh;overflow-y:auto}
-.modal h3{font-family:'Nunito',sans-serif;font-size:1.2rem;font-weight:900;color:var(--blue-dark);margin-bottom:18px}
-.mf{margin-bottom:13px}
-.mf label{display:block;font-size:.83rem;font-weight:600;margin-bottom:5px}
-.mf input,.mf select,.mf textarea{width:100%;padding:9px 13px;border:1.5px solid var(--border);border-radius:8px;font-size:.92rem;font-family:'Inter',sans-serif;outline:none;background:#fafbfc}
-.mf input:focus,.mf select:focus,.mf textarea:focus{border-color:var(--blue)}
-.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.modal-btns{display:flex;gap:10px;justify-content:flex-end;margin-top:14px}
-.btn-cancel{background:none;border:1.5px solid var(--border);color:var(--text-muted);padding:8px 18px;border-radius:8px;font-size:.88rem;font-weight:600;cursor:pointer}
-.btn-primary{background:var(--orange);color:#fff;border:none;padding:8px 22px;border-radius:8px;font-size:.88rem;font-weight:700;cursor:pointer}
-.btn-danger{background:#c62828;color:#fff;border:none;padding:8px 22px;border-radius:8px;font-size:.88rem;font-weight:700;cursor:pointer}
-.err-inline{color:#c62828;font-size:.8rem;margin-top:3px;display:none}
-/* Find More Modal */
-.find-more-grid{display:flex;flex-direction:column;gap:8px;max-height:400px;overflow-y:auto;margin-bottom:16px}
-.find-more-row{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:10px;border:1.5px solid var(--border);cursor:pointer}
-.find-more-row.selected{border-color:var(--blue);background:#E3F2FD}
-.find-more-row:hover{background:var(--bg)}
-@media(max-width:900px){.sidebar{display:none}.matches-panel{width:260px}}
-@media(max-width:600px){.matches-panel{display:none}}
-</style>
-<script>function toggleNotifications(){var dd=document.getElementById("notif-dropdown");if(!dd)return;var open=dd.style.display==="block";dd.style.display=open?"none":"block";if(!open&&typeof loadNotifications!=="undefined")loadNotifications();}</script>
+    .match-row.active{background:#E3F2FD;border-color:#BBDEFB}
+    .m-av{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.85rem;font-weight:800;color:#fff;flex-shrink:0}
+    .match-row-info{flex:1;min-width:0}
+    .match-row-name{font-weight:700;font-size:.9rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .match-row-detail{font-size:.75rem;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .overlap-pill{background:#E8F5E9;color:#2E7D32;font-size:.7rem;font-weight:700;padding:2px 8px;border-radius:20px;white-space:nowrap}
+    .chat-panel{flex:1;display:flex;flex-direction:column;min-width:0;overflow:hidden}
+    .chat-empty{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--text-muted);gap:12px;padding:20px}
+    .chat-empty-icon{font-size:3rem}
+    .chat-header{padding:14px 20px;border-bottom:1.5px solid var(--border);background:var(--white);display:flex;align-items:center;gap:14px;flex-shrink:0;position:relative}
+    .chat-header-av{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.85rem;color:#fff}
+    .chat-header-name{font-family:'Nunito',sans-serif;font-size:1rem;font-weight:800;color:var(--blue-dark);cursor:pointer;text-decoration:underline dotted}
+    .chat-header-sub{font-size:.78rem;color:var(--text-muted)}
+    .btn-schedule{background:var(--orange);color:#fff;border:none;padding:7px 16px;border-radius:8px;font-size:.82rem;font-weight:700;cursor:pointer;margin-left:auto}
+    .chat-messages{flex:1;overflow-y:auto;padding:16px 20px;display:flex;flex-direction:column;gap:10px;background:var(--bg)}
+    .msg{display:flex;gap:8px;align-items:flex-end;max-width:75%}
+    .msg.mine{align-self:flex-end;flex-direction:row-reverse}
+    .msg-av{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:800;color:#fff;flex-shrink:0}
+    .msg-content{display:flex;flex-direction:column;gap:3px;position:relative}
+    .msg.mine .msg-content{align-items:flex-end}
+    .msg-sender{font-size:.7rem;color:var(--text-muted)}
+    .msg-bubble{padding:9px 13px;border-radius:14px;font-size:.88rem;line-height:1.5;word-break:break-word}
+    .msg.theirs .msg-bubble{background:var(--white);border:1.5px solid var(--border);border-bottom-left-radius:4px}
+    .msg.mine .msg-bubble{background:var(--blue);color:#fff;border-bottom-right-radius:4px}
+    .msg-time{font-size:.65rem;color:var(--text-muted)}
+    .msg-row{display:flex;align-items:flex-end;gap:4px}
+    .msg-options-btn{background:none;border:none;cursor:pointer;font-size:14px;color:var(--text-muted);padding:2px 4px;opacity:0;border-radius:4px;line-height:1}
+    .msg:hover .msg-options-btn{opacity:1}
+    .meeting-bubble{background:var(--white);border:1.5px solid #BBDEFB;border-radius:12px;padding:12px 14px;min-width:220px;max-width:280px}
+    .meeting-bubble-title{font-family:'Nunito',sans-serif;font-size:.88rem;font-weight:800;color:var(--blue-dark);margin-bottom:4px}
+    .meeting-bubble-detail{font-size:.78rem;color:var(--text-muted);margin-bottom:2px}
+    .meeting-bubble-status{font-size:.75rem;font-weight:700;color:#2E7D32;margin-top:6px}
+    .chat-input-row{padding:12px 16px;background:var(--white);border-top:1.5px solid var(--border);display:flex;gap:10px;align-items:flex-end}
+    .chat-input{flex:1;border:1.5px solid var(--border);border-radius:10px;padding:9px 14px;font-size:.92rem;font-family:'Inter',sans-serif;outline:none;resize:none;max-height:80px;min-height:38px;line-height:1.4}
+    .chat-input:focus{border-color:var(--blue)}
+    .btn-send{background:var(--blue);color:#fff;border:none;width:38px;height:38px;border-radius:9px;font-size:1rem;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+    /* Dropdown menu */
+    .dropdown{position:absolute;background:var(--white);border:1.5px solid var(--border);border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.12);z-index:100;min-width:160px;overflow:hidden}
+    .dropdown-item{padding:10px 16px;font-size:.88rem;cursor:pointer;display:flex;align-items:center;gap:8px}
+    .dropdown-item:hover{background:var(--bg)}
+    .dropdown-item.danger{color:#c62828}
+    /* Modals */
+    .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;display:none;align-items:center;justify-content:center}
+    .modal-overlay.open{display:flex}
+    .modal{background:var(--white);border-radius:20px;padding:32px;width:100%;max-width:440px;max-height:90vh;overflow-y:auto}
+    .modal h3{font-family:'Nunito',sans-serif;font-size:1.2rem;font-weight:900;color:var(--blue-dark);margin-bottom:18px}
+    .mf{margin-bottom:13px}
+    .mf label{display:block;font-size:.83rem;font-weight:600;margin-bottom:5px}
+    .mf input,.mf select,.mf textarea{width:100%;padding:9px 13px;border:1.5px solid var(--border);border-radius:8px;font-size:.92rem;font-family:'Inter',sans-serif;outline:none;background:#fafbfc}
+    .mf input:focus,.mf select:focus,.mf textarea:focus{border-color:var(--blue)}
+    .row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .modal-btns{display:flex;gap:10px;justify-content:flex-end;margin-top:14px}
+    .btn-cancel{background:none;border:1.5px solid var(--border);color:var(--text-muted);padding:8px 18px;border-radius:8px;font-size:.88rem;font-weight:600;cursor:pointer}
+    .btn-primary{background:var(--orange);color:#fff;border:none;padding:8px 22px;border-radius:8px;font-size:.88rem;font-weight:700;cursor:pointer}
+    .btn-danger{background:#c62828;color:#fff;border:none;padding:8px 22px;border-radius:8px;font-size:.88rem;font-weight:700;cursor:pointer}
+    .err-inline{color:#c62828;font-size:.8rem;margin-top:3px;display:none}
+    /* Find More Modal */
+    .find-more-grid{display:flex;flex-direction:column;gap:8px;max-height:400px;overflow-y:auto;margin-bottom:16px}
+    .find-more-row{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:10px;border:1.5px solid var(--border);cursor:pointer}
+    .find-more-row.selected{border-color:var(--blue);background:#E3F2FD}
+    .find-more-row:hover{background:var(--bg)}
+    @media(max-width:900px){.sidebar{display:none}.matches-panel{width:260px}}
+    @media(max-width:600px){.matches-panel{display:none}}
+  </style>
+  <script>function toggleNotifications(){var dd=document.getElementById("notif-dropdown");if(!dd)return;var open=dd.style.display==="block";dd.style.display=open?"none":"block";if(!open&&typeof loadNotifications!=="undefined")loadNotifications();}</script>
 </head>
 <body>
 <nav>
   <a href="index.html" class="logo">
-    
+
     <span class="logo-text">Mav<span>Match</span></span>
   </a>
-      <div style="position:relative;cursor:pointer" onclick="if(typeof toggleNotifications!=='undefined')toggleNotifications()" id="bell-btn">
-      <span style="font-size:1.3rem">🔔</span>
-      <div id="notif-badge" style="display:none;position:absolute;top:-4px;right:-4px;background:#E53935;color:#fff;font-size:.6rem;font-weight:800;width:16px;height:16px;border-radius:50%;display:flex;align-items:center;justify-content:center"></div>
-    </div>
+  <div style="position:relative;cursor:pointer" onclick="if(typeof toggleNotifications!=='undefined')toggleNotifications()" id="bell-btn">
+    <span style="font-size:1.3rem">🔔</span>
+    <div id="notif-badge" style="display:none;position:absolute;top:-4px;right:-4px;background:#E53935;color:#fff;font-size:.6rem;font-weight:800;width:16px;height:16px;border-radius:50%;display:flex;align-items:center;justify-content:center"></div>
+  </div>
   <div class="user-chip">
     <div class="user-avatar" id="nav-avatar">M</div>
     <span style="font-size:.87rem;font-weight:600" id="nav-name">Maverick</span>
@@ -286,193 +286,193 @@ nav{background:var(--white);border-bottom:1.5px solid var(--border);padding:0 5%
 </div>
 
 <script>
-const studentId = localStorage.getItem('mm_studentId');
-const myName = (localStorage.getItem('mm_fname')||'') + ' ' + (localStorage.getItem('mm_lname')||'');
-const myInitials = ((localStorage.getItem('mm_fname')||'M')[0] + (localStorage.getItem('mm_lname')||'')[0]).toUpperCase();
-function getMyColor(){ return localStorage.getItem('mm_color') || '#1565C0'; }
+  const studentId = localStorage.getItem('mm_studentId');
+  const myName = (localStorage.getItem('mm_fname')||'') + ' ' + (localStorage.getItem('mm_lname')||'');
+  const myInitials = ((localStorage.getItem('mm_fname')||'M')[0] + (localStorage.getItem('mm_lname')||'')[0]).toUpperCase();
+  function getMyColor(){ return localStorage.getItem('mm_color') || '#1565C0'; }
 
-// Nav
-document.getElementById('nav-avatar').textContent = myInitials;
-document.getElementById('nav-name').textContent = localStorage.getItem('mm_fname') || 'Student';
+  // Nav
+  document.getElementById('nav-avatar').textContent = myInitials;
+  document.getElementById('nav-name').textContent = localStorage.getItem('mm_fname') || 'Student';
 
-// Chats stored per student+match key (localStorage for bot accounts, API for real users)
-function chatKey(matchIdx){ return 'chat_' + studentId + '_' + matchIdx; }
-function getChat(idx){ try{ return JSON.parse(localStorage.getItem(chatKey(idx))||'[]'); }catch(e){ return []; } }
-function saveChat(idx, msgs){ localStorage.setItem(chatKey(idx), JSON.stringify(msgs)); }
+  // Chats stored per student+match key (localStorage for bot accounts, API for real users)
+  function chatKey(matchIdx){ return 'chat_' + studentId + '_' + matchIdx; }
+  function getChat(idx){ try{ return JSON.parse(localStorage.getItem(chatKey(idx))||'[]'); }catch(e){ return []; } }
+  function saveChat(idx, msgs){ localStorage.setItem(chatKey(idx), JSON.stringify(msgs)); }
 
-// Real messaging via API
-let pollingInterval = null;
-let lastMessageCount = 0;
+  // Real messaging via API
+  let pollingInterval = null;
+  let lastMessageCount = 0;
 
-function startPolling(idx){
-  stopPolling();
-  const m = matches[idx];
-  if(!m || !m.matchId || !m.matchedStudentId) return;
-  // Only poll for real users (not bots)
-  if(m.matchedStudentId <= 100) return;
-  pollingInterval = setInterval(()=>fetchMessages(idx), 3000);
-  fetchMessages(idx);
-}
-
-function stopPolling(){
-  if(pollingInterval) { clearInterval(pollingInterval); pollingInterval = null; }
-  lastMessageCount = 0;
-}
-
-function fetchMessages(idx){
-  const m = matches[idx];
-  if(!m || !m.matchId || activeMatch !== idx) return;
-  fetch('/api/messages?matchId='+m.matchId)
-    .then(r=>{ if(!r.ok) return []; return r.json(); })
-    .then(data=>{
-      if(!data || data.length === 0) return;
-      // Convert API messages to chat format
-      const msgs = data.map(msg=>({
-        dbId: msg.id,
-        text: msg.content,
-        time: new Date(msg.sentAt).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}),
-        mine: msg.senderId == studentId,
-        sender: msg.senderName
-      }));
-      if(msgs.length !== lastMessageCount){
-        lastMessageCount = msgs.length;
-        saveChat(idx, msgs);
-        renderMessages(idx);
-        renderMatchList();
-      }
-    }).catch(()=>{});
-}
-
-const avatarColors=['#1565C0','#F57C00','#2E7D32','#7B1FA2','#C62828','#0277BD','#E65100','#4A148C'];
-function colorFor(name){let h=0;for(let i=0;i<(name||'').length;i++)h=(h*31+name.charCodeAt(i))%avatarColors.length;return avatarColors[h];}
-function initialsOf(name){const p=(name||'?').trim().split(' ');return(p[0][0]+(p[1]?p[1][0]:'')).toUpperCase();}
-
-let matches = [];
-let currentPage = 0;
-let activeMatch = null;
-let currentFilter = 'all';
-let pendingMoreMatches = [];
-let reportingMsgId = null;
-let blockingStudentId = null;
-
-function mapMatch(m){
-  return {
-    matchId: m.matchId,
-    matchedStudentId: m.studentId,
-    name: m.name,
-    initials: initialsOf(m.name),
-    color: colorFor(m.name),
-    major: m.major||'',
-    course: m.courseCode||'',
-    overlap: m.overlapHours||0
-  };
-}
-
-function loadMatches(page){
-  if(!studentId){ document.getElementById('match-list').innerHTML='<div style="padding:20px;text-align:center;color:#c62828">Please log in first.</div>'; return; }
-
-  // On first load, use mm_picked_matches as single source of truth
-  if(page === 0){
-    const pickedKey = 'mm_picked_matches_' + studentId;
-    const picked = localStorage.getItem(pickedKey);
-    if(picked){
-      try{
-        const pickedData = JSON.parse(picked);
-        if(pickedData && pickedData.length > 0){
-          matches = pickedData.map(mapMatch);
-          buildFilters();
-          renderMatchList();
-          document.getElementById('find-more-btn').style.display = 'block';
-          currentPage = 0;
-          return;
-        }
-      }catch(e){}
-    }
+  function startPolling(idx){
+    stopPolling();
+    const m = matches[idx];
+    if(!m || !m.matchId || !m.matchedStudentId) return;
+    // Only poll for real users (not bots)
+    if(m.matchedStudentId <= 100) return;
+    pollingInterval = setInterval(()=>fetchMessages(idx), 3000);
+    fetchMessages(idx);
   }
 
-  fetch('/api/matches?studentId='+studentId+'&page='+page)
-    .then(r=>r.json())
-    .then(data=>{
-      if(data && data.length > 0){
-        if(page === 0){
-          const picked = JSON.parse(localStorage.getItem('mm_picked_matches_'+studentId)||'[]');
-          const pickedIds = new Set(picked.map(m=>m.studentId));
-          // Only auto-add real users (id > 100) who matched with YOU but you haven't seen yet
-          // This handles the case where person B matched with person A but A never picked B
-          const realNewMatches = data.filter(m=>m.studentId > 100 && !pickedIds.has(m.studentId));
-          const base = realNewMatches.length > 0 ? [...picked, ...realNewMatches] : picked;
-          // Always deduplicate by studentId
-          const seen = new Set();
-          const deduped = base.filter(m=>{ if(seen.has(m.studentId)) return false; seen.add(m.studentId); return true; });
-          if(deduped.length !== picked.length || realNewMatches.length > 0){
-            localStorage.setItem('mm_picked_matches_'+studentId, JSON.stringify(deduped));
-          }
-          matches = deduped.length > 0 ? deduped.map(mapMatch) : data.map(mapMatch);
-        } else {
-          matches = [...matches, ...data.map(mapMatch)];
-        }
-        buildFilters();
-        renderMatchList();
-      } else if(page === 0 && matches.length === 0){
-        document.getElementById('match-list').innerHTML='<div style="padding:20px;text-align:center;color:var(--text-muted)">No matches yet. Add more courses and availability!</div>';
-      }
-      const btn = document.getElementById('find-more-btn');
-      if(btn) btn.style.display = data && data.length === 10 ? 'block' : 'none';
-    }).catch(()=>{ document.getElementById('match-list').innerHTML='<div style="padding:20px;text-align:center;color:#c62828">Could not load matches.</div>'; });
-}
+  function stopPolling(){
+    if(pollingInterval) { clearInterval(pollingInterval); pollingInterval = null; }
+    lastMessageCount = 0;
+  }
 
-function openFindMore(){
-  if(!studentId) return;
-  // Check if user has courses
-  fetch('/api/courses?studentId='+studentId)
-    .then(r=>r.json())
-    .then(courses=>{
-      if(!courses || courses.length === 0){
-        showNiceAlert('Please add courses first before finding more matches!');
-        return;
-      }
-      // Check availability
-      fetch('/api/availability?studentId='+studentId)
-        .then(r=>r.json())
-        .then(avail=>{
-          if(!avail || avail.length === 0){
-            showNiceAlert('Please add your availability first before finding more matches!');
+  function fetchMessages(idx){
+    const m = matches[idx];
+    if(!m || !m.matchId || activeMatch !== idx) return;
+    fetch('/api/messages?matchId='+m.matchId)
+            .then(r=>{ if(!r.ok) return []; return r.json(); })
+            .then(data=>{
+              if(!data || data.length === 0) return;
+              // Convert API messages to chat format
+              const msgs = data.map(msg=>({
+                dbId: msg.id,
+                text: msg.content,
+                time: new Date(msg.sentAt).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}),
+                mine: msg.senderId == studentId,
+                sender: msg.senderName
+              }));
+              if(msgs.length !== lastMessageCount){
+                lastMessageCount = msgs.length;
+                saveChat(idx, msgs);
+                renderMessages(idx);
+                renderMatchList();
+              }
+            }).catch(()=>{});
+  }
+
+  const avatarColors=['#1565C0','#F57C00','#2E7D32','#7B1FA2','#C62828','#0277BD','#E65100','#4A148C'];
+  function colorFor(name){let h=0;for(let i=0;i<(name||'').length;i++)h=(h*31+name.charCodeAt(i))%avatarColors.length;return avatarColors[h];}
+  function initialsOf(name){const p=(name||'?').trim().split(' ');return(p[0][0]+(p[1]?p[1][0]:'')).toUpperCase();}
+
+  let matches = [];
+  let currentPage = 0;
+  let activeMatch = null;
+  let currentFilter = 'all';
+  let pendingMoreMatches = [];
+  let reportingMsgId = null;
+  let blockingStudentId = null;
+
+  function mapMatch(m){
+    return {
+      matchId: m.matchId,
+      matchedStudentId: m.studentId,
+      name: m.name,
+      initials: initialsOf(m.name),
+      color: colorFor(m.name),
+      major: m.major||'',
+      course: m.courseCode||'',
+      overlap: m.overlapHours||0
+    };
+  }
+
+  function loadMatches(page){
+    if(!studentId){ document.getElementById('match-list').innerHTML='<div style="padding:20px;text-align:center;color:#c62828">Please log in first.</div>'; return; }
+
+    // On first load, use mm_picked_matches as single source of truth
+    if(page === 0){
+      const pickedKey = 'mm_picked_matches_' + studentId;
+      const picked = localStorage.getItem(pickedKey);
+      if(picked){
+        try{
+          const pickedData = JSON.parse(picked);
+          if(pickedData && pickedData.length > 0){
+            matches = pickedData.map(mapMatch);
+            buildFilters();
+            renderMatchList();
+            document.getElementById('find-more-btn').style.display = 'block';
+            currentPage = 0;
             return;
           }
-          doFindMore();
-        }).catch(()=>doFindMore());
-    }).catch(()=>doFindMore());
-}
-
-function showNiceAlert(msg){
-  document.getElementById('nice-alert-msg').textContent = msg;
-  document.getElementById('nice-alert-modal').classList.add('open');
-}
-
-function doFindMore(){
-  if(!studentId) return;
-  const btn = document.getElementById('find-more-btn');
-  if(btn){ btn.textContent='⏳ Finding more matches...'; btn.disabled=true; }
-  const nextPage = currentPage + 1;
-  fetch('/api/matches?studentId='+studentId+'&page='+nextPage)
-    .then(r=>r.json())
-    .then(data=>{
-      if(!data || data.length === 0){
-        alert('No more matches found! Try adding more courses or availability slots.');
-        document.getElementById('find-more-btn').style.display='none';
-        return;
+        }catch(e){}
       }
-      // Filter out matches already in list
-      const existingIds = new Set(matches.map(m=>m.matchedStudentId));
-      pendingMoreMatches = data.map(mapMatch).filter(m=>!existingIds.has(m.matchedStudentId));
-      if(pendingMoreMatches.length === 0){
-        const b = document.getElementById('find-more-btn');
-        if(b){ b.textContent='🔄 Find More Matches'; b.disabled=false; }
-        showNiceAlert('No new matches found! Try adding more courses or availability.');
-        return;
-      }
-      const grid = document.getElementById('find-more-grid');
-      grid.innerHTML = pendingMoreMatches.map((m,i)=>`
+    }
+
+    fetch('/api/matches?studentId='+studentId+'&page='+page)
+            .then(r=>r.json())
+            .then(data=>{
+              if(data && data.length > 0){
+                if(page === 0){
+                  const picked = JSON.parse(localStorage.getItem('mm_picked_matches_'+studentId)||'[]');
+                  const pickedIds = new Set(picked.map(m=>m.studentId));
+                  // Only auto-add real users (id > 100) who matched with YOU but you haven't seen yet
+                  // This handles the case where person B matched with person A but A never picked B
+                  const realNewMatches = data.filter(m=>m.studentId > 100 && !pickedIds.has(m.studentId));
+                  const base = realNewMatches.length > 0 ? [...picked, ...realNewMatches] : picked;
+                  // Always deduplicate by studentId
+                  const seen = new Set();
+                  const deduped = base.filter(m=>{ if(seen.has(m.studentId)) return false; seen.add(m.studentId); return true; });
+                  if(deduped.length !== picked.length || realNewMatches.length > 0){
+                    localStorage.setItem('mm_picked_matches_'+studentId, JSON.stringify(deduped));
+                  }
+                  matches = deduped.length > 0 ? deduped.map(mapMatch) : data.map(mapMatch);
+                } else {
+                  matches = [...matches, ...data.map(mapMatch)];
+                }
+                buildFilters();
+                renderMatchList();
+              } else if(page === 0 && matches.length === 0){
+                document.getElementById('match-list').innerHTML='<div style="padding:20px;text-align:center;color:var(--text-muted)">No matches yet. Add more courses and availability!</div>';
+              }
+              const btn = document.getElementById('find-more-btn');
+              if(btn) btn.style.display = data && data.length === 10 ? 'block' : 'none';
+            }).catch(()=>{ document.getElementById('match-list').innerHTML='<div style="padding:20px;text-align:center;color:#c62828">Could not load matches.</div>'; });
+  }
+
+  function openFindMore(){
+    if(!studentId) return;
+    // Check if user has courses
+    fetch('/api/courses?studentId='+studentId)
+            .then(r=>r.json())
+            .then(courses=>{
+              if(!courses || courses.length === 0){
+                showNiceAlert('Please add courses first before finding more matches!');
+                return;
+              }
+              // Check availability
+              fetch('/api/availability?studentId='+studentId)
+                      .then(r=>r.json())
+                      .then(avail=>{
+                        if(!avail || avail.length === 0){
+                          showNiceAlert('Please add your availability first before finding more matches!');
+                          return;
+                        }
+                        doFindMore();
+                      }).catch(()=>doFindMore());
+            }).catch(()=>doFindMore());
+  }
+
+  function showNiceAlert(msg){
+    document.getElementById('nice-alert-msg').textContent = msg;
+    document.getElementById('nice-alert-modal').classList.add('open');
+  }
+
+  function doFindMore(){
+    if(!studentId) return;
+    const btn = document.getElementById('find-more-btn');
+    if(btn){ btn.textContent='⏳ Finding more matches...'; btn.disabled=true; }
+    const nextPage = currentPage + 1;
+    fetch('/api/matches?studentId='+studentId+'&page='+nextPage)
+            .then(r=>r.json())
+            .then(data=>{
+              if(!data || data.length === 0){
+                alert('No more matches found! Try adding more courses or availability slots.');
+                document.getElementById('find-more-btn').style.display='none';
+                return;
+              }
+              // Filter out matches already in list
+              const existingIds = new Set(matches.map(m=>m.matchedStudentId));
+              pendingMoreMatches = data.map(mapMatch).filter(m=>!existingIds.has(m.matchedStudentId));
+              if(pendingMoreMatches.length === 0){
+                const b = document.getElementById('find-more-btn');
+                if(b){ b.textContent='🔄 Find More Matches'; b.disabled=false; }
+                showNiceAlert('No new matches found! Try adding more courses or availability.');
+                return;
+              }
+              const grid = document.getElementById('find-more-grid');
+              grid.innerHTML = pendingMoreMatches.map((m,i)=>`
         <div class="find-more-row" id="fmr-${i}" onclick="toggleFindMore(${i})">
           <div style="width:38px;height:38px;border-radius:50%;background:${m.color};display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.82rem;flex-shrink:0">${m.initials}</div>
           <div style="flex:1">
@@ -481,93 +481,93 @@ function doFindMore(){
           </div>
           <div style="background:#E8F5E9;color:#2E7D32;font-size:.72rem;font-weight:700;padding:2px 8px;border-radius:20px">${m.overlap}h</div>
         </div>`).join('');
-      const b = document.getElementById('find-more-btn');
-      if(b){ b.textContent='🔄 Find More Matches'; b.disabled=false; }
-      document.getElementById('find-more-modal').classList.add('open');
-      currentPage = nextPage;
-    }).catch(()=>{
+              const b = document.getElementById('find-more-btn');
+              if(b){ b.textContent='🔄 Find More Matches'; b.disabled=false; }
+              document.getElementById('find-more-modal').classList.add('open');
+              currentPage = nextPage;
+            }).catch(()=>{
       const b = document.getElementById('find-more-btn');
       if(b){ b.textContent='🔄 Find More Matches'; b.disabled=false; }
       alert('Could not load more matches.');
     });
-}
-
-function toggleFindMore(i){
-  const el = document.getElementById('fmr-'+i);
-  el.classList.toggle('selected');
-}
-
-function confirmFindMore(){
-  const selected = pendingMoreMatches.filter((_,i)=>document.getElementById('fmr-'+i)?.classList.contains('selected'));
-  if(selected.length === 0){ closeFindMore(); return; }
-  matches = [...matches, ...selected];
-  // Save to mm_picked_matches (single source of truth)
-  localStorage.setItem('mm_picked_matches_'+studentId, JSON.stringify(
-    matches.map(m=>({matchId:m.matchId,studentId:m.matchedStudentId,name:m.name,major:m.major,courseCode:m.course,overlapHours:m.overlap}))
-  ));
-  buildFilters();
-  renderMatchList();
-  const btn = document.getElementById('find-more-btn');
-  if(btn) btn.style.display = pendingMoreMatches.length === 10 ? 'block' : 'none';
-  closeFindMore();
-}
-
-function closeFindMore(){ document.getElementById('find-more-modal').classList.remove('open'); }
-
-function buildFilters(){
-  const bar = document.getElementById('filter-bar');
-  const chips = ['<div class="filter-chip active" onclick="filterBy(\'all\',this)">All</div>'];
-  const seen = new Set();
-  matches.forEach(m=>{ if(!seen.has(m.course)){ seen.add(m.course); chips.push(`<div class="filter-chip" onclick="filterBy('${m.course}',this)">${m.course}</div>`); } });
-  bar.innerHTML = chips.join('');
-}
-
-function removeMatch(idx){
-  if(activeMatch === idx){
-    activeMatch = null;
-    document.getElementById('chat-view').style.display='none';
-    document.getElementById('chat-empty').style.display='flex';
   }
-  matches.splice(idx, 1);
-  if(activeMatch !== null && activeMatch > idx) activeMatch--;
-  buildFilters();
-  renderMatchList();
-}
 
-function filterBy(f, el){
-  currentFilter = f;
-  document.querySelectorAll('.filter-chip').forEach(c=>c.classList.remove('active'));
-  el.classList.add('active');
-  renderMatchList();
-}
+  function toggleFindMore(i){
+    const el = document.getElementById('fmr-'+i);
+    el.classList.toggle('selected');
+  }
 
-function renderMatchList(){
-  const list = document.getElementById('match-list');
-  const filtered = currentFilter==='all' ? matches : matches.filter(m=>m.course===currentFilter);
-  if(filtered.length === 0){ list.innerHTML='<div style="padding:20px;text-align:center;color:var(--text-muted);font-size:.88rem">No matches found.</div>'; return; }
-  // Set unread for dummy matches with messages that haven't been read
-  matches.forEach((m,idx)=>{
-    if(idx === activeMatch) return;
-    const isDummy = m.matchedStudentId && m.matchedStudentId <= 100;
-    if(!isDummy) return;
-    const msgs = getChat(idx).filter(msg=>!msg.cleared);
-    const uk = 'unread_' + studentId + '_' + idx;
-    const hasUnread = parseInt(localStorage.getItem(uk)||'0');
-    const hasTheirMsg = msgs.some(msg=>!msg.mine);
-    const seenKey = 'seen_' + studentId + '_' + idx;
-    const seen = localStorage.getItem(seenKey);
-    if(hasTheirMsg && !seen && !hasUnread){
-      localStorage.setItem(uk, '1');
+  function confirmFindMore(){
+    const selected = pendingMoreMatches.filter((_,i)=>document.getElementById('fmr-'+i)?.classList.contains('selected'));
+    if(selected.length === 0){ closeFindMore(); return; }
+    matches = [...matches, ...selected];
+    // Save to mm_picked_matches (single source of truth)
+    localStorage.setItem('mm_picked_matches_'+studentId, JSON.stringify(
+            matches.map(m=>({matchId:m.matchId,studentId:m.matchedStudentId,name:m.name,major:m.major,courseCode:m.course,overlapHours:m.overlap}))
+    ));
+    buildFilters();
+    renderMatchList();
+    const btn = document.getElementById('find-more-btn');
+    if(btn) btn.style.display = pendingMoreMatches.length === 10 ? 'block' : 'none';
+    closeFindMore();
+  }
+
+  function closeFindMore(){ document.getElementById('find-more-modal').classList.remove('open'); }
+
+  function buildFilters(){
+    const bar = document.getElementById('filter-bar');
+    const chips = ['<div class="filter-chip active" onclick="filterBy(\'all\',this)">All</div>'];
+    const seen = new Set();
+    matches.forEach(m=>{ if(!seen.has(m.course)){ seen.add(m.course); chips.push(`<div class="filter-chip" onclick="filterBy('${m.course}',this)">${m.course}</div>`); } });
+    bar.innerHTML = chips.join('');
+  }
+
+  function removeMatch(idx){
+    if(activeMatch === idx){
+      activeMatch = null;
+      document.getElementById('chat-view').style.display='none';
+      document.getElementById('chat-empty').style.display='flex';
     }
-  });
-  list.innerHTML = filtered.map((m,i)=>{
-    const idx = matches.indexOf(m);
-    const msgs = getChat(idx);
-    const last = msgs[msgs.length-1];
-    const lastText = last ? (last.type==='meeting' ? '📆 Study session requested' : last.text) : 'Start a conversation...';
-    const unreadKey = 'unread_' + studentId + '_' + idx;
-    const unreadCount = parseInt(localStorage.getItem(unreadKey)||'0');
-    return `<div class="match-row ${activeMatch===idx?'active':''}" onclick="selectMatch(${idx})" style="position:relative">
+    matches.splice(idx, 1);
+    if(activeMatch !== null && activeMatch > idx) activeMatch--;
+    buildFilters();
+    renderMatchList();
+  }
+
+  function filterBy(f, el){
+    currentFilter = f;
+    document.querySelectorAll('.filter-chip').forEach(c=>c.classList.remove('active'));
+    el.classList.add('active');
+    renderMatchList();
+  }
+
+  function renderMatchList(){
+    const list = document.getElementById('match-list');
+    const filtered = currentFilter==='all' ? matches : matches.filter(m=>m.course===currentFilter);
+    if(filtered.length === 0){ list.innerHTML='<div style="padding:20px;text-align:center;color:var(--text-muted);font-size:.88rem">No matches found.</div>'; return; }
+    // Set unread for dummy matches with messages that haven't been read
+    matches.forEach((m,idx)=>{
+      if(idx === activeMatch) return;
+      const isDummy = m.matchedStudentId && m.matchedStudentId <= 100;
+      if(!isDummy) return;
+      const msgs = getChat(idx).filter(msg=>!msg.cleared);
+      const uk = 'unread_' + studentId + '_' + idx;
+      const hasUnread = parseInt(localStorage.getItem(uk)||'0');
+      const hasTheirMsg = msgs.some(msg=>!msg.mine);
+      const seenKey = 'seen_' + studentId + '_' + idx;
+      const seen = localStorage.getItem(seenKey);
+      if(hasTheirMsg && !seen && !hasUnread){
+        localStorage.setItem(uk, '1');
+      }
+    });
+    list.innerHTML = filtered.map((m,i)=>{
+      const idx = matches.indexOf(m);
+      const msgs = getChat(idx);
+      const last = msgs[msgs.length-1];
+      const lastText = last ? (last.type==='meeting' ? '📆 Study session requested' : last.text) : 'Start a conversation...';
+      const unreadKey = 'unread_' + studentId + '_' + idx;
+      const unreadCount = parseInt(localStorage.getItem(unreadKey)||'0');
+      return `<div class="match-row ${activeMatch===idx?'active':''}" onclick="selectMatch(${idx})" style="position:relative">
       <div class="m-av" style="background:${m.color}">${m.initials}</div>
       <div class="match-row-info">
         <div class="match-row-name">${m.name}</div>
@@ -575,48 +575,48 @@ function renderMatchList(){
       </div>
       ${unreadCount > 0 ? `<div style="background:#E53935;color:#fff;font-size:.65rem;font-weight:800;width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0">${unreadCount}</div>` : `<div class="overlap-pill">${m.overlap}h</div>`}
     </div>`;
-  }).join('');
-}
-
-function selectMatch(idx){
-  activeMatch = idx;
-  renderMatchList();
-  const m = matches[idx];
-  document.getElementById('chat-empty').style.display='none';
-  const cv = document.getElementById('chat-view');
-  cv.style.cssText='display:flex;flex-direction:column;flex:1;min-height:0;max-height:100%;overflow:hidden;height:100%';
-  document.getElementById('chat-av').textContent = m.initials;
-  document.getElementById('chat-av').style.background = m.color;
-  document.getElementById('chat-name').textContent = m.name;
-  document.getElementById('chat-sub').textContent = m.major + ' · ' + m.course + ' · ' + m.overlap + 'h overlap/week';
-  document.getElementById('s-course').value = m.course;
-  localStorage.removeItem('unread_' + studentId + '_' + idx);
-  localStorage.setItem('seen_' + studentId + '_' + idx, '1');
-  document.getElementById('header-menu').style.display='none';
-
-  // Only show demo messages for dummy/seeded accounts (id <= 100) and only if chat was never opened
-  const existingChat = getChat(idx);
-  const wasCleared = existingChat.length > 0 && existingChat[0].cleared;
-  const isDummy = m.matchedStudentId && m.matchedStudentId <= 100;
-  if(existingChat.length === 0 && isDummy && !wasCleared){
-    // Only show ONE opener message from them
-    const demoMsgs = [
-      {sender:m.name, text:'Hey! Saw we matched for '+m.course+'. Want to study together?', time:fmtTime(new Date(Date.now()-3600000)), mine:false},
-    ];
-    saveChat(idx, demoMsgs);
-    // Don't set unread here - user is opening the chat now, so they'll see it
+    }).join('');
   }
-  renderMessages(idx);
-  startPolling(idx);
-}
 
-function renderMessages(idx){
-  const cont = document.getElementById('chat-messages');
-  const m = matches[idx];
-  const msgs = getChat(idx).filter(msg=>!msg.cleared);
-  cont.innerHTML = msgs.map((msg, msgIdx)=>{
-    if(msg.type==='meeting'){
-      return `<div class="msg ${msg.mine?'mine':'theirs'}">
+  function selectMatch(idx){
+    activeMatch = idx;
+    renderMatchList();
+    const m = matches[idx];
+    document.getElementById('chat-empty').style.display='none';
+    const cv = document.getElementById('chat-view');
+    cv.style.cssText='display:flex;flex-direction:column;flex:1;min-height:0;max-height:100%;overflow:hidden;height:100%';
+    document.getElementById('chat-av').textContent = m.initials;
+    document.getElementById('chat-av').style.background = m.color;
+    document.getElementById('chat-name').textContent = m.name;
+    document.getElementById('chat-sub').textContent = m.major + ' · ' + m.course + ' · ' + m.overlap + 'h overlap/week';
+    document.getElementById('s-course').value = m.course;
+    localStorage.removeItem('unread_' + studentId + '_' + idx);
+    localStorage.setItem('seen_' + studentId + '_' + idx, '1');
+    document.getElementById('header-menu').style.display='none';
+
+    // Only show demo messages for dummy/seeded accounts (id <= 100) and only if chat was never opened
+    const existingChat = getChat(idx);
+    const wasCleared = existingChat.length > 0 && existingChat[0].cleared;
+    const isDummy = m.matchedStudentId && m.matchedStudentId <= 100;
+    if(existingChat.length === 0 && isDummy && !wasCleared){
+      // Only show ONE opener message from them
+      const demoMsgs = [
+        {sender:m.name, text:'Hey! Saw we matched for '+m.course+'. Want to study together?', time:fmtTime(new Date(Date.now()-3600000)), mine:false},
+      ];
+      saveChat(idx, demoMsgs);
+      // Don't set unread here - user is opening the chat now, so they'll see it
+    }
+    renderMessages(idx);
+    startPolling(idx);
+  }
+
+  function renderMessages(idx){
+    const cont = document.getElementById('chat-messages');
+    const m = matches[idx];
+    const msgs = getChat(idx).filter(msg=>!msg.cleared);
+    cont.innerHTML = msgs.map((msg, msgIdx)=>{
+      if(msg.type==='meeting'){
+        return `<div class="msg ${msg.mine?'mine':'theirs'}">
         ${!msg.mine?`<div class="msg-av" style="background:${m.color}">${m.initials}</div>`:''}
         <div class="msg-content">
           <div class="msg-sender">${msg.mine?'You':m.name}</div>
@@ -631,8 +631,8 @@ function renderMessages(idx){
         </div>
         ${msg.mine?`<div class="msg-av" style="background:${getMyColor()}">${myInitials}</div>`:''}
       </div>`;
-    }
-    return `<div class="msg ${msg.mine?'mine':'theirs'}">
+      }
+      return `<div class="msg ${msg.mine?'mine':'theirs'}">
       ${!msg.mine?`<div class="msg-av" style="background:${m.color}">${m.initials}</div>`:''}
       <div class="msg-content">
         <div class="msg-sender">${msg.mine?'You':m.name}</div>
@@ -644,277 +644,277 @@ function renderMessages(idx){
       </div>
       ${msg.mine?`<div class="msg-av" style="background:${getMyColor()}">${myInitials}</div>`:''}
     </div>`;
-  }).join('');
-  cont.scrollTop = cont.scrollHeight;
-}
+    }).join('');
+    cont.scrollTop = cont.scrollHeight;
+  }
 
-function fmtTime(d){
-  d = d || new Date();
-  const h=d.getHours()%12||12, m=String(d.getMinutes()).padStart(2,'0');
-  return h+':'+m+' '+(d.getHours()>=12?'PM':'AM');
-}
+  function fmtTime(d){
+    d = d || new Date();
+    const h=d.getHours()%12||12, m=String(d.getMinutes()).padStart(2,'0');
+    return h+':'+m+' '+(d.getHours()>=12?'PM':'AM');
+  }
 
-function sendMsg(){
-  const inp = document.getElementById('chat-input');
-  const text = inp.value.trim();
-  if(!text || activeMatch===null) return;
-  const m = matches[activeMatch];
-  const idx = activeMatch;
+  function sendMsg(){
+    const inp = document.getElementById('chat-input');
+    const text = inp.value.trim();
+    if(!text || activeMatch===null) return;
+    const m = matches[activeMatch];
+    const idx = activeMatch;
 
-  // Real users (id > 100) — save to database
-  if(m.matchedStudentId && m.matchedStudentId > 100 && m.matchId){
+    // Real users (id > 100) — save to database
+    if(m.matchedStudentId && m.matchedStudentId > 100 && m.matchId){
+      inp.value='';
+      fetch('/api/messages',{method:'POST',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({matchId:m.matchId, senderId:parseInt(studentId), content:text})
+      }).then(r=>r.json()).then(data=>{
+        if(data.id){
+          const msgs=getChat(idx);
+          msgs.push({dbId:data.id,sender:'me',text,time:fmtTime(),mine:true});
+          saveChat(idx,msgs);
+          if(activeMatch===idx){ renderMessages(idx); renderMatchList(); }
+        }
+      }).catch(()=>{});
+      return;
+    }
+
+    // Bot accounts (id <= 100) — localStorage only
+    const msgs = getChat(activeMatch);
+    msgs.push({sender:'me', text, time:fmtTime(), mine:true});
+    saveChat(activeMatch, msgs);
     inp.value='';
-    fetch('/api/messages',{method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({matchId:m.matchId, senderId:parseInt(studentId), content:text})
-    }).then(r=>r.json()).then(data=>{
-      if(data.id){
-        const msgs=getChat(idx);
-        msgs.push({dbId:data.id,sender:'me',text,time:fmtTime(),mine:true});
-        saveChat(idx,msgs);
-        if(activeMatch===idx){ renderMessages(idx); renderMatchList(); }
-      }
-    }).catch(()=>{});
-    return;
+    renderMessages(activeMatch);
+    renderMatchList();
+    const replies = ['Sounds good! When works for you?','Yes definitely, free this week.','Lets meet at the library!','That works for me!','Can we do mornings?','I will be there!'];
+    if(m.matchedStudentId && m.matchedStudentId <= 100){
+      setTimeout(()=>{
+        const msgs2 = getChat(idx);
+        msgs2.push({sender:m.name,text:replies[Math.floor(Math.random()*replies.length)],time:fmtTime(),mine:false});
+        saveChat(idx,msgs2);
+        if(activeMatch===idx){ renderMessages(idx); }
+        else {
+          const uk='unread_'+studentId+'_'+idx;
+          localStorage.setItem(uk,(parseInt(localStorage.getItem(uk)||'0')+1).toString());
+        }
+        renderMatchList();
+      }, 1200);
+    }
+  }
+  function handleKey(e){ if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMsg();} }
+
+  // Header menu (block/clear)
+  function toggleHeaderMenu(){
+    const menu = document.getElementById('header-menu');
+    menu.style.display = menu.style.display==='none' ? 'block' : 'none';
+  }
+  document.addEventListener('click', function(e){
+    if(!e.target.closest('#header-menu') && !e.target.closest('#chat-name')) document.getElementById('header-menu').style.display='none';
+  });
+
+  function clearChat(){
+    if(activeMatch===null) return;
+    document.getElementById('header-menu').style.display='none';
+    document.getElementById('clear-modal').classList.add('open');
+  }
+  function confirmClear(){
+    saveChat(activeMatch,[{cleared:true}]);
+    renderMessages(activeMatch);
+    renderMatchList();
+    document.getElementById('clear-modal').classList.remove('open');
   }
 
-  // Bot accounts (id <= 100) — localStorage only
-  const msgs = getChat(activeMatch);
-  msgs.push({sender:'me', text, time:fmtTime(), mine:true});
-  saveChat(activeMatch, msgs);
-  inp.value='';
-  renderMessages(activeMatch);
-  renderMatchList();
-  const replies = ['Sounds good! When works for you?','Yes definitely, free this week.','Lets meet at the library!','That works for me!','Can we do mornings?','I will be there!'];
-  if(m.matchedStudentId && m.matchedStudentId <= 100){
-    setTimeout(()=>{
-      const msgs2 = getChat(idx);
-      msgs2.push({sender:m.name,text:replies[Math.floor(Math.random()*replies.length)],time:fmtTime(),mine:false});
-      saveChat(idx,msgs2);
-      if(activeMatch===idx){ renderMessages(idx); }
-      else {
-        const uk='unread_'+studentId+'_'+idx;
-        localStorage.setItem(uk,(parseInt(localStorage.getItem(uk)||'0')+1).toString());
-      }
-      renderMatchList();
-    }, 1200);
+  function confirmRemoveMatch(){
+    if(activeMatch===null) return;
+    document.getElementById('remove-match-name').textContent = matches[activeMatch].name;
+    document.getElementById('header-menu').style.display='none';
+    document.getElementById('remove-match-modal').classList.add('open');
   }
-}
-function handleKey(e){ if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMsg();} }
-
-// Header menu (block/clear)
-function toggleHeaderMenu(){
-  const menu = document.getElementById('header-menu');
-  menu.style.display = menu.style.display==='none' ? 'block' : 'none';
-}
-document.addEventListener('click', function(e){
-  if(!e.target.closest('#header-menu') && !e.target.closest('#chat-name')) document.getElementById('header-menu').style.display='none';
-});
-
-function clearChat(){
-  if(activeMatch===null) return;
-  document.getElementById('header-menu').style.display='none';
-  document.getElementById('clear-modal').classList.add('open');
-}
-function confirmClear(){
-  saveChat(activeMatch,[{cleared:true}]);
-  renderMessages(activeMatch);
-  renderMatchList();
-  document.getElementById('clear-modal').classList.remove('open');
-}
-
-function confirmRemoveMatch(){
-  if(activeMatch===null) return;
-  document.getElementById('remove-match-name').textContent = matches[activeMatch].name;
-  document.getElementById('header-menu').style.display='none';
-  document.getElementById('remove-match-modal').classList.add('open');
-}
-function doRemoveMatch(){
-  if(activeMatch===null) return;
-  // Remove from matches array
-  matches.splice(activeMatch, 1);
-  // Update localStorage
-  if(studentId){
-    const saved = matches.map(m=>({matchId:m.matchId,studentId:m.matchedStudentId,name:m.name,major:m.major,courseCode:m.course,overlapHours:m.overlap}));
-    localStorage.setItem('mm_picked_matches_'+studentId, JSON.stringify(saved));
-  }
-  activeMatch = null;
-  document.getElementById('chat-view').style.display='none';
-  document.getElementById('chat-empty').style.display='flex';
-  buildFilters();
-  renderMatchList();
-  document.getElementById('remove-match-modal').classList.remove('open');
-  // Update stat in sessionStorage so dashboard refreshes
-  sessionStorage.setItem('matches_updated', '1');
-}
-
-function confirmBlock(){
-  if(activeMatch===null) return;
-  const m = matches[activeMatch];
-  blockingStudentId = m.matchedStudentId;
-  document.getElementById('block-name-display').textContent = m.name;
-  document.getElementById('header-menu').style.display='none';
-  document.getElementById('block-modal').classList.add('open');
-}
-
-function blockUser(){
-  if(!blockingStudentId || !studentId) return;
-  fetch('/api/block', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({blockerId:parseInt(studentId), blockedId:blockingStudentId}) })
-    .then(r=>r.json())
-    .then(()=>{
-      matches = matches.filter(m=>m.matchedStudentId !== blockingStudentId);
-      // Save blocked ID to localStorage so it persists on refresh
-      const blockedKey = 'mm_blocked_'+studentId;
-      const blocked = JSON.parse(localStorage.getItem(blockedKey)||'[]');
-      if(!blocked.includes(blockingStudentId)) blocked.push(blockingStudentId);
-      localStorage.setItem(blockedKey, JSON.stringify(blocked));
-      // Update picked matches
+  function doRemoveMatch(){
+    if(activeMatch===null) return;
+    // Remove from matches array
+    matches.splice(activeMatch, 1);
+    // Update localStorage
+    if(studentId){
       const saved = matches.map(m=>({matchId:m.matchId,studentId:m.matchedStudentId,name:m.name,major:m.major,courseCode:m.course,overlapHours:m.overlap}));
       localStorage.setItem('mm_picked_matches_'+studentId, JSON.stringify(saved));
-      activeMatch = null;
-      document.getElementById('chat-view').style.display='none';
-      document.getElementById('chat-empty').style.display='flex';
-      buildFilters();
-      renderMatchList();
-      closeBlock();
-    }).catch(()=>{ closeBlock(); showNiceAlert('Block failed. Please try again.'); });
-}
-
-function closeBlock(){ document.getElementById('block-modal').classList.remove('open'); }
-
-// Report
-function openReport(msgIdx){
-  reportingMsgId = msgIdx;
-  document.getElementById('report-reason').value='';
-  document.getElementById('report-details').value='';
-  document.getElementById('report-modal').classList.add('open');
-}
-
-function closeReport(){ document.getElementById('report-modal').classList.remove('open'); }
-
-function submitReport(){
-  const reason = document.getElementById('report-reason').value;
-  if(!reason){ alert('Please select a reason.'); return; }
-  const details = document.getElementById('report-details').value;
-  const msgs = getChat(activeMatch);
-  const msg = msgs[reportingMsgId];
-  const m = matches[activeMatch];
-  if(msg){
-    if(msg.dbId){
-      // Real message - report by ID
-      fetch('/api/messages/report', {method:'POST', headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({messageId:msg.dbId, reason:reason+(details?' — '+details:'')})
-      }).catch(()=>{});
-    } else {
-      // Bot/localStorage message - report by content
-      fetch('/api/messages/report-content', {method:'POST', headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({
-          content: msg.text,
-          senderName: m ? m.name : 'Unknown',
-          reporterId: parseInt(studentId),
-          reason: reason+(details?' — '+details:'')
-        })
-      }).catch(()=>{});
     }
+    activeMatch = null;
+    document.getElementById('chat-view').style.display='none';
+    document.getElementById('chat-empty').style.display='flex';
+    buildFilters();
+    renderMatchList();
+    document.getElementById('remove-match-modal').classList.remove('open');
+    // Update stat in sessionStorage so dashboard refreshes
+    sessionStorage.setItem('matches_updated', '1');
   }
-  closeReport();
-  document.getElementById('report-success-modal').classList.add('open');
-}
 
-// Schedule
-function updateDayFromDate(){
-  const dateVal = document.getElementById('s-date').value;
-  if(!dateVal) return;
-  const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-  const day = days[new Date(dateVal + 'T12:00:00').getDay()];
-  document.getElementById('s-day').value = day;
-}
-function openSchedule(){
-  const today = new Date().toISOString().split('T')[0];
-  document.getElementById('s-date').min = today;
-  // Set min time if today is selected
-  document.getElementById('s-date').oninput = function(){
-    updateDayFromDate();
-    const now = new Date();
-    const todayStr = now.toISOString().split('T')[0];
-    const timeInput = document.getElementById('s-time');
-    if(this.value === todayStr){
-      const hh = String(now.getHours()).padStart(2,'0');
-      const mm = String(now.getMinutes()).padStart(2,'0');
-      timeInput.min = hh+':'+mm;
-    } else {
-      timeInput.min = '';
+  function confirmBlock(){
+    if(activeMatch===null) return;
+    const m = matches[activeMatch];
+    blockingStudentId = m.matchedStudentId;
+    document.getElementById('block-name-display').textContent = m.name;
+    document.getElementById('header-menu').style.display='none';
+    document.getElementById('block-modal').classList.add('open');
+  }
+
+  function blockUser(){
+    if(!blockingStudentId || !studentId) return;
+    fetch('/api/block', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({blockerId:parseInt(studentId), blockedId:blockingStudentId}) })
+            .then(r=>r.json())
+            .then(()=>{
+              matches = matches.filter(m=>m.matchedStudentId !== blockingStudentId);
+              // Save blocked ID to localStorage so it persists on refresh
+              const blockedKey = 'mm_blocked_'+studentId;
+              const blocked = JSON.parse(localStorage.getItem(blockedKey)||'[]');
+              if(!blocked.includes(blockingStudentId)) blocked.push(blockingStudentId);
+              localStorage.setItem(blockedKey, JSON.stringify(blocked));
+              // Update picked matches
+              const saved = matches.map(m=>({matchId:m.matchId,studentId:m.matchedStudentId,name:m.name,major:m.major,courseCode:m.course,overlapHours:m.overlap}));
+              localStorage.setItem('mm_picked_matches_'+studentId, JSON.stringify(saved));
+              activeMatch = null;
+              document.getElementById('chat-view').style.display='none';
+              document.getElementById('chat-empty').style.display='flex';
+              buildFilters();
+              renderMatchList();
+              closeBlock();
+            }).catch(()=>{ closeBlock(); showNiceAlert('Block failed. Please try again.'); });
+  }
+
+  function closeBlock(){ document.getElementById('block-modal').classList.remove('open'); }
+
+  // Report
+  function openReport(msgIdx){
+    reportingMsgId = msgIdx;
+    document.getElementById('report-reason').value='';
+    document.getElementById('report-details').value='';
+    document.getElementById('report-modal').classList.add('open');
+  }
+
+  function closeReport(){ document.getElementById('report-modal').classList.remove('open'); }
+
+  function submitReport(){
+    const reason = document.getElementById('report-reason').value;
+    if(!reason){ alert('Please select a reason.'); return; }
+    const details = document.getElementById('report-details').value;
+    const msgs = getChat(activeMatch);
+    const msg = msgs[reportingMsgId];
+    const m = matches[activeMatch];
+    if(msg){
+      if(msg.dbId){
+        // Real message - report by ID
+        fetch('/api/messages/report', {method:'POST', headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({messageId:msg.dbId, reason:reason+(details?' — '+details:'')})
+        }).catch(()=>{});
+      } else {
+        // Bot/localStorage message - report by content
+        fetch('/api/messages/report-content', {method:'POST', headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({
+            content: msg.text,
+            senderName: m ? m.name : 'Unknown',
+            reporterId: parseInt(studentId),
+            reason: reason+(details?' — '+details:'')
+          })
+        }).catch(()=>{});
+      }
     }
-  };
-  document.getElementById('sched-modal').classList.add('open');
-}
-function closeSchedule(){ document.getElementById('sched-modal').classList.remove('open'); }
-function sendSchedule(){
-  ['s-course-err','s-date-err','s-loc-err'].forEach(e=>document.getElementById(e).style.display='none');
-  const course=document.getElementById('s-course').value.trim();
-  const date=document.getElementById('s-date').value;
-  const location=document.getElementById('s-location').value.trim();
-  let ok=true;
-  if(!course){document.getElementById('s-course-err').style.display='block';ok=false}
-  if(!date){document.getElementById('s-date-err').style.display='block';ok=false}
-  if(!location){document.getElementById('s-loc-err').style.display='block';ok=false}
-  if(!ok) return;
-  const [h,min]=document.getElementById('s-time').value.split(':');
-  const hr=parseInt(h);
-  const meetTime=(hr>12?hr-12:hr)+':'+(min||'00')+' '+(hr>=12?'PM':'AM');
-  updateDayFromDate(); const day=document.getElementById('s-day').value||'TBD';
-  const note=document.getElementById('s-note').value.trim();
-  const msgs = getChat(activeMatch);
-  msgs.push({type:'meeting', course, date, meetTime, day, location, note, mine:true, time:fmtTime()});
-  saveChat(activeMatch, msgs);
+    closeReport();
+    document.getElementById('report-success-modal').classList.add('open');
+  }
 
-  // Save to API so it shows in meetings tab
-  if(studentId && matches[activeMatch]){
-    const matchedId = matches[activeMatch].matchedStudentId;
-    const meetingData = {
-      studentId: parseInt(studentId),
-      partner: matches[activeMatch].name,
-      receiverId: matchedId > 100 ? matchedId : null,
-      course: course,
-      date: date,
-      day: day,
-      time: meetTime,
-      duration: '1 hour',
-      location: location,
-      notes: note
+  // Schedule
+  function updateDayFromDate(){
+    const dateVal = document.getElementById('s-date').value;
+    if(!dateVal) return;
+    const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+    const day = days[new Date(dateVal + 'T12:00:00').getDay()];
+    document.getElementById('s-day').value = day;
+  }
+  function openSchedule(){
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('s-date').min = today;
+    // Set min time if today is selected
+    document.getElementById('s-date').oninput = function(){
+      updateDayFromDate();
+      const now = new Date();
+      const todayStr = now.toISOString().split('T')[0];
+      const timeInput = document.getElementById('s-time');
+      if(this.value === todayStr){
+        const hh = String(now.getHours()).padStart(2,'0');
+        const mm = String(now.getMinutes()).padStart(2,'0');
+        timeInput.min = hh+':'+mm;
+      } else {
+        timeInput.min = '';
+      }
     };
-    fetch('/api/meetings', {
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify(meetingData)
-    }).then(r=>r.json())
-      .then(data=>console.log('Meeting saved:', data))
-      .catch(e=>console.error('Meeting save failed:', e));
+    document.getElementById('sched-modal').classList.add('open');
+  }
+  function closeSchedule(){ document.getElementById('sched-modal').classList.remove('open'); }
+  function sendSchedule(){
+    ['s-course-err','s-date-err','s-loc-err'].forEach(e=>document.getElementById(e).style.display='none');
+    const course=document.getElementById('s-course').value.trim();
+    const date=document.getElementById('s-date').value;
+    const location=document.getElementById('s-location').value.trim();
+    let ok=true;
+    if(!course){document.getElementById('s-course-err').style.display='block';ok=false}
+    if(!date){document.getElementById('s-date-err').style.display='block';ok=false}
+    if(!location){document.getElementById('s-loc-err').style.display='block';ok=false}
+    if(!ok) return;
+    const [h,min]=document.getElementById('s-time').value.split(':');
+    const hr=parseInt(h);
+    const meetTime=(hr>12?hr-12:hr)+':'+(min||'00')+' '+(hr>=12?'PM':'AM');
+    updateDayFromDate(); const day=document.getElementById('s-day').value||'TBD';
+    const note=document.getElementById('s-note').value.trim();
+    const msgs = getChat(activeMatch);
+    msgs.push({type:'meeting', course, date, meetTime, day, location, note, mine:true, time:fmtTime()});
+    saveChat(activeMatch, msgs);
+
+    // Save to API so it shows in meetings tab
+    if(studentId && matches[activeMatch]){
+      const matchedId = matches[activeMatch].matchedStudentId;
+      const meetingData = {
+        studentId: parseInt(studentId),
+        partner: matches[activeMatch].name,
+        receiverId: matchedId > 100 ? matchedId : null,
+        course: course,
+        date: date,
+        day: day,
+        time: meetTime,
+        duration: '1 hour',
+        location: location,
+        notes: note
+      };
+      fetch('/api/meetings', {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify(meetingData)
+      }).then(r=>r.json())
+              .then(data=>console.log('Meeting saved:', data))
+              .catch(e=>console.error('Meeting save failed:', e));
+    }
+
+    closeSchedule();
+    renderMessages(activeMatch);
+    renderMatchList();
   }
 
-  closeSchedule();
-  renderMessages(activeMatch);
-  renderMatchList();
-}
+  document.getElementById('sched-modal').addEventListener('click',function(e){if(e.target===this)closeSchedule()});
+  document.getElementById('report-modal').addEventListener('click',function(e){if(e.target===this)closeReport()});
+  document.getElementById('block-modal').addEventListener('click',function(e){if(e.target===this)closeBlock()});
+  document.getElementById('remove-match-modal').addEventListener('click',function(e){if(e.target===this)this.classList.remove('open')});
+  document.getElementById('find-more-modal').addEventListener('click',function(e){if(e.target===this)closeFindMore()});
+  document.getElementById('report-success-modal').addEventListener('click',function(e){if(e.target===this)this.classList.remove('open')});
+  document.getElementById('nice-alert-modal').addEventListener('click',function(e){if(e.target===this)this.classList.remove('open')});
 
-document.getElementById('sched-modal').addEventListener('click',function(e){if(e.target===this)closeSchedule()});
-document.getElementById('report-modal').addEventListener('click',function(e){if(e.target===this)closeReport()});
-document.getElementById('block-modal').addEventListener('click',function(e){if(e.target===this)closeBlock()});
-document.getElementById('remove-match-modal').addEventListener('click',function(e){if(e.target===this)this.classList.remove('open')});
-document.getElementById('find-more-modal').addEventListener('click',function(e){if(e.target===this)closeFindMore()});
-document.getElementById('report-success-modal').addEventListener('click',function(e){if(e.target===this)this.classList.remove('open')});
-document.getElementById('nice-alert-modal').addEventListener('click',function(e){if(e.target===this)this.classList.remove('open')});
-
-loadMatches(0);
-function logOut(){
-  const sid = localStorage.getItem('mm_studentId');
-  // Keep per-user data, only clear session keys
-  const keysToKeep = ['mm_blocked_'+sid, 'mm_picked_matches_'+sid];
-  const preserved = {};
-  keysToKeep.forEach(k=>{ const v=localStorage.getItem(k); if(v) preserved[k]=v; });
-  localStorage.clear();
-  Object.keys(preserved).forEach(k=>localStorage.setItem(k,preserved[k]));
-  window.location.href='login.html';
-}
+  loadMatches(0);
+  function logOut(){
+    const sid = localStorage.getItem('mm_studentId');
+    // Keep per-user data, only clear session keys
+    const keysToKeep = ['mm_blocked_'+sid, 'mm_picked_matches_'+sid];
+    const preserved = {};
+    keysToKeep.forEach(k=>{ const v=localStorage.getItem(k); if(v) preserved[k]=v; });
+    localStorage.clear();
+    Object.keys(preserved).forEach(k=>localStorage.setItem(k,preserved[k]));
+    window.location.href='login.html';
+  }
 </script>
 </body>
 </html>

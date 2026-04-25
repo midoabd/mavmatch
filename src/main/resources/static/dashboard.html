@@ -1,95 +1,95 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Dashboard – MavMatch</title>
-<script src="courses_db.js"></script>
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
-<style>
-  *{margin:0;padding:0;box-sizing:border-box}
-  :root{--blue:#1565C0;--blue-dark:#0D47A1;--orange:#F57C00;--orange-bright:#FF6F00;--white:#fff;--bg:#F0F4FF;--border:#E2E8F0;--text:#1e293b;--text-muted:#64748b;--radius:12px;--shadow:0 4px 24px rgba(21,101,192,.10)}
-  body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column}
-  nav{background:var(--white);border-bottom:1.5px solid var(--border);padding:0 5%;display:flex;align-items:center;justify-content:space-between;height:64px;box-shadow:0 2px 12px rgba(21,101,192,.07);position:sticky;top:0;z-index:50}
-  .logo{display:flex;align-items:center;gap:8px;text-decoration:none}
-  .logo-text{font-family:'Nunito',sans-serif;font-size:1.4rem;font-weight:900;color:#0D47A1}
-  .logo-text span{color:var(--orange)}
-  .nav-right{display:flex;align-items:center;gap:16px}
-  .user-chip{display:flex;align-items:center;gap:8px;background:var(--bg);border:1.5px solid var(--border);border-radius:24px;padding:5px 14px 5px 8px}
-  .user-avatar{width:30px;height:30px;border-radius:50%;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;font-size:.78rem;font-weight:800}
-  .btn-logout{font-size:.85rem;color:var(--text-muted);text-decoration:none;padding:6px 12px;border-radius:6px;border:1px solid var(--border)}
-  .btn-logout:hover{background:#fff2f2;color:#c62828}
-  .app{display:flex;flex:1}
-  .sidebar{width:220px;background:var(--white);border-right:1.5px solid var(--border);padding:24px 0;flex-shrink:0}
-  .nav-item{display:flex;align-items:center;gap:10px;padding:10px 22px;font-size:.92rem;font-weight:600;color:var(--text-muted);text-decoration:none;transition:.15s}
-  .nav-item:hover{background:var(--bg);color:var(--blue)}
-  .nav-item.active{background:#E3F2FD;color:var(--blue);border-right:3px solid var(--blue)}
-  .nav-icon{font-size:1.1rem;width:22px;text-align:center}
-  .sidebar-section{font-size:.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);padding:16px 22px 6px}
-  .content{flex:1;padding:32px 5%;overflow-y:auto}
-  .welcome{background:linear-gradient(135deg,var(--blue-dark),var(--blue));border-radius:16px;padding:28px 32px;color:#fff;margin-bottom:28px;display:flex;justify-content:space-between;align-items:center}
-  .welcome h2{font-family:'Nunito',sans-serif;font-size:1.5rem;font-weight:900;margin-bottom:4px}
-  .welcome p{font-size:.9rem;opacity:.85}
-  .btn-white-sm{background:#fff;color:var(--blue-dark);border:none;padding:10px 20px;border-radius:8px;font-size:.9rem;font-weight:700;cursor:pointer;transition:.2s;white-space:nowrap}
-  .btn-white-sm:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,.15)}
-  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:28px}
-  .stat{background:var(--white);border-radius:var(--radius);padding:18px 20px;border:1.5px solid var(--border)}
-  .stat-val{font-family:'Nunito',sans-serif;font-size:1.8rem;font-weight:900;color:var(--blue-dark)}
-  .stat-label{font-size:.8rem;color:var(--text-muted);margin-top:2px}
-  .section-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
-  .section-title{font-family:'Nunito',sans-serif;font-size:1.1rem;font-weight:800;color:var(--blue-dark)}
-  .see-all{font-size:.85rem;color:var(--blue);font-weight:600;cursor:pointer;background:none;border:none;text-decoration:none}
-  .courses-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px;margin-bottom:28px}
-  .course-card{background:var(--white);border-radius:var(--radius);padding:18px 20px;border:1.5px solid var(--border);transition:.2s}
-  .course-card:hover{box-shadow:var(--shadow);transform:translateY(-2px)}
-  .course-id{font-family:'Nunito',sans-serif;font-size:1rem;font-weight:900;color:var(--blue-dark);margin-bottom:4px}
-  .course-name-text{font-size:.82rem;color:var(--text-muted);margin-bottom:12px}
-  .course-meta{display:flex;justify-content:space-between;align-items:center}
-  .match-pill{background:#E3F2FD;color:var(--blue);font-size:.75rem;font-weight:700;padding:3px 10px;border-radius:20px}
-  .remove-btn{font-size:.72rem;color:#c62828;background:none;border:none;cursor:pointer;padding:2px 6px;border-radius:4px}
-  .remove-btn:hover{background:#fff2f2}
-  .add-course-card{background:var(--white);border-radius:var(--radius);padding:18px 20px;border:2px dashed var(--border);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;cursor:pointer;min-height:96px;transition:.2s}
-  .add-course-card:hover{border-color:var(--blue);background:#E3F2FD}
-  .add-course-card span{font-size:.87rem;font-weight:600;color:var(--text-muted)}
-  .empty-box{text-align:center;padding:30px;color:var(--text-muted);font-size:.9rem;background:var(--white);border-radius:var(--radius);border:1.5px solid var(--border);margin-bottom:28px}
-  .matches-list{display:flex;flex-direction:column;gap:12px;margin-bottom:28px}
-  .match-row{background:var(--white);border-radius:var(--radius);padding:16px 20px;border:1.5px solid var(--border);display:flex;align-items:center;gap:14px;transition:.2s}
-  .match-row:hover{box-shadow:var(--shadow)}
-  .m-avatar{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.85rem;font-weight:800;color:#fff;flex-shrink:0}
-  .match-info{flex:1}
-  .match-name{font-weight:700;font-size:.95rem;margin-bottom:2px}
-  .match-detail{font-size:.82rem;color:var(--text-muted)}
-  .match-overlap-badge{background:#E8F5E9;color:#2E7D32;font-size:.78rem;font-weight:700;padding:4px 12px;border-radius:20px;white-space:nowrap}
-  .btn-connect{background:var(--blue);color:#fff;border:none;padding:8px 18px;border-radius:8px;font-size:.85rem;font-weight:700;cursor:pointer;text-decoration:none;white-space:nowrap}
-  .btn-connect:hover{background:var(--blue-dark)}
-  .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;display:none;align-items:center;justify-content:center}
-  .modal-overlay.open{display:flex}
-  .modal{background:var(--white);border-radius:20px;padding:36px;width:100%;max-width:420px;box-shadow:0 20px 60px rgba(0,0,0,.2)}
-  .modal h3{font-family:'Nunito',sans-serif;font-size:1.3rem;font-weight:900;color:var(--blue-dark);margin-bottom:18px}
-  .mf{margin-bottom:14px}
-  .mf label{display:block;font-size:.85rem;font-weight:600;color:var(--text);margin-bottom:5px}
-  .mf input,.mf select{width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:8px;font-size:.93rem;font-family:'Inter',sans-serif;outline:none;background:#fafbfc;color:var(--text)}
-  .mf input:focus,.mf select:focus{border-color:var(--blue)}
-  .modal-btns{display:flex;gap:10px;justify-content:flex-end;margin-top:6px}
-  .btn-cancel{background:none;border:1.5px solid var(--border);color:var(--text-muted);padding:9px 20px;border-radius:8px;font-size:.9rem;font-weight:600;cursor:pointer}
-  .btn-save{background:var(--orange);color:#fff;border:none;padding:9px 24px;border-radius:8px;font-size:.9rem;font-weight:700;cursor:pointer}
-  .err-inline{color:#c62828;font-size:.82rem;margin-top:4px;display:none}
-  @media(max-width:800px){.sidebar{display:none}.stats{grid-template-columns:repeat(2,1fr)}}
-</style>
-<script>function toggleNotifications(){var dd=document.getElementById("notif-dropdown");if(!dd)return;var open=dd.style.display==="block";dd.style.display=open?"none":"block";if(!open&&typeof loadNotifications!=="undefined")loadNotifications();}</script>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dashboard – MavMatch</title>
+  <script src="courses_db.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    :root{--blue:#1565C0;--blue-dark:#0D47A1;--orange:#F57C00;--orange-bright:#FF6F00;--white:#fff;--bg:#F0F4FF;--border:#E2E8F0;--text:#1e293b;--text-muted:#64748b;--radius:12px;--shadow:0 4px 24px rgba(21,101,192,.10)}
+    body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column}
+    nav{background:var(--white);border-bottom:1.5px solid var(--border);padding:0 5%;display:flex;align-items:center;justify-content:space-between;height:64px;box-shadow:0 2px 12px rgba(21,101,192,.07);position:sticky;top:0;z-index:50}
+    .logo{display:flex;align-items:center;gap:8px;text-decoration:none}
+    .logo-text{font-family:'Nunito',sans-serif;font-size:1.4rem;font-weight:900;color:#0D47A1}
+    .logo-text span{color:var(--orange)}
+    .nav-right{display:flex;align-items:center;gap:16px}
+    .user-chip{display:flex;align-items:center;gap:8px;background:var(--bg);border:1.5px solid var(--border);border-radius:24px;padding:5px 14px 5px 8px}
+    .user-avatar{width:30px;height:30px;border-radius:50%;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;font-size:.78rem;font-weight:800}
+    .btn-logout{font-size:.85rem;color:var(--text-muted);text-decoration:none;padding:6px 12px;border-radius:6px;border:1px solid var(--border)}
+    .btn-logout:hover{background:#fff2f2;color:#c62828}
+    .app{display:flex;flex:1}
+    .sidebar{width:220px;background:var(--white);border-right:1.5px solid var(--border);padding:24px 0;flex-shrink:0}
+    .nav-item{display:flex;align-items:center;gap:10px;padding:10px 22px;font-size:.92rem;font-weight:600;color:var(--text-muted);text-decoration:none;transition:.15s}
+    .nav-item:hover{background:var(--bg);color:var(--blue)}
+    .nav-item.active{background:#E3F2FD;color:var(--blue);border-right:3px solid var(--blue)}
+    .nav-icon{font-size:1.1rem;width:22px;text-align:center}
+    .sidebar-section{font-size:.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);padding:16px 22px 6px}
+    .content{flex:1;padding:32px 5%;overflow-y:auto}
+    .welcome{background:linear-gradient(135deg,var(--blue-dark),var(--blue));border-radius:16px;padding:28px 32px;color:#fff;margin-bottom:28px;display:flex;justify-content:space-between;align-items:center}
+    .welcome h2{font-family:'Nunito',sans-serif;font-size:1.5rem;font-weight:900;margin-bottom:4px}
+    .welcome p{font-size:.9rem;opacity:.85}
+    .btn-white-sm{background:#fff;color:var(--blue-dark);border:none;padding:10px 20px;border-radius:8px;font-size:.9rem;font-weight:700;cursor:pointer;transition:.2s;white-space:nowrap}
+    .btn-white-sm:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,.15)}
+    .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:28px}
+    .stat{background:var(--white);border-radius:var(--radius);padding:18px 20px;border:1.5px solid var(--border)}
+    .stat-val{font-family:'Nunito',sans-serif;font-size:1.8rem;font-weight:900;color:var(--blue-dark)}
+    .stat-label{font-size:.8rem;color:var(--text-muted);margin-top:2px}
+    .section-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+    .section-title{font-family:'Nunito',sans-serif;font-size:1.1rem;font-weight:800;color:var(--blue-dark)}
+    .see-all{font-size:.85rem;color:var(--blue);font-weight:600;cursor:pointer;background:none;border:none;text-decoration:none}
+    .courses-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px;margin-bottom:28px}
+    .course-card{background:var(--white);border-radius:var(--radius);padding:18px 20px;border:1.5px solid var(--border);transition:.2s}
+    .course-card:hover{box-shadow:var(--shadow);transform:translateY(-2px)}
+    .course-id{font-family:'Nunito',sans-serif;font-size:1rem;font-weight:900;color:var(--blue-dark);margin-bottom:4px}
+    .course-name-text{font-size:.82rem;color:var(--text-muted);margin-bottom:12px}
+    .course-meta{display:flex;justify-content:space-between;align-items:center}
+    .match-pill{background:#E3F2FD;color:var(--blue);font-size:.75rem;font-weight:700;padding:3px 10px;border-radius:20px}
+    .remove-btn{font-size:.72rem;color:#c62828;background:none;border:none;cursor:pointer;padding:2px 6px;border-radius:4px}
+    .remove-btn:hover{background:#fff2f2}
+    .add-course-card{background:var(--white);border-radius:var(--radius);padding:18px 20px;border:2px dashed var(--border);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;cursor:pointer;min-height:96px;transition:.2s}
+    .add-course-card:hover{border-color:var(--blue);background:#E3F2FD}
+    .add-course-card span{font-size:.87rem;font-weight:600;color:var(--text-muted)}
+    .empty-box{text-align:center;padding:30px;color:var(--text-muted);font-size:.9rem;background:var(--white);border-radius:var(--radius);border:1.5px solid var(--border);margin-bottom:28px}
+    .matches-list{display:flex;flex-direction:column;gap:12px;margin-bottom:28px}
+    .match-row{background:var(--white);border-radius:var(--radius);padding:16px 20px;border:1.5px solid var(--border);display:flex;align-items:center;gap:14px;transition:.2s}
+    .match-row:hover{box-shadow:var(--shadow)}
+    .m-avatar{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.85rem;font-weight:800;color:#fff;flex-shrink:0}
+    .match-info{flex:1}
+    .match-name{font-weight:700;font-size:.95rem;margin-bottom:2px}
+    .match-detail{font-size:.82rem;color:var(--text-muted)}
+    .match-overlap-badge{background:#E8F5E9;color:#2E7D32;font-size:.78rem;font-weight:700;padding:4px 12px;border-radius:20px;white-space:nowrap}
+    .btn-connect{background:var(--blue);color:#fff;border:none;padding:8px 18px;border-radius:8px;font-size:.85rem;font-weight:700;cursor:pointer;text-decoration:none;white-space:nowrap}
+    .btn-connect:hover{background:var(--blue-dark)}
+    .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;display:none;align-items:center;justify-content:center}
+    .modal-overlay.open{display:flex}
+    .modal{background:var(--white);border-radius:20px;padding:36px;width:100%;max-width:420px;box-shadow:0 20px 60px rgba(0,0,0,.2)}
+    .modal h3{font-family:'Nunito',sans-serif;font-size:1.3rem;font-weight:900;color:var(--blue-dark);margin-bottom:18px}
+    .mf{margin-bottom:14px}
+    .mf label{display:block;font-size:.85rem;font-weight:600;color:var(--text);margin-bottom:5px}
+    .mf input,.mf select{width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:8px;font-size:.93rem;font-family:'Inter',sans-serif;outline:none;background:#fafbfc;color:var(--text)}
+    .mf input:focus,.mf select:focus{border-color:var(--blue)}
+    .modal-btns{display:flex;gap:10px;justify-content:flex-end;margin-top:6px}
+    .btn-cancel{background:none;border:1.5px solid var(--border);color:var(--text-muted);padding:9px 20px;border-radius:8px;font-size:.9rem;font-weight:600;cursor:pointer}
+    .btn-save{background:var(--orange);color:#fff;border:none;padding:9px 24px;border-radius:8px;font-size:.9rem;font-weight:700;cursor:pointer}
+    .err-inline{color:#c62828;font-size:.82rem;margin-top:4px;display:none}
+    @media(max-width:800px){.sidebar{display:none}.stats{grid-template-columns:repeat(2,1fr)}}
+  </style>
+  <script>function toggleNotifications(){var dd=document.getElementById("notif-dropdown");if(!dd)return;var open=dd.style.display==="block";dd.style.display=open?"none":"block";if(!open&&typeof loadNotifications!=="undefined")loadNotifications();}</script>
 </head>
 <body>
 <nav>
   <a href="index.html" class="logo">
-    
+
     <span class="logo-text">Mav<span>Match</span></span>
   </a>
   <div class="nav-right">
-        <div style="position:relative;cursor:pointer" onclick="if(typeof toggleNotifications!=='undefined')toggleNotifications()" id="bell-btn">
+    <div style="position:relative;cursor:pointer" onclick="if(typeof toggleNotifications!=='undefined')toggleNotifications()" id="bell-btn">
       <span style="font-size:1.3rem">🔔</span>
       <div id="notif-badge" style="display:none;position:absolute;top:-4px;right:-4px;background:#E53935;color:#fff;font-size:.6rem;font-weight:800;width:16px;height:16px;border-radius:50%;display:flex;align-items:center;justify-content:center"></div>
     </div>
-  <div class="user-chip">
+    <div class="user-chip">
       <div class="user-avatar" id="nav-avatar">M</div>
       <span style="font-size:.87rem;font-weight:600" id="nav-name">Maverick</span>
     </div>
@@ -159,185 +159,185 @@
 </div>
 
 <script>
-const sid = localStorage.getItem('mm_studentId');
-const fname=localStorage.getItem('mm_fname')||'Maverick';
-const lname=localStorage.getItem('mm_lname')||'';
-const initials=localStorage.getItem('mm_initials')||'M';
-document.getElementById('nav-avatar').textContent=initials;
+  const sid = localStorage.getItem('mm_studentId');
+  const fname=localStorage.getItem('mm_fname')||'Maverick';
+  const lname=localStorage.getItem('mm_lname')||'';
+  const initials=localStorage.getItem('mm_initials')||'M';
+  document.getElementById('nav-avatar').textContent=initials;
   const navAv=document.getElementById('nav-avatar');
   if(navAv) navAv.style.background=localStorage.getItem('mm_color')||'#1565C0';
-document.getElementById('nav-name').textContent=fname+(lname?' '+lname[0]+'.':'');
-document.getElementById('welcome-msg').textContent='Hey '+fname+', welcome back! 👋';
+  document.getElementById('nav-name').textContent=fname+(lname?' '+lname[0]+'.':'');
+  document.getElementById('welcome-msg').textContent='Hey '+fname+', welcome back! 👋';
 
-function getCourses(){try{return JSON.parse(localStorage.getItem('mm_courses_'+sid)||'[]')}catch(e){return[]}}
-function saveCourses(c){localStorage.setItem('mm_courses_'+sid,JSON.stringify(c))}
+  function getCourses(){try{return JSON.parse(localStorage.getItem('mm_courses_'+sid)||'[]')}catch(e){return[]}}
+  function saveCourses(c){localStorage.setItem('mm_courses_'+sid,JSON.stringify(c))}
 
-// Load courses from API on page load
-function loadCoursesFromAPI(){
-  if(!sid) return;
-  fetch('/api/courses?studentId='+sid)
-    .then(r=>r.json())
-    .then(data=>{
-      if(data&&data.length>0){
-        const mapped = data.map(c=>({code:c.courseCode, name:c.courseName||c.courseCode, days:'TBD', time:'', dbId:c.id}));
-        localStorage.setItem('mm_courses_'+sid, JSON.stringify(mapped));
-        renderCourses();
-      }
-    }).catch(()=>{});
-}
+  // Load courses from API on page load
+  function loadCoursesFromAPI(){
+    if(!sid) return;
+    fetch('/api/courses?studentId='+sid)
+            .then(r=>r.json())
+            .then(data=>{
+              if(data&&data.length>0){
+                const mapped = data.map(c=>({code:c.courseCode, name:c.courseName||c.courseCode, days:'TBD', time:'', dbId:c.id}));
+                localStorage.setItem('mm_courses_'+sid, JSON.stringify(mapped));
+                renderCourses();
+              }
+            }).catch(()=>{});
+  }
 
-function renderCourses(){
-  const courses=getCourses();
-  document.getElementById('stat-courses').textContent=courses.length;
-  const cont=document.getElementById('courses-container');
-  if(courses.length===0){cont.innerHTML='<div class="empty-box">No courses yet — click "+ Add Course" to get started!</div>';return;}
-  cont.innerHTML='<div class="courses-grid">'+
-    courses.map((c,i)=>`<div class="course-card"><div class="course-id">${c.code}</div><div class="course-name-text">${c.name}</div><div class="course-meta"><button class="remove-btn" onclick="removeCourse(${i})">✕ Remove</button></div></div>`).join('')+
-    '<div class="add-course-card" onclick="openModal()"><div style="font-size:1.8rem;color:var(--text-muted)">+</div><span>Add a course</span></div>'+
-  '</div>';
-}
+  function renderCourses(){
+    const courses=getCourses();
+    document.getElementById('stat-courses').textContent=courses.length;
+    const cont=document.getElementById('courses-container');
+    if(courses.length===0){cont.innerHTML='<div class="empty-box">No courses yet — click "+ Add Course" to get started!</div>';return;}
+    cont.innerHTML='<div class="courses-grid">'+
+            courses.map((c,i)=>`<div class="course-card"><div class="course-id">${c.code}</div><div class="course-name-text">${c.name}</div><div class="course-meta"><button class="remove-btn" onclick="removeCourse(${i})">✕ Remove</button></div></div>`).join('')+
+            '<div class="add-course-card" onclick="openModal()"><div style="font-size:1.8rem;color:var(--text-muted)">+</div><span>Add a course</span></div>'+
+            '</div>';
+  }
 
-function removeCourse(i){
-  const c=getCourses();
-  const course=c[i];
-  c.splice(i,1);
-  saveCourses(c);
-  renderCourses();
-  if(course&&course.code&&sid){
-    fetch('/api/courses?studentId='+sid+'&courseCode='+encodeURIComponent(course.code),{method:'DELETE'})
-      .then(()=>{
-        // Recompute matches without removed course
-        fetch('/api/matches?studentId='+sid+'&page=0&refresh=true').catch(()=>{});
+  function removeCourse(i){
+    const c=getCourses();
+    const course=c[i];
+    c.splice(i,1);
+    saveCourses(c);
+    renderCourses();
+    if(course&&course.code&&sid){
+      fetch('/api/courses?studentId='+sid+'&courseCode='+encodeURIComponent(course.code),{method:'DELETE'})
+              .then(()=>{
+                // Recompute matches without removed course
+                fetch('/api/matches?studentId='+sid+'&page=0&refresh=true').catch(()=>{});
+              }).catch(()=>{});
+    }
+  }
+
+  function openModal(){document.getElementById('modal').classList.add('open')}
+  function closeModal(){document.getElementById('modal').classList.remove('open')}
+
+  // Course autocomplete for dashboard
+  function filterDashCourses(){
+    const val = document.getElementById('course-search-input').value.toLowerCase();
+    if(val.length < 2){ document.getElementById('dash-course-dropdown').style.display='none'; return; }
+    const allC = Object.values(typeof UTA_COURSES !== 'undefined' ? UTA_COURSES : {}).flat();
+    const seen = new Set();
+    const unique = allC.filter(c=>{ if(seen.has(c.code)) return false; seen.add(c.code); return true; });
+    const filtered = unique.filter(c=>c.code.toLowerCase().includes(val)||c.name.toLowerCase().includes(val)).slice(0,10);
+    renderDashCourseDropdown(filtered);
+  }
+  function showDashCourses(){ filterDashCourses(); }
+  function hideDashCourses(){ document.getElementById('dash-course-dropdown').style.display='none'; }
+  function renderDashCourseDropdown(list){
+    const dd = document.getElementById('dash-course-dropdown');
+    if(list.length===0){dd.style.display='none';return;}
+    dd.style.display='block';
+    dd.innerHTML=list.map(c=>`<div onclick="selectDashCourse('${c.code}','${c.name.replace(/'/g,"\'")}')" style="padding:10px 14px;cursor:pointer;font-size:.88rem;border-bottom:1px solid #f0f0f0" onmouseover="this.style.background='#E3F2FD'" onmouseout="this.style.background=''">${c.code} — ${c.name}</div>`).join('');
+  }
+  function selectDashCourse(code, name){
+    document.getElementById('course-search-input').value=code+' — '+name;
+    document.getElementById('course-code').value=code;
+    document.getElementById('course-name').value=name;
+    document.getElementById('dash-course-dropdown').style.display='none';
+  }
+
+  function saveCourse(){
+    const code=document.getElementById('course-code').value.trim().toUpperCase();
+    document.getElementById('code-err').style.display='none';
+    if(!code){document.getElementById('code-err').style.display='block';return;}
+    const courses=getCourses();
+    if(courses.find(c=>c.code===code)){alert('Course already added!');return;}
+    const courseName = document.getElementById('course-name').value.trim()||'Course';
+    courses.push({code,name:courseName,days:'TBD',time:''});
+    saveCourses(courses);
+    // Save to DB
+    if(sid){
+      fetch('/api/courses',{method:'POST',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({studentId:parseInt(sid),courseCode:code,courseName:courseName,days:'TBD',time:''})
+      }).then(r=>r.json()).then(d=>{
+        // Update dbId in localStorage
+        const c2=getCourses();
+        const idx=c2.findIndex(x=>x.code===code);
+        if(idx>=0&&d.id){c2[idx].dbId=d.id;saveCourses(c2);}
       }).catch(()=>{});
+    }
+    document.getElementById('course-search-input').value='';
+    document.getElementById('course-code').value='';
+    document.getElementById('course-name').value='';
+    closeModal();
+    renderCourses();
+    // Recompute in background so Find More will have fresh results
+    if(sid){
+      fetch('/api/matches?studentId='+sid+'&page=0&refresh=true').catch(()=>{});
+    }
   }
-}
 
-function openModal(){document.getElementById('modal').classList.add('open')}
-function closeModal(){document.getElementById('modal').classList.remove('open')}
+  document.getElementById('modal').addEventListener('click',function(e){if(e.target===this)closeModal()});
 
-// Course autocomplete for dashboard
-function filterDashCourses(){
-  const val = document.getElementById('course-search-input').value.toLowerCase();
-  if(val.length < 2){ document.getElementById('dash-course-dropdown').style.display='none'; return; }
-  const allC = Object.values(typeof UTA_COURSES !== 'undefined' ? UTA_COURSES : {}).flat();
-  const seen = new Set();
-  const unique = allC.filter(c=>{ if(seen.has(c.code)) return false; seen.add(c.code); return true; });
-  const filtered = unique.filter(c=>c.code.toLowerCase().includes(val)||c.name.toLowerCase().includes(val)).slice(0,10);
-  renderDashCourseDropdown(filtered);
-}
-function showDashCourses(){ filterDashCourses(); }
-function hideDashCourses(){ document.getElementById('dash-course-dropdown').style.display='none'; }
-function renderDashCourseDropdown(list){
-  const dd = document.getElementById('dash-course-dropdown');
-  if(list.length===0){dd.style.display='none';return;}
-  dd.style.display='block';
-  dd.innerHTML=list.map(c=>`<div onclick="selectDashCourse('${c.code}','${c.name.replace(/'/g,"\'")}')" style="padding:10px 14px;cursor:pointer;font-size:.88rem;border-bottom:1px solid #f0f0f0" onmouseover="this.style.background='#E3F2FD'" onmouseout="this.style.background=''">${c.code} — ${c.name}</div>`).join('');
-}
-function selectDashCourse(code, name){
-  document.getElementById('course-search-input').value=code+' — '+name;
-  document.getElementById('course-code').value=code;
-  document.getElementById('course-name').value=name;
-  document.getElementById('dash-course-dropdown').style.display='none';
-}
-
-function saveCourse(){
-  const code=document.getElementById('course-code').value.trim().toUpperCase();
-  document.getElementById('code-err').style.display='none';
-  if(!code){document.getElementById('code-err').style.display='block';return;}
-  const courses=getCourses();
-  if(courses.find(c=>c.code===code)){alert('Course already added!');return;}
-  const courseName = document.getElementById('course-name').value.trim()||'Course';
-  courses.push({code,name:courseName,days:'TBD',time:''});
-  saveCourses(courses);
-  // Save to DB
   if(sid){
-    fetch('/api/courses',{method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({studentId:parseInt(sid),courseCode:code,courseName:courseName,days:'TBD',time:''})
-    }).then(r=>r.json()).then(d=>{
-      // Update dbId in localStorage
-      const c2=getCourses();
-      const idx=c2.findIndex(x=>x.code===code);
-      if(idx>=0&&d.id){c2[idx].dbId=d.id;saveCourses(c2);}
-    }).catch(()=>{});
+    fetch('/api/meetings?studentId='+sid)
+            .then(r=>r.json())
+            .then(data=>{
+              const upcoming = (data||[]).filter(m=>m.status==='confirmed' && m.date && new Date(m.date+'T23:59:00')>=new Date());
+              document.getElementById('stat-meetings').textContent=upcoming.length;
+            }).catch(()=>{});
   }
-  document.getElementById('course-search-input').value='';
-  document.getElementById('course-code').value='';
-  document.getElementById('course-name').value='';
-  closeModal();
-  renderCourses();
-  // Recompute in background so Find More will have fresh results
+  loadCoursesFromAPI();
+
+  // Load matches
+  const avatarColors=['#1565C0','#F57C00','#2E7D32','#7B1FA2','#C62828','#0277BD','#E65100','#4A148C'];
+  function colorFor(name){let h=0;for(let i=0;i<(name||'').length;i++)h=(h*31+name.charCodeAt(i))%avatarColors.length;return avatarColors[h];}
+  function initialsOf(name){const p=(name||'?').trim().split(' ');return(p[0][0]+(p[1]?p[1][0]:'')).toUpperCase();}
+
   if(sid){
-    fetch('/api/matches?studentId='+sid+'&page=0&refresh=true').catch(()=>{});
+    // mm_picked_matches = what user selected (onboarding + find more additions)
+    // This is the ONLY source of truth for what shows on dashboard/my matches
+    let display = null;
+    try{ const p=JSON.parse(localStorage.getItem('mm_picked_matches_'+sid)||'null'); if(p&&p.length>0) display=p; }catch(e){}
+
+    if(display){
+      renderDashboardMatches(display);
+    } else {
+      // No picks yet - hit API once to show something
+      fetch('/api/matches?studentId='+sid+'&page=0')
+              .then(r=>r.json())
+              .then(data=>{
+                if(data&&data.length>0){
+                  renderDashboardMatches(data.slice().sort((a,b)=>(b.overlapHours||0)-(a.overlapHours||0)));
+                } else {
+                  document.getElementById('matches-list').innerHTML='<div style="padding:16px;text-align:center;color:#64748b;font-size:.9rem">No matches yet!</div>';
+                }
+              })
+              .catch(()=>{
+                document.getElementById('matches-list').innerHTML='<div style="padding:16px;text-align:center;color:#64748b;font-size:.9rem">No matches yet!</div>';
+              });
+    }
   }
-}
 
-document.getElementById('modal').addEventListener('click',function(e){if(e.target===this)closeModal()});
-
-if(sid){
-  fetch('/api/meetings?studentId='+sid)
-    .then(r=>r.json())
-    .then(data=>{ 
-      const upcoming = (data||[]).filter(m=>m.status==='confirmed' && m.date && new Date(m.date+'T23:59:00')>=new Date());
-      document.getElementById('stat-meetings').textContent=upcoming.length;
-    }).catch(()=>{});
-}
-loadCoursesFromAPI();
-
-// Load matches
-const avatarColors=['#1565C0','#F57C00','#2E7D32','#7B1FA2','#C62828','#0277BD','#E65100','#4A148C'];
-function colorFor(name){let h=0;for(let i=0;i<(name||'').length;i++)h=(h*31+name.charCodeAt(i))%avatarColors.length;return avatarColors[h];}
-function initialsOf(name){const p=(name||'?').trim().split(' ');return(p[0][0]+(p[1]?p[1][0]:'')).toUpperCase();}
-
-if(sid){
-  // mm_picked_matches = what user selected (onboarding + find more additions)
-  // This is the ONLY source of truth for what shows on dashboard/my matches
-  let display = null;
-  try{ const p=JSON.parse(localStorage.getItem('mm_picked_matches_'+sid)||'null'); if(p&&p.length>0) display=p; }catch(e){}
-
-  if(display){
-    renderDashboardMatches(display);
-  } else {
-    // No picks yet - hit API once to show something
-    fetch('/api/matches?studentId='+sid+'&page=0')
-      .then(r=>r.json())
-      .then(data=>{
-        if(data&&data.length>0){
-          renderDashboardMatches(data.slice().sort((a,b)=>(b.overlapHours||0)-(a.overlapHours||0)));
-        } else {
-          document.getElementById('matches-list').innerHTML='<div style="padding:16px;text-align:center;color:#64748b;font-size:.9rem">No matches yet!</div>';
-        }
-      })
-      .catch(()=>{
-        document.getElementById('matches-list').innerHTML='<div style="padding:16px;text-align:center;color:#64748b;font-size:.9rem">No matches yet!</div>';
-      });
-  }
-}
-
-function renderDashboardMatches(data){
-  const list = document.getElementById('matches-list');
-  if(!data || data.length === 0){
-    list.innerHTML = '<div style="padding:16px;text-align:center;color:#64748b;font-size:.9rem">No matches yet. Complete onboarding to find matches!</div>';
-    return;
-  }
-  // Set best overlap
-  const bestOverlap = Math.max(...data.map(m=>m.overlapHours||0));
-  const overlapEl = document.getElementById('stat-overlap');
-  if(overlapEl) overlapEl.textContent = bestOverlap + 'h';
-  // Count from mm_picked_matches only
-  try{
-    const sid2 = localStorage.getItem('mm_studentId')||'';
-    const picked = JSON.parse(localStorage.getItem('mm_picked_matches_'+sid2)||'null');
-    const count = picked ? picked.length : (data||[]).length;
-    const el=document.getElementById('stat-matches'); if(el) el.textContent = count;
-  }catch(e){ const el=document.getElementById('stat-matches'); if(el) el.textContent = (data||[]).length; }
-  list.innerHTML = data.slice(0,3).map(m=>{
-    const name = m.name || m.student2Name || '?';
-    const initials = initialsOf(name);
-    const color = colorFor(name);
-    const course = m.courseCode || '';
-    const major = m.major || m.student2Major || '';
-    const overlap = m.overlapHours || 0;
-    return `<div class="match-row">
+  function renderDashboardMatches(data){
+    const list = document.getElementById('matches-list');
+    if(!data || data.length === 0){
+      list.innerHTML = '<div style="padding:16px;text-align:center;color:#64748b;font-size:.9rem">No matches yet. Complete onboarding to find matches!</div>';
+      return;
+    }
+    // Set best overlap
+    const bestOverlap = Math.max(...data.map(m=>m.overlapHours||0));
+    const overlapEl = document.getElementById('stat-overlap');
+    if(overlapEl) overlapEl.textContent = bestOverlap + 'h';
+    // Count from mm_picked_matches only
+    try{
+      const sid2 = localStorage.getItem('mm_studentId')||'';
+      const picked = JSON.parse(localStorage.getItem('mm_picked_matches_'+sid2)||'null');
+      const count = picked ? picked.length : (data||[]).length;
+      const el=document.getElementById('stat-matches'); if(el) el.textContent = count;
+    }catch(e){ const el=document.getElementById('stat-matches'); if(el) el.textContent = (data||[]).length; }
+    list.innerHTML = data.slice(0,3).map(m=>{
+      const name = m.name || m.student2Name || '?';
+      const initials = initialsOf(name);
+      const color = colorFor(name);
+      const course = m.courseCode || '';
+      const major = m.major || m.student2Major || '';
+      const overlap = m.overlapHours || 0;
+      return `<div class="match-row">
       <div class="m-avatar" style="background:${color}">${initials}</div>
       <div class="match-info">
         <div class="match-name">${name}</div>
@@ -346,18 +346,18 @@ function renderDashboardMatches(data){
       <div class="match-overlap-badge">${overlap}h overlap</div>
       <a href="matches.html" class="btn-connect">View</a>
     </div>`;
-  }).join('');
-}
-function logOut(){
-  const sid = localStorage.getItem('mm_studentId');
-  // Keep per-user data, only clear session keys
-  const keysToKeep = ['mm_blocked_'+sid, 'mm_picked_matches_'+sid];
-  const preserved = {};
-  keysToKeep.forEach(k=>{ const v=localStorage.getItem(k); if(v) preserved[k]=v; });
-  localStorage.clear();
-  Object.keys(preserved).forEach(k=>localStorage.setItem(k,preserved[k]));
-  window.location.href='login.html';
-}
+    }).join('');
+  }
+  function logOut(){
+    const sid = localStorage.getItem('mm_studentId');
+    // Keep per-user data, only clear session keys
+    const keysToKeep = ['mm_blocked_'+sid, 'mm_picked_matches_'+sid];
+    const preserved = {};
+    keysToKeep.forEach(k=>{ const v=localStorage.getItem(k); if(v) preserved[k]=v; });
+    localStorage.clear();
+    Object.keys(preserved).forEach(k=>localStorage.setItem(k,preserved[k]));
+    window.location.href='login.html';
+  }
 </script>
 </body>
 </html>
