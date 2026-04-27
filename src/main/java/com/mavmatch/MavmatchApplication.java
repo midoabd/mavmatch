@@ -1,3 +1,9 @@
+/**
+ * MavMatch - Study Partner Matching Platform
+ * Built by Ahmad Abdallah | UTA Senior IS Project 2026
+ * © 2026 Ahmad Abdallah. All rights reserved.
+ */
+
 package com.mavmatch;
 
 import org.springframework.boot.SpringApplication;
