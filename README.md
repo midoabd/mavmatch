@@ -148,8 +148,9 @@ src/
 
 ## Team
 
-Built by **Ahmad Abdallah** as a Senior IS Project at the University of Texas at Arlington.
-Other group members were part of the assigned project team.
+Primary design and development by Ahmad Abdallah as a Senior IS Project at the University of Texas at Arlington.
+
+Other group members were part of the assigned project team and are acknowledged for their participation and support.
 ---
 
 ## License
