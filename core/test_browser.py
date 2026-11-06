@@ -1,0 +1,118 @@
+from datetime import datetime, timedelta
+import os
+from django.contrib.staticfiles.testing import StaticLiveServerTestCase
+from django.test import override_settings
+from playwright.sync_api import sync_playwright, expect
+from .models import Course
+
+@override_settings(PASSWORD_HASHERS=['django.contrib.auth.hashers.MD5PasswordHasher'])
+class BrowserWorkflowTests(StaticLiveServerTestCase):
+    def setUp(self):
+        self.course=Course.objects.create(code='INSY 3304',name='Database Management')
+        self.contexts=[]
+        self.errors=[]
+        self.playwright=sync_playwright().start()
+        self.browser=self.playwright.chromium.launch(executable_path=os.getenv('CHROMIUM_PATH','/usr/bin/chromium'),headless=True,
+            args=['--no-sandbox','--disable-dev-shm-usage'])
+    def tearDown(self):
+        for context in self.contexts:context.close()
+        self.browser.close();self.playwright.stop()
+    def page(self,mobile=False):
+        context=self.browser.new_context(viewport={'width':390 if mobile else 1366,'height':844 if mobile else 900},timezone_id='America/Chicago')
+        self.contexts.append(context)
+        page=context.new_page()
+        page.on('pageerror',lambda error:self.errors.append(str(error)))
+        return page
+    def register(self,page,first):
+        page.goto(self.live_server_url+'/register/')
+        for label,value in [('First name',first),('Last name','Student'),('UTA email',first.lower()+'@mavs.uta.edu'),('Password','Uncommon-password-682!')]:
+            page.get_by_label(label,exact=True).fill(value)
+        page.get_by_role('button',name='Create my account').click()
+        page.wait_for_url('**/app/onboarding/')
+    def setup_student(self,page):
+        page.get_by_role('button',name='Add a course',exact=False).first.click()
+        page.get_by_label('Search courses').fill('INSY 3304')
+        page.get_by_role('button',name='Add',exact=True).click()
+        page.get_by_role('button',name='Next: my availability').click()
+        page.get_by_role('button',name='Monday 10am to 11am',exact=True).click()
+        page.get_by_role('button',name='Monday 11am to 12pm',exact=True).click()
+        page.get_by_role('button',name='Find my people').click()
+        expect(page.get_by_role('heading',name='Your study circle is taking shape.')).to_be_visible()
+    def test_two_accounts_courses_matches_chat_meetings_groups_and_profile(self):
+        a,b=self.page(),self.page()
+        self.register(a,'Alice');self.setup_student(a)
+        self.register(b,'Bob');self.setup_student(b)
+        a.goto(self.live_server_url+'/app/matches/')
+        expect(a.get_by_role('heading',name='Bob Student')).to_be_visible()
+        expect(a.get_by_text('2h in common',exact=True)).to_be_visible()
+        a.get_by_role('button',name='Say hello').click()
+        a.wait_for_url('**/app/messages/?conversation=*')
+        message='<img src=x onerror="window.crossAccountBug=true"> Hello Bob!'
+        a.get_by_label('Message',exact=True).fill(message)
+        a.get_by_role('button',name='Send',exact=False).click()
+        expect(a.locator('.bubble')).to_have_text(message)
+        self.assertFalse(a.evaluate('Boolean(window.crossAccountBug)'))
+        b.goto(self.live_server_url+'/app/messages/')
+        expect(b.locator('.bubble')).to_have_text(message)
+        a.get_by_role('button',name='Plan session').click()
+        a.get_by_label('Date & time',exact=False).fill((datetime.now()+timedelta(days=2)).strftime('%Y-%m-%dT14:00'))
+        a.get_by_label('Where?',exact=True).fill('Central Library')
+        a.get_by_role('button',name='Send invitation').click()
+        expect(a.get_by_role('dialog')).not_to_be_visible()
+        b.goto(self.live_server_url+'/app/meetings/')
+        b.get_by_role('button',name='Accept',exact=True).click()
+        expect(b.get_by_text('confirmed',exact=True)).to_be_visible()
+        a.goto(self.live_server_url+'/app/groups/')
+        a.get_by_role('button',name='Create a group').click()
+        a.get_by_label('Group name').fill('Database circle')
+        a.get_by_role('button',name='Create group',exact=False).last.click()
+        expect(a.get_by_role('heading',name='Database circle')).to_be_visible()
+        b.goto(self.live_server_url+'/app/groups/')
+        b.get_by_role('button',name='Join group').click()
+        expect(b.get_by_text('2 members',exact=False)).to_be_visible()
+        a.goto(self.live_server_url+'/app/profile/')
+        a.get_by_label('First name',exact=True).fill('Alicia')
+        a.get_by_role('button',name='Save profile').click()
+        expect(a.get_by_role('heading',name='Alicia Student')).to_be_visible()
+        a.reload();expect(a.get_by_label('First name',exact=True)).to_have_value('Alicia')
+        b.goto(self.live_server_url+'/app/profile/')
+        expect(b.get_by_label('First name',exact=True)).to_have_value('Bob')
+        a.goto(self.live_server_url+'/app/courses/')
+        a.get_by_role('button',name='Remove INSY 3304',exact=True).click()
+        a.get_by_role('button',name='Confirm',exact=True).click()
+        expect(a.get_by_role('heading',name='INSY 3304',exact=True)).to_have_count(0)
+        a.goto(self.live_server_url+'/app/matches/')
+        expect(a.get_by_role('heading',name='No compatible partners just yet')).to_be_visible()
+        a.goto(self.live_server_url+'/app/messages/')
+        expect(a.locator('.bubble')).to_have_text(message)
+        b.goto(self.live_server_url+'/app/courses/')
+        expect(b.get_by_role('heading',name='INSY 3304',exact=True)).to_be_visible()
+        b.goto(self.live_server_url+'/app/matches/')
+        expect(b.get_by_role('heading',name='No compatible partners just yet')).to_be_visible()
+        self.assertEqual(self.errors,[])
+    def test_mobile_onboarding_and_logout(self):
+        page=self.page(mobile=True)
+        self.register(page,'Mobile');self.setup_student(page)
+        page.goto(self.live_server_url+'/app/')
+        expect(page.get_by_role('heading',name='A little progress, together.')).to_be_visible()
+        self.assertLessEqual(page.evaluate('document.documentElement.scrollWidth'),391)
+        page.get_by_role('button',name='Log out',exact=True).click()
+        page.wait_for_url('**/login/')
+        page.goto(self.live_server_url+'/app/')
+        page.wait_for_url(lambda url:'/login/?next=' in url)
+        self.assertEqual(self.errors,[])
+    def test_network_failure_does_not_fake_login_or_registration(self):
+        page=self.page()
+        page.goto(self.live_server_url+'/login/')
+        page.route('**/api/login/',lambda route:route.abort())
+        page.get_by_label('UTA email',exact=True).fill('someone@mavs.uta.edu')
+        page.get_by_label('Password',exact=True).fill('Not-a-real-password-482!')
+        page.get_by_role('button',name='Log in',exact=False).click()
+        expect(page.get_by_role('alert')).to_contain_text('Could not reach MavMatch')
+        self.assertTrue(page.url.endswith('/login/'))
+        page.goto(self.live_server_url+'/register/')
+        page.route('**/api/register/',lambda route:route.abort())
+        for label,value in [('First name','New'),('Last name','Student'),('UTA email','new@mavs.uta.edu'),('Password','Not-a-real-password-482!')]:page.get_by_label(label,exact=True).fill(value)
+        page.get_by_role('button',name='Create my account').click()
+        expect(page.get_by_role('alert')).to_contain_text('Could not reach MavMatch')
+        self.assertTrue(page.url.endswith('/register/'))

@@ -1,158 +1,54 @@
-# MavMatch 🤝
+# MavMatch 2.0
 
-A full-stack web application that helps University of Texas at Arlington (UTA) students find compatible study partners based on shared courses and overlapping weekly availability.
+A local study-partner demo. Requires **Python 3.12 only**. Use VS Code to edit and run it. SQLite is included with Python and stores data in `.local/mavmatch.sqlite3`.
 
-**Live Demo:** [mavmatch-production.up.railway.app](https://mavmatch-production.up.railway.app)
+## Get updates through GitHub
 
----
+This rebuild now lives in the existing repository: https://github.com/midoabd/mavmatch (branch `master`). The original Java app and its history are preserved on `backup/original-before-v2`.
 
-## What It Does
+For your first GitHub checkout, use VS Code's **Git: Clone** command with `https://github.com/midoabd/mavmatch.git`. If your working demo came from a ZIP, copy its `.local` folder into the cloned project before starting it; this preserves your existing accounts and messages. Keep the ZIP folder until you have verified the copied data.
 
-Students register with their UTA email, select their courses, and set their weekly availability. MavMatch's matching algorithm then finds other students who share at least one course and calculates how many hours per week their schedules overlap. Matches are ranked by overlap hours so the most compatible study partners appear first.
+For later updates, stop the server with Ctrl+C, run `git pull` in the cloned project, then run the Windows launcher below. `.local` and `.venv` are ignored by Git. Keep any local source edits committed or backed up before updating; avoid reset/clean commands that discard work.
 
-Once matched, students can chat in real time, schedule study sessions, and manage their meetings — all in one place.
+## Windows
 
----
+Open the folder containing `manage.py` in VS Code. In **Terminal → New Terminal**, run:
 
-## Features
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\windows.ps1
+```
 
-- **Smart Matching Algorithm** — finds students sharing courses and ranks them by weekly schedule overlap
-- **Real-Time Chat** — message your matches directly in the app
-- **Study Session Scheduling** — schedule meetings with your matches, accept or decline requests
-- **Availability Grid** — set your weekly free time visually
-- **Notification Bell** — get notified of new messages and meeting requests
-- **Admin Dashboard** — view reported messages, ban or delete accounts
-- **100 Seeded Students** — pre-loaded dummy accounts for realistic demo experience
+Then open **http://127.0.0.1:8000** and click **Explore with the demo account**. The script creates the Python environment, installs dependencies, sets up the database file, and starts the app. Keep the terminal open. Press Ctrl+C to stop. Use the same command next time; your data is preserved.
 
----
+If Python is missing, install Python 3.12 and reopen VS Code. No Docker, WSL, or PostgreSQL installation is required.
 
-## Tech Stack
+## macOS / Linux
 
-### Frontend
-- HTML5, CSS3, JavaScript (ES6+) — no frameworks
-- Google Fonts (Nunito, Inter)
-- Fetch API for all backend communication
-
-### Backend
-- Java 17
-- Spring Boot 3.5
-- Spring Security (BCrypt password hashing)
-- Spring Data JPA + Hibernate ORM
-- Maven
-
-### Database
-- PostgreSQL (hosted on Railway)
-- 8 tables: students, courses, student_courses, availability, matches, meeting_requests, messages, blocked_users
-
-### Deployment
-- Deployed on Railway (cloud platform)
-- Dockerized build
-- Auto-redeploy on GitHub push
-
----
-
-## Database Schema
-
-| Table | Description |
-|---|---|
-| students | User accounts with BCrypt hashed passwords |
-| courses | Course catalog (code + name) |
-| student_courses | Many-to-many: students ↔ courses |
-| availability | Weekly time slots per student |
-| matches | Computed matches with overlap hours |
-| meeting_requests | Scheduled study sessions |
-| messages | Chat messages between matched students |
-| blocked_users | Block relationships between students |
-
----
-
-## Matching Algorithm
-
-1. Find all students who share at least one course with the user
-2. For each candidate, compare availability hour-by-hour across all days
-3. Calculate total weekly overlap in hours
-4. Filter out blocked users
-5. Rank results by overlap hours (descending)
-6. Save results to database and return paginated (10 per page)
-
-Optimized using bulk database queries to avoid N+1 performance issues.
-
----
-
-## Getting Started (Local Development)
-
-### Prerequisites
-- Java 17
-- Maven
-- PostgreSQL database
-
-### Setup
-
-1. Clone the repository:
 ```bash
-git clone https://github.com/YOUR_USERNAME/mavmatch.git
-cd mavmatch
+bash scripts/setup.sh
+bash scripts/dev.sh
 ```
 
-2. Create `src/main/resources/application-local.properties`:
-```properties
-spring.datasource.url=jdbc:postgresql://YOUR_HOST:PORT/YOUR_DB
-spring.datasource.username=YOUR_USERNAME
-spring.datasource.password=YOUR_PASSWORD
-spring.jpa.hibernate.ddl-auto=update
-server.port=8080
+## Demo
+
+Setup creates 24 labeled demo accounts and the reference UTA course catalog. Use the demo button or `demo@mavs.uta.edu` / `MavMatchDemo!2026`. You can create independent accounts using a `@mavs.uta.edu` address. UTA ID is optional; no email is sent.
+
+Features include courses, weekly availability, current matching, private chat, meeting invitations, groups, profiles, reporting, and blocking. Server-managed sessions scope data to the logged-in student. Recommendations use current enrollment and unique shared hours; conversations keep stable IDs and survive course changes. User text is escaped for display.
+
+## Optional developer tests
+
+```bash
+.venv/bin/python -m pip install -r requirements-dev.txt
+.venv/bin/python manage.py test core.tests --noinput
+.venv/bin/python manage.py test core --noinput
 ```
 
-3. Run with local profile in IntelliJ:
-   - Set environment variable: `SPRING_PROFILES_ACTIVE=local`
-   - Run `MavMatchApplication.java`
+The full suite includes real-browser tests requiring an existing Chrome/Chromium executable. Set `CHROMIUM_PATH` to its path; the default is `/usr/bin/chromium`. Browser testing tools are not needed to run the app. Create a local moderator with `manage.py createsuperuser` and use `/admin/`.
 
-4. Open `http://localhost:8080`
+## Local data
 
----
+To back up your demo, stop the app and copy `.local/mavmatch.sqlite3`. The generated `.local/secret-key` is private. Both are excluded from Git and source ZIPs. Repeating setup does not reset account changes.
 
-## Project Structure
+This is a local funding demo, without public hosting, email verification, university SSO, or group chat. Messaging polls every five seconds and shows the latest 200 messages per conversation. The original project is preserved on the backup branch.
 
-```
-src/
-├── main/
-│   ├── java/com/mavmatch/
-│   │   ├── config/          # Security, data seeding
-│   │   ├── controller/      # REST API endpoints
-│   │   ├── model/           # JPA entities
-│   │   ├── repository/      # Database repositories
-│   │   └── service/         # Business logic + matching algorithm
-│   └── resources/
-│       └── static/          # Frontend HTML/CSS/JS files
-```
-
----
-
-## API Endpoints
-
-| Method | Endpoint | Description |
-|---|---|---|
-| POST | /api/register | Register new student |
-| POST | /api/login | Authenticate student |
-| GET/POST | /api/courses | Get or add courses |
-| DELETE | /api/courses | Remove a course |
-| GET/POST | /api/availability | Get or save availability |
-| GET | /api/matches | Get matches (with optional refresh) |
-| GET/POST/DELETE | /api/meetings | Manage study sessions |
-| GET/POST | /api/messages | Chat messages |
-| POST | /api/block | Block a user |
-| GET | /api/notifications | Get unread notifications |
-| GET | /api/admin/dashboard | Admin statistics |
-
----
-
-## Team
-
-Primary design and development by Ahmad Abdallah as a Senior IS Project at the University of Texas at Arlington.
-
-Other group members were part of the assigned project team and are acknowledged for their participation and support.
----
-
-## License
-
-This project is for educational purposes as part of a university senior project.
+The application is validated on Linux. The Windows launcher has not been executed on Windows in this workspace.
