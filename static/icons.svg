@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+  <symbol id="dashboard" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></symbol>
+  <symbol id="book" viewBox="0 0 24 24"><path d="M12 5.5C8.8 3.7 5.5 3.4 2.5 4.5V20c3-1.1 6.3-.8 9.5 1 3.2-1.8 6.5-2.1 9.5-1V4.5c-3-1.1-6.3-.8-9.5 1Zm0 0V21"/><path d="m6 8.5 2.5.6M6 12l2.5.6m7-3.5 2.5-.6m-2.5 4.1L18 12"/></symbol>
+  <symbol id="clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></symbol>
+  <symbol id="partners" viewBox="0 0 24 24"><circle cx="9" cy="7" r="3.2"/><path d="M2.5 20v-2a6.5 6.5 0 0 1 12.5-2.5M16 4.5a3.2 3.2 0 0 1 0 6.2"/><circle cx="18" cy="17" r="3.2"/><path d="m20.5 19.5 2 2"/></symbol>
+  <symbol id="messages" viewBox="0 0 24 24"><path d="M20.5 11.5a7 7 0 0 1-7 7H8L3 21V7a4 4 0 0 1 4-4h9.5a4 4 0 0 1 4 4v4.5Z"/><path d="M7.5 8.5h8m-8 4h5"/></symbol>
+  <symbol id="calendar" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2.5"/><path d="M7 3v4m10-4v4M3 10h18m-13 4h1m6 0h1m-8 3h1m6 0h1"/></symbol>
+  <symbol id="groups" viewBox="0 0 24 24"><circle cx="12" cy="7" r="3"/><path d="M6 21v-2a6 6 0 0 1 12 0v2M4 5a3 3 0 0 0 0 6m16-6a3 3 0 0 1 0 6M1 19v-1a5 5 0 0 1 3-4.6M23 19v-1a5 5 0 0 0-3-4.6"/></symbol>
+  <symbol id="profile" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="9" r="3"/><path d="M5.8 18.5a6.5 6.5 0 0 1 12.4 0"/></symbol>
+  <symbol id="bell" viewBox="0 0 24 24"><path d="M5 9a7 7 0 0 1 14 0c0 7 2 7 2 8H3c0-1 2-1 2-8Zm4 12h6"/></symbol>
+  <symbol id="logout" viewBox="0 0 24 24"><path d="M10 4H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h5m5-13 5 5-5 5m-7-5h12"/></symbol>
+  <symbol id="shield" viewBox="0 0 24 24"><path d="M12 2.5 3.5 6v5c0 5 3.5 8 8.5 10.5 5-2.5 8.5-5.5 8.5-10.5V6L12 2.5Z"/><path d="m8 12 2.5 2.5L16 9"/></symbol>
+  <symbol id="sparkles" viewBox="0 0 24 24"><path d="m10 3 2.5 6.5L19 12l-6.5 2.5L10 21l-2.5-6.5L1 12l6.5-2.5L10 3Zm10-2 1 3 3 1-3 1-1 3-1-3-3-1 3-1 1-3Z"/></symbol>
+  <symbol id="arrow" viewBox="0 0 24 24"><path d="M4 12h16m-6-6 6 6-6 6"/></symbol>
+  <symbol id="external" viewBox="0 0 24 24"><path d="M6 18 18 6M6 6h12v12"/></symbol>
+  <symbol id="plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="close" viewBox="0 0 24 24"><path d="m6 6 12 12M6 18 18 6"/></symbol>
+  <symbol id="search" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></symbol>
+  <symbol id="pin" viewBox="0 0 24 24"><path d="M19 9c0 5-7 12-7 12S5 14 5 9a7 7 0 1 1 14 0Z"/><circle cx="12" cy="9" r="2.5"/></symbol>
+</svg>

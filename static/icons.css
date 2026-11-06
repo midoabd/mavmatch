@@ -1,0 +1,25 @@
+/* Shared vector icons: consistent geometry on Windows, macOS, and Linux. */
+.icon{display:inline-block;width:20px;height:20px;flex-shrink:0;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;vertical-align:middle;overflow:visible}
+.brand-mark{display:block;width:36px;height:36px;flex-shrink:0}
+.brand{gap:9px}
+.sidebar nav a>.icon{width:20px;height:20px;opacity:.9}
+.sidebar nav a.active>.icon{opacity:1;stroke-width:2}
+.notification-link{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:9px}
+.notification-link:hover{background:#edf4ff;color:var(--blue)}
+.notification-link>.icon{width:21px;height:21px}
+.icon-button{display:inline-flex;align-items:center;justify-content:center;min-width:34px;min-height:34px;padding:7px}
+.icon-button .icon{width:18px;height:18px}
+.stat-icon,.course-icon{display:inline-flex;align-items:center;justify-content:center}
+.stat-icon .icon{width:18px;height:18px}
+.course-icon .icon{width:19px;height:19px}
+.btn .icon,.text-link .icon{width:16px;height:16px}
+.hero-chips>span{display:inline-flex;align-items:center;gap:6px}
+.hero-chips .icon{width:15px;height:15px}
+.mini-icon{display:inline-flex;align-items:center;justify-content:center}
+.mini-icon .icon{width:26px;height:26px}
+.campus-card>.icon{width:27px;height:27px;color:var(--orange);margin:3px 0 12px}
+.empty>.icon{display:block;width:30px;height:30px;color:#83a2ca;margin:0 auto 10px}
+.add-card>.icon{width:29px;height:29px;margin-bottom:2px}
+.partner-detail>.icon,.session-info p>.icon,.group-card small>.icon{width:15px;height:15px;margin-right:3px}
+.search-box>.icon{position:absolute;left:13px;top:12px;width:18px;height:18px;color:#8a98ac}
+@media(max-width:780px){.brand-mark{width:31px;height:31px}.sidebar nav a>.icon{width:17px;height:17px}.sidebar nav a{gap:8px}.top-actions{gap:10px}}
