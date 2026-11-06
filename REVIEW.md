@@ -33,3 +33,14 @@ Fix: authenticated API mutations execute their permission checks and writes in o
 The full SQLite suite passed **38 tests**: 32 API/data tests, 3 Chromium workflows, and 3 concurrency tests. Concurrent requests use independent connections against an isolated file-backed SQLite test database, matching the local app's locking behavior. Browser tests include desktop/mobile, separate students, and failed network requests during authentication.
 
 No cross-account leak, outsider authorization bypass, or destructive course-to-chat cascade was reproduced in the reviewed paths. This is not a guarantee that every possible bug is absent. The app remains a local demo with documented sample credentials and no email verification; public deployment and real-student operational security were outside this review. PowerShell itself was not executed on Windows here.
+
+## Matching follow-up
+
+Two additional issues were reproduced and fixed:
+
+- **Mixed-state recommendations:** while one student dropped a shared course and then added overlapping availability, another request combined the old enrollment with the new hours. It recommended that student even though there was no instant when both requirements held. Recommendation calculation now reads a single transactional snapshot, including blocks and active-account state.
+- **An incomplete candidate broke the entire list:** an admin-created student with enrollment/availability but no profile caused the endpoint to return HTTP 404 for the requesting student, hiding valid partners as well. Incomplete candidates are now excluded until their profiles exist.
+
+Targeted tests confirmed that hours on different days or adjacent hours do not overlap; multiple shared courses neither duplicate partners nor multiply their hours; matching still requires a shared course; reverse blocks and disabled accounts are excluded; and ranking uses hours first, then number of shared courses. These rules were retained rather than silently changing the product's weighting.
+
+The full suite now passes **45 tests**, including the new concurrent matching regression and six targeted algorithm tests. Weekly compatibility remains distinct from a date-specific free/busy calendar: confirmed meetings are checked for conflicts when accepted, rather than subtracted permanently from the weekly pattern.

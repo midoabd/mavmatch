@@ -1,6 +1,6 @@
 # Validation
 
-After the serious-bug review, the simplified SQLite build passed all **38 tests**: 32 account/API tests, 3 Chromium workflows, and 3 concurrency tests. Browser workflows include mobile onboarding and two independent student accounts. Tests create and destroy an isolated file-backed SQLite test database. See REVIEW.md for the reproduced concurrency failures and fixes. Database migrations and demo seeding also completed successfully with SQLite.
+After the algorithm follow-up review, the simplified SQLite build passed all **45 tests**: 38 account/API/matching tests, 3 Chromium workflows, and 4 concurrency tests. Browser workflows include mobile onboarding and two independent student accounts. Tests create and destroy an isolated file-backed SQLite test database. See REVIEW.md for the reproduced concurrency and matching failures and fixes. Database migrations and demo seeding also completed successfully with SQLite.
 
 Coverage includes account isolation, CSRF, failed login handling, course ownership and deletion, current shared courses and availability, unique overlapping hours, stable private conversations, preserved chat after course removal, blocking, reporting, unread state, profile persistence, meeting permissions/conflicts, and study groups.
 

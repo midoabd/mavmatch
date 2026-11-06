@@ -1,4 +1,5 @@
 from django.contrib.auth.models import User
+from django.db import transaction
 from django.db.models import Q
 from .models import Availability, Block, Enrollment
 
@@ -10,8 +11,13 @@ def person(user):
             'lastName': user.last_name, 'major': user.profile.major, 'color': user.profile.color,
             'isDemo': user.profile.is_demo}
 
+@transaction.atomic
 def recommendations(user):
-    """Current enrollment + unique weekly hours. Never cache account data in the browser."""
+    """Score a consistent snapshot of current courses, unique hours, and blocks.
+
+    SQLite IMMEDIATE transactions keep concurrent schedule/enrollment changes
+    from being combined into a recommendation that was never valid.
+    """
     mine = dict(Enrollment.objects.filter(student=user).values_list('course_id', 'course__code'))
     hours = set(Availability.objects.filter(student=user).values_list('day', 'hour'))
     if not mine or not hours:
@@ -28,7 +34,9 @@ def recommendations(user):
     for sid, day, hour in Availability.objects.filter(student_id__in=shared).values_list('student_id', 'day', 'hour'):
         availability.setdefault(sid, set()).add((day, hour))
     results = []
-    for student in User.objects.filter(id__in=shared).select_related('profile'):
+    # Admin-created users can have enrollments before their profile is created.
+    # One incomplete account must not prevent all valid partners from loading.
+    for student in User.objects.filter(id__in=shared, is_active=True, profile__isnull=False).select_related('profile'):
         overlap = sorted(hours & availability.get(student.id, set()))
         if not overlap: continue
         results.append({**person(student), 'sharedCourses': sorted(mine[c] for c in shared[student.id]),

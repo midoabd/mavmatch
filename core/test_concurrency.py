@@ -99,3 +99,40 @@ class ConcurrentWritesTests(TransactionTestCase):
                 'A message was admitted after the recipient had already received block confirmation.')
         else:
             self.assertFalse(Message.objects.filter(conversation=conv).exists())
+
+    def test_matches_cannot_combine_courses_and_hours_from_different_states(self):
+        from unittest.mock import patch
+        alice,bob,cara=self.users
+        Enrollment.objects.filter(student=cara).delete()
+        Availability.objects.create(student=alice,day=0,hour=10)
+        Availability.objects.create(student=bob,day=0,hour=14)
+        reader,writer=self.client_for(alice),self.client_for(bob)
+        ready=threading.Event()
+        original_filter=Availability.objects.filter
+        def pause_before_candidate_hours(*args,**kwargs):
+            if 'student_id__in' in kwargs:
+                ready.set()
+                time.sleep(0.3)
+            return original_filter(*args,**kwargs)
+        def read():
+            close_old_connections()
+            try: return reader.get('/api/matches/')
+            finally: connections.close_all()
+        def change():
+            close_old_connections()
+            try:
+                dropped=writer.delete(f'/api/courses/{self.course.id}/')
+                saved=writer.put('/api/availability/',data=json.dumps({'slots':[{'day':0,'hour':10}]}),content_type='application/json')
+                return dropped.status_code,saved.status_code
+            finally: connections.close_all()
+        # Bob never qualifies: initially the hours differ, then the shared course
+        # is removed before the overlapping hour is added.
+        with patch.object(Availability.objects,'filter',side_effect=pause_before_candidate_hours):
+            with ThreadPoolExecutor(max_workers=2) as pool:
+                a=pool.submit(read)
+                self.assertTrue(ready.wait(5),'Matching never reached candidate availability.')
+                b=pool.submit(change)
+                response=a.result(timeout=10)
+                self.assertEqual(b.result(timeout=10),(200,200))
+        self.assertEqual(response.status_code,200)
+        self.assertEqual(response.json(),[], 'A recommendation combined stale enrollment with new availability.')
