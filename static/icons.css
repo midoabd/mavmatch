@@ -17,8 +17,6 @@
 .hero-chips .icon{width:15px;height:15px}
 .mini-icon{display:inline-flex;align-items:center;justify-content:center}
 .mini-icon .icon{width:26px;height:26px}
-.campus-card>.icon{width:27px;height:27px;color:var(--orange);margin:3px 0 12px}
-.empty>.icon{display:block;width:30px;height:30px;color:#83a2ca;margin:0 auto 10px}
 .add-card>.icon{width:29px;height:29px;margin-bottom:2px}
 .partner-detail>.icon,.session-info p>.icon,.group-card small>.icon{width:15px;height:15px;margin-right:3px}
 .search-box>.icon{position:absolute;left:13px;top:12px;width:18px;height:18px;color:#8a98ac}

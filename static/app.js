@@ -37,7 +37,7 @@ function ranges(slots) {
   }
   return result;
 }
-const empty=(title,detail,link='',label='Get started')=>`<div class="empty">${uiIcon('sparkles')}<h3>${esc(title)}</h3><p>${esc(detail)}</p>${link?`<a class="btn primary small" href="${esc(link)}">${esc(label)} →</a>`:''}</div>`;
+const empty=(title,detail,link='',label='Get started')=>`<div class="empty"><h3>${esc(title)}</h3><p>${esc(detail)}</p>${link?`<a class="btn primary small" href="${esc(link)}">${esc(label)} →</a>`:''}</div>`;
 const button=(action,label,id='',cls='')=>`<button class="btn ${cls}" data-action="${action}" data-id="${id}">${label}</button>`;
 function head(title,description,action='') {return `<div class="page-head"><div><div class="eyebrow">YOUR MAVMATCH WORKSPACE</div><h1>${title}</h1><p>${description}</p></div>${action}</div>`;}
 function modal(title,content) {$('#modal-content').innerHTML=`<div class="dialog-head"><h2>${esc(title)}</h2><button class="icon-button" data-action="close" aria-label="Close dialog">${uiIcon('close')}</button></div>${content}`;$('#modal').showModal();}
