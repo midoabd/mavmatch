@@ -47,10 +47,11 @@
 
 .hero-copy {
   padding: clamp(30px, 3.4vw, 52px);
+  padding-top: clamp(28px, 2.6vw, 40px);
 }
 
 .hero-kicker {
-  margin-bottom: 22px;
+  margin-bottom: 16px;
   color: #c2d2ea;
   font-size: 10px;
   font-weight: 700;
@@ -70,7 +71,7 @@
 }
 
 .hero-description {
-  margin-top: 22px;
+  margin-top: 10px;
   color: #d5dfef;
   font-size: 15px;
   line-height: 1.7;
