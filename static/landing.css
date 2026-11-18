@@ -28,7 +28,7 @@
   isolation: isolate;
 }
 
-.hero-photo {
+.hero-art {
   position: absolute;
   z-index: -2;
   width: 100%;
@@ -224,7 +224,7 @@
     background: linear-gradient(90deg, #101d36f5 0%, #101d36bd 43%, #101d3622 100%);
   }
 
-  .hero-photo {
+  .hero-art {
     object-position: center 62%;
   }
 
