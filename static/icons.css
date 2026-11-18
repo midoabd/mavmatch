@@ -11,10 +11,6 @@
 .stat-icon .icon{width:18px;height:18px}
 .course-icon .icon{width:19px;height:19px}
 .btn .icon,.text-link .icon{width:16px;height:16px}
-.hero-chips>span{display:inline-flex;align-items:center;gap:6px}
-.hero-chips .icon{width:15px;height:15px}
-.mini-icon{display:inline-flex;align-items:center;justify-content:center}
-.mini-icon .icon{width:26px;height:26px}
 .add-card>.icon{width:29px;height:29px;margin-bottom:2px}
 .partner-detail>.icon,.session-info p>.icon,.group-card small>.icon{width:15px;height:15px;margin-right:3px}
 .search-box>.icon{position:absolute;left:13px;top:12px;width:18px;height:18px;color:#8a98ac}
