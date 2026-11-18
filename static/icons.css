@@ -1,7 +1,5 @@
 /* Shared vector icons: consistent geometry on Windows, macOS, and Linux. */
 .icon{display:inline-block;width:20px;height:20px;flex-shrink:0;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;vertical-align:middle;overflow:visible}
-.brand-mark{display:block;width:36px;height:36px;flex-shrink:0}
-.brand{gap:9px}
 .sidebar nav a>.icon{width:20px;height:20px;opacity:.9}
 .sidebar nav a.active>.icon{opacity:1;stroke-width:2}
 .notification-link{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:9px}
@@ -20,4 +18,4 @@
 .add-card>.icon{width:29px;height:29px;margin-bottom:2px}
 .partner-detail>.icon,.session-info p>.icon,.group-card small>.icon{width:15px;height:15px;margin-right:3px}
 .search-box>.icon{position:absolute;left:13px;top:12px;width:18px;height:18px;color:#8a98ac}
-@media(max-width:780px){.brand-mark{width:31px;height:31px}.sidebar nav a>.icon{width:17px;height:17px}.sidebar nav a{gap:8px}.top-actions{gap:10px}}
+@media(max-width:780px){.sidebar nav a>.icon{width:17px;height:17px}.sidebar nav a{gap:8px}.top-actions{gap:10px}}
