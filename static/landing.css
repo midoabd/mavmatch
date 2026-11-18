@@ -1,10 +1,22 @@
 .landing {
-  background: #f3f1ec;
+  min-height: 100svh;
+  background:
+    radial-gradient(ellipse at 94% 70%, #b56b3938, transparent 50%),
+    radial-gradient(ellipse at 12% 5%, #3066a470, transparent 60%),
+    #132f51;
+  background-repeat: no-repeat;
 }
 
 .landing .topbar {
   position: relative;
-  border-bottom-color: #e6e3dc;
+  background: #dfebf7;
+  border-bottom-color: #bed0e4;
+}
+
+.landing .local-pill {
+  background: #f7e6ce;
+  border-color: #d9b98c;
+  color: #76552d;
 }
 
 .landing-grid {
@@ -24,7 +36,9 @@
   min-height: 660px;
   overflow: hidden;
   border-radius: 24px;
+  border: 1px solid #ffffff26;
   background: #101d36;
+  box-shadow: 0 20px 60px #06182d30;
   isolation: isolate;
 }
 
@@ -81,10 +95,11 @@
   max-width: 460px;
   justify-self: center;
   padding: 40px;
-  border: 1px solid #e6e3dc;
+  border: 1px solid #f1d5ad;
+  border-top: 4px solid #f5a34b;
   border-radius: 22px;
-  background: #fff;
-  box-shadow: 0 12px 40px #2b35490a;
+  background: #fff1dc;
+  box-shadow: 0 20px 60px #06182d40;
 }
 
 .auth-card h2 {
@@ -98,7 +113,7 @@
 
 .auth-intro {
   margin-bottom: 30px;
-  color: #6c7788;
+  color: #5e6876;
   font-size: 13px;
   line-height: 1.6;
 }
@@ -115,16 +130,16 @@
 .auth-card select {
   min-height: 48px;
   padding: 12px 13px;
-  border-color: #dce1e8;
+  border-color: #d9c8b0;
   border-radius: 9px;
-  background: #fafbfc;
+  background: #fffaf2;
   font-size: 13px;
 }
 
 .auth-card input:focus,
 .auth-card select:focus {
   border-color: var(--blue);
-  background: #fff;
+  background: #fffcf7;
 }
 
 .auth-card .primary {
@@ -147,7 +162,7 @@
   align-items: center;
   gap: 12px;
   margin: 28px 0 20px;
-  color: #7a8493;
+  color: #706758;
   font-size: 9px;
   font-weight: 600;
   letter-spacing: 1px;
@@ -158,21 +173,26 @@
   content: "";
   flex: 1;
   height: 1px;
-  background: #e7eaf0;
+  background: #dac8ad;
 }
 
 .demo-btn {
   justify-content: center !important;
   min-height: 46px;
-  background: #fff;
-  border-color: #cdd8e6;
+  background: #f6e0bf;
+  border-color: #c8ab81;
   color: var(--dark);
   font-size: 12px;
 }
 
+.demo-btn:hover {
+  background: #efd2a7;
+  border-color: #b99560;
+}
+
 .auth-card .fineprint {
   margin-top: 20px;
-  color: #7c8592;
+  color: #70695f;
   font-size: 10px;
   text-align: center;
   line-height: 1.7;
@@ -185,7 +205,7 @@
   max-width: 1440px;
   margin: 0 auto;
   padding: 16px 40px 24px;
-  color: #75808f;
+  color: #c5d5e9;
   font-size: 10px;
 }
 
